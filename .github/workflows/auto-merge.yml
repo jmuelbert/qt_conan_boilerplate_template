@@ -1,15 +1,14 @@
----
-name: Auto-merge minor/patch
-on:
-  schedule:
-    - cron: "0 * * * *"
+name: Auto approve
+
+on: pull_request
+
 jobs:
-  test:
-    name: Auto-merge minor and patch updates
-    runs-on: ubuntu-18.04
+  auto-approve:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - uses: koj-co/dependabot-pr-action@master
+      - uses: hmarr/auto-approve-action@v2
+        if: github.actor == 'dependabot[bot]'
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          merge-minor: true
-          merge-patch: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}

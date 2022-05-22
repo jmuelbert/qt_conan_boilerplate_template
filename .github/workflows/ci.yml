@@ -32,8 +32,7 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macos-10.15
-          - windows-2019
+          - macos-11
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
           - llvm-13.0.0
@@ -49,8 +48,10 @@ jobs:
 
         exclude:
           # mingw is determined by this author to be too buggy to support
-          - os: windows-2019
+          - os: macos-11
             compiler: gcc-11
+          - os: ubuntu-20.04
+            compiler: llvm-13.0.0
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
@@ -65,15 +66,6 @@ jobs:
             developer_mode: OFF
             package_generator: TBZ2
 
-          # This exists solely to make sure a non-multiconfig build works
-          - os: ubuntu-20.04
-            compiler: gcc-11
-            generator: "Unix Makefiles"
-            build_type: Debug
-            gcov_executable: gcov
-            developer_mode: On
-
-          # Windows msvc builds
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
@@ -90,15 +82,14 @@ jobs:
             compiler: msvc
             generator: "Visual Studio 17 2022"
             build_type: Debug
-            developer_mode: Off
+            developer_mode: OFF
 
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
             build_type: Release
-            developer_mode: Off
+            developer_mode: OFF
             package_generator: ZIP
-
 
     steps:
       - name: Check for llvm version mismatches
@@ -108,9 +99,10 @@ jobs:
           script: |
             core.setFailed('There is a mismatch between configured llvm compiler and clang-tidy version chosen')
 
-      - uses: actions/checkout@v2
+      - name: "🧰 Checkout"
+        uses: actions/checkout@v3
 
-      - name: Setup Cache
+      - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
           compiler: ${{ matrix.compiler }}
@@ -118,7 +110,7 @@ jobs:
           developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
 
-      - name: Setup Cpp
+      - name: "🔧 Setup Cpp"
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler }}
@@ -130,7 +122,6 @@ jobs:
           vcpkg: false
           ccache: true
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-
 
           cppcheck: true
 
@@ -145,14 +136,14 @@ jobs:
         # has meaningful results
       - name: Configure CMake
         run: |
-          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }}
+          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} -DGIT_SHA:STRING=${{ github.sha }}
 
-      - name: Build
+      - name: "⚙️ Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cmake --build ./build --config ${{matrix.build_type}}
 
-      - name: Unix - Test and coverage
+      - name: "Unix - 🧪 Test and coverage"
         if: runner.os != 'Windows'
         working-directory: ./build
         # Execute tests defined by the CMake configuration.
@@ -179,7 +170,6 @@ jobs:
         with:
           files: |
             build/*-*${{ matrix.build_type }}*-*.*
-
 
       - name: Publish to codecov
         uses: codecov/codecov-action@v2

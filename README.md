@@ -5,7 +5,7 @@
 [![Language grade: C++](https://img.shields.io/lgtm/grade/cpp/github/jmuelbert/qt_conan_boilerplate_template)](https://lgtm.com/projects/g/jmuelbert/qt_conan_boilerplate_template/context:cpp)
 [![CodeQL](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jmuelbert_qt_conan_boilerplate_template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jmuelbert_qt_conan_boilerplate_template)
-[![GitHub Super-Linter](https://github.com/jmuelbert/qt_conan_boilerplate_template/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![GitHub Super-Linter](https://github.com/jmuelbert/qt_conan_boilerplate_template/workflows/Lint.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 ## About qt_conan_boilerplate_template
 

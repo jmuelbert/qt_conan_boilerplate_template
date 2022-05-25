@@ -1,5 +1,12 @@
 image: ubuntu:latest
 
+variables:
+  SAST_IMAGE_SUFFIX: '-fips'
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 stages:
   - test
 

@@ -2,18 +2,17 @@
 
 #include <QString>
 
-namespace app
-{
+namespace app {
 
 class MyClass
 {
-    QString _text;
+  QString _text;
 
 public:
-    explicit MyClass(const QString& text);
+  explicit MyClass(const QString &text);
 
-    QString appendIt(const QString& extra) const;
-    QString text() const;
+  QString appendIt(const QString &extra) const;
+  QString text() const;
 };
 
-}
+}// namespace app

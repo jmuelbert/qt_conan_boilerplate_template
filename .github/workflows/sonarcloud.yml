@@ -96,7 +96,7 @@ jobs:
 
       - name: Install deps
         run: |
-          sudo apt-get install -y ninja-build
+          sudo apt-get install -y ninja-build libgl-dev
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v3

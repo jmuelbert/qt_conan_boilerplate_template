@@ -107,7 +107,7 @@ dynamic_project_options(
   ENABLE_CLANG_TIDY
   ENABLE_COVERAGE
   ENABLE_CPPCHECK
-  ENABLE_DOXYGEN
+  # ENABLE_DOXYGEN
   # CONAN_OPTIONS    # Extra options to pass to conan
   # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
   # CLANG_WARNINGS   # Override the defaults for the CLANG warnings

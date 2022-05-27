@@ -1,7 +1,7 @@
 image: ubuntu:latest
 
 variables:
-  SAST_IMAGE_SUFFIX: '-fips'
+  SAST_IMAGE_SUFFIX: "-fips"
 
 include:
   - template: Security/SAST.gitlab-ci.yml
@@ -27,7 +27,7 @@ stages:
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1E9377A2BA9EF27F
 
 .setup_cpp: &setup_cpp |
-  curl -LJO "https://github.com/aminya/setup-cpp/releases/download/v0.14.2/setup_cpp_linux"
+  curl -LJO "https://github.com/aminya/setup-cpp/releases/download/v0.15.0/setup_cpp_linux"
   chmod +x setup_cpp_linux
   ./setup_cpp_linux --compiler $compiler --cmake true --ninja true  --conan true --ccache true --clangtidy true --clangformat true --cppcheck true
   source ~/.profile

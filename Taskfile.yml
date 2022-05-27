@@ -23,6 +23,22 @@ tasks:
       CWD:
         sh: git rev-parse --show-toplevel
 
+  pack:
+    cmds:
+      - task: test_release
+
+      - echo '{{OS}} {{ARCH}}'
+      - |
+        {{if eq OS "darwin"}}
+          cd ./build && cpack -G "DragNDrop;ZIP"
+        {{end}}
+        {{if eq OS "windows" }}
+          cd ./build && cpack -G "NSIS64"
+        {{end}}
+        {{if eq OS "linux"}}
+          cd ./build && cpack -G  "STGZ; TBZ2"
+        {{end}}
+
   lint:
     - |
       {{if eq OS "windows"}} 
@@ -37,8 +53,7 @@ tasks:
         git ls-files --exclude-standard | grep -E '(CMakeLists\.txt)|(\.(cmake))$' | xargs cmake-format --in-place | xargs cmake-lint --disabled-codes C0103 C0301 R0912 R0915 R0913 --suppress-decorations
       {{end}}
 
-    - ~/vcpkg/vcpkg format-manifest ./test/vcpkg.json ./test_install/vcpkg.json
-    - npx -y cspell lint --no-progress --show-suggestions
+    - npx cspell "**" --show-suggestions --color --no-progress
 
   clean: |
     {{if eq OS "windows"}} 

@@ -1,4 +1,4 @@
-## Troubleshooting
+## Troubleshopoting
 
 ### Update Conan
 Many problems that users have can be resolved by updating Conan, so if you are

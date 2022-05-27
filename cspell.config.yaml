@@ -24,6 +24,7 @@ words:
   - cflags
   - choco
   - cmake
+  - cmakelang
   - cmakelint
   - cmds
   - cobertura
@@ -64,8 +65,10 @@ words:
   - gmock
   - Graphviz
   - gtest
+  - hmarr
   - hwrap
   - inplace
+  - jmuelbert
   - kcov
   - kwargs
   - LDFLAGS

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16...3.23)
 
 # Not ideal to use this global variable, but necessary to make sure
 # that tooling and projects use the same version
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 # strongly encouraged to enable this globally to avoid conflicts between
 # -Wpedantic being enabled and -std=c++20 and -std=gnu++20 for example
@@ -20,10 +20,10 @@ set(ENABLE_DEVELOPER_MODE
 # Change this to false if you want to disable warnings_as_errors in developer mode
 set(OPT_WARNINGS_AS_ERRORS_DEVELOPER_DEFAULT TRUE)
 
-# Add project_options v0.20.0
+# Add project_options v0.22.1
 # https://github.com/cpp-best-practices/project_options
 include(FetchContent)
-FetchContent_Declare(_project_options URL https://github.com/aminya/project_options/archive/refs/tags/v0.21.1.zip)
+FetchContent_Declare(_project_options URL https://github.com/aminya/project_options/archive/refs/tags/v0.22.1.zip)
 FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
 
@@ -36,7 +36,7 @@ project(
   myproject
   VERSION 0.0.1
   DESCRIPTION ""
-  HOMEPAGE_URL "%%myurl%%"
+  HOMEPAGE_URL "https://github.com/jmuelbert/qt_conan_boilerplate_template"
   LANGUAGES CXX C)
 
 # This variable is set by project() in CMake 3.21+
@@ -104,6 +104,10 @@ dynamic_project_options(
   <vector>
   <string> # This is a list of headers to pre-compile, here are some common ones
   ENABLE_CONAN
+  ENABLE_CLANG_TIDY
+  ENABLE_COVERAGE
+  ENABLE_CPPCHECK
+  ENABLE_DOXYGEN
   # CONAN_OPTIONS    # Extra options to pass to conan
   # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
   # CLANG_WARNINGS   # Override the defaults for the CLANG warnings
@@ -154,7 +158,7 @@ if(MSVC)
 endif()
 
 # set the startup project for the "play" button in MSVC
-set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT intro)
+set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT app)
 
 if(CMAKE_SKIP_INSTALL_RULES)
   return()
@@ -166,7 +170,7 @@ endif()
 # we know we want to ship
 package_project(
   TARGETS
-  intro
+  app
   project_options
   project_warnings
   # FIXME: this does not work! CK

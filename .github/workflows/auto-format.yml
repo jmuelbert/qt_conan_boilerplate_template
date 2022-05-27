@@ -1,3 +1,4 @@
+---
 name: format
 on:
   push:
@@ -10,7 +11,10 @@ jobs:
 
     steps:
       - name: "🧰 Checkout"
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
 
       - name: "🟨 Use clang-format"
         uses: DoozyX/clang-format-lint-action@v0.13

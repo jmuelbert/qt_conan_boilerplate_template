@@ -4,7 +4,7 @@
 catch2/2.13.9
 cli11/2.2.0
 spdlog/1.10.0
-qt/6.3.0
+qt/6.2.4
 
 [options]
 qt:qtdeclarative=True

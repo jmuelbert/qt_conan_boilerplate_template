@@ -78,9 +78,9 @@ jobs:
           - ubuntu-20.04
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-13.0.0
+          - gcc-11
         generator:
-          - Unix Makefiles
+          - "Ninja Multi-Config"
         build_type:
           - Release
         developer_mode:
@@ -96,7 +96,7 @@ jobs:
 
       - name: Install deps
         run: |
-          sudo apt-get install -y ninja-build libgl-dev libx11-dev libxcb1-dev
+          echo "Nothing"
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
@@ -141,13 +141,13 @@ jobs:
           vcvarsall: ${{ contains(matrix.os, 'windows' )}}
 
           cmake: true
-          ninja: false
+          ninja: true
           conan: true
           vcpkg: false
           ccache: true
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
 
-          cppcheck: true
+          cppcheck: false
 
           gcovr: true
           opencppcoverage: true
@@ -162,7 +162,7 @@ jobs:
         run: |
           mkdir -p ./build
           cd ./build
-          conan install .. -s compiler.cppstd=17  --build missing
+          conan install .. -s compiler.cppstd=gnu17  --build missing
           cd ..
           cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }}
 

@@ -1,8 +1,9 @@
 #pragma once
 
 #include <QString>
+#include <string>
 
-namespace app {
+namespace mApp {
 
 class MyClass
 {
@@ -15,4 +16,4 @@ public:
   QString text() const;
 };
 
-}// namespace app
+}// namespace mApp

@@ -1,71 +1,66 @@
-find_package(fmt CONFIG)
-find_package(spdlog CONFIG)
-find_package(CLI11 CONFIG REQUIRED)
+cmake_minimum_required(VERSION 3.5)
 
+project(QtWidgetTest VERSION 0.1 LANGUAGES CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
-set(BUNDLE_EXTENSION .)
 
-find_package(
-  Qt6
-  COMPONENTS Core Gui Widgets
-  REQUIRED)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Generic test that uses conan libs
-qt_add_executable(
-  app
-  WIN32
-  MANUAL_FINALIZATION
-  main.cpp
-  Window1.cpp
-  Window1.h
-  Window1.ui
-  res/MyApp.qrc)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
-target_link_libraries(
-  app
-  PUBLIC project_options project_warnings
-  PRIVATE CLI11::CLI11
-          fmt::fmt
-          spdlog::spdlog
-          MyLib
-          Qt6::Core
-          Qt6::Gui
-          Qt6::Widgets)
+set(TS_FILES QtWidgetTest_de_DE.ts)
 
-target_include_directories(app PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
+set(PROJECT_SOURCES
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui
+        ${TS_FILES}
+)
 
-if(WIN32)
-  target_link_options(app PRIVATE "/entry:mainCRTStartup")
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(QtWidgetTest
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+    )
+# Define target properties for Android with Qt 6 as:
+#    set_property(TARGET QtWidgetTest APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+
+    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+else()
+    if(ANDROID)
+        add_library(QtWidgetTest SHARED
+            ${PROJECT_SOURCES}
+        )
+# Define properties for Android with Qt 5 after find_package() calls as:
+#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+    else()
+        add_executable(QtWidgetTest
+            ${PROJECT_SOURCES}
+        )
+    endif()
+
+    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-if(APPLE)
-  # # Since there appear to exist problems with NOT setting the RPATH when building
-  # # by enabling CMAKE_KEEP_RPATH and others, we just set the libs absolute paths
-  # # to the conan lib dir.
+target_link_libraries(QtWidgetTest PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-  # function(ChangeRPath target file new)
-  #     add_custom_command(TARGET App
-  #             POST_BUILD COMMAND
-  #             ${CMAKE_INSTALL_NAME_TOOL} -change @rpath/${file} ${new}/${file}
-  #             $<TARGET_FILE:App>)
-  # endfunction()
+set_target_properties(QtWidgetTest PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
 
-  # foreach(qt_lib IN LISTS CONAN_LIBS_QT)
-  #     ChangeRPath(App lib${qt_lib}.dylib ${CONAN_LIB_DIRS_QT})
-  # endforeach()
-  # Destination paths below are relative to ${CMAKE_INSTALL_PREFIX}
-  set(MACOSX_BUNDLE_DISPLAY_NAME "App")
-
-  install(
-    TARGETS app
-    BUNDLE DESTINATION . COMPONENT Runtime
-    RUNTIME DESTINATION ${INSTALL_RUNTIME_DIR} COMPONENT Runtime)
-
-  # Note Mac specific extension .app
-  set(APPS "\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
-
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(QtWidgetTest)
 endif()
-
-qt_finalize_target(app)

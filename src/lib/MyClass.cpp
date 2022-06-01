@@ -1,10 +1,14 @@
 #include "MyClass.h"
 
-namespace app {
+namespace mApp {
 
-MyClass::MyClass(const QString &text) : _text{ text } {}
+MyClass::MyClass(const QString &text)
+  : _text(std::move(text)),
 
-QString MyClass::appendIt(const QString &extra) const { return _text + " " + extra; }
+    QString MyClass::appendIt(const QString &extra) const
+{
+  return _text + " " + extra;
+}
 
 QString MyClass::text() const
 {
@@ -13,4 +17,4 @@ QString MyClass::text() const
   return _text;
 }
 
-}// namespace app
+}// namespace mApp

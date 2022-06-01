@@ -103,7 +103,7 @@ dynamic_project_options(
   PCH_HEADERS
   <vector>
   <string> # This is a list of headers to pre-compile, here are some common ones
-  ENABLE_CONAN
+  # ENABLE_CONAN
   ENABLE_CLANG_TIDY
   ENABLE_COVERAGE
   ENABLE_CPPCHECK
@@ -168,14 +168,14 @@ endif()
 
 # Add other targets that you want installed here, be default we just package the one executable
 # we know we want to ship
-package_project(
-  TARGETS
-  app
-  project_options
-  project_warnings
-  # FIXME: this does not work! CK
-  # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-)
+# package_project(
+#  TARGETS
+#  QtWidgetTest
+#  project_options
+#  project_warnings
+# FIXME: this does not work! CK
+# PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
+# )
 
 # Experience shows that explicit package naming can help make it easier to sort
 # out potential ABI related issues before they start, while helping you

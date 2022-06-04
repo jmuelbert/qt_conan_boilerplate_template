@@ -89,7 +89,6 @@ catch_discover_tests(
   OUTPUT_SUFFIX
   .xml)
 
-
 find_package(
   Qt6
   COMPONENTS Test
@@ -113,7 +112,12 @@ if(WIN32 OR APPLE)
   set_tests_properties(testMain PROPERTIES ENVIRONMENT "PATH=${CONAN_BIN_DIRS_QT}\;$ENV{PATH}")
 endif()
 
-target_link_libraries(testMain PRIVATE Qt6::Test MyLib myproject::project_options myproject::project_warnings)
+target_link_libraries(
+  testMain
+  PRIVATE Qt6::Test
+          MyLib
+          myproject::project_options
+          myproject::project_warnings)
 
 if(APPLE)
   # Since there appear to exist problems with NOT setting the RPATH when building

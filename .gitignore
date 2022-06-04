@@ -9,8 +9,12 @@ out/
 /.clang-format
 /.idea
 
-cmake-build-*/
+# Conan
 conan-cache/
+conan.lock
+conanbuildinfo.txt
+conaninfo.txt
+graph_info.json
 
 _ReSharper*
 *.log

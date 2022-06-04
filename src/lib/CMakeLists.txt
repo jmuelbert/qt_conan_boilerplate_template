@@ -23,11 +23,8 @@ qt_add_library(
 
 add_library(MyLib::MyLib ALIAS MyLib)
 
-target_include_directories(MyLib
-    INTERFACE
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-)
+target_include_directories(MyLib INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+                                           "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 target_link_libraries(MyLib PUBLIC Qt6::Core)
 
 qt_finalize_target(MyLib)
@@ -37,21 +34,22 @@ qt_finalize_target(MyLib)
 #
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/MyLib)
 
-
-install(TARGETS MyLib
-        EXPORT MyLib-Targets
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+install(
+  TARGETS MyLib
+  EXPORT MyLib-Targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  INCLUDES
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 install(FILES MyClass.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(EXPORT MyLib-Targets
-        FILE MyLibTargets.cmake
-        NAMESPACE MyLib::
-        DESTINATION ${INSTALL_CONFIGDIR})
+install(
+  EXPORT MyLib-Targets
+  FILE MyLibTargets.cmake
+  NAMESPACE MyLib::
+  DESTINATION ${INSTALL_CONFIGDIR})
 
 export(
   EXPORT MyLib-Targets

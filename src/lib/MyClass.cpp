@@ -2,13 +2,8 @@
 
 namespace mApp {
 
-MyClass::MyClass(const QString &text)
-  : _text(std::move(text)),
 
-    QString MyClass::appendIt(const QString &extra) const
-{
-  return _text + " " + extra;
-}
+QString MyClass::appendIt(const QString &extra) const { return _text + " " + extra; }
 
 QString MyClass::text() const
 {

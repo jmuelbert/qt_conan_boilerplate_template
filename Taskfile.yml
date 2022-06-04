@@ -3,9 +3,25 @@ version: 3
 
 tasks:
   test:
-    - cmake -S . -B ./build
-    - cmake --build ./build --config Debug
-    - cd ./build && ctest -C Debug --verbose
+    - |
+      {{if eq OS "darwin"}}
+        PRESET_NAME="test-unixlike-clang-debug"
+        BUILD_TYPE="Debug"
+        ENABLE_DEVELOPER_MODE=False
+        conan install ./conanfile.py -b missing -pr:b default -s build_type="${BUILD_TYPE}" -s compiler.version=13.1 -g CMakeToolchain --output-folder=./out/build/${PRESET_NAME}
+        cmake --preset ${PRESET_NAME}
+        cmake --build ./out/build/${PRESET_NAME}
+        cd ./out/build/${PRESET_NAME} &&  ctest -C "${BUILD_TYPE}" --verbose
+      {{end}}
+      {{if eq OS "linux"}}
+        PRESET_NAME="test-unixlike-gcc-debug"
+        BUILD_TYPE="Debug"
+        ENABLE_DEVELOPER_MODE=False
+        conan install ./conanfile.py -b missing -pr:b default -s build_type="${BUILD_TYPE}" -s compiler.version=13.1 -g CMakeToolchain --output-folder=./out/build/${PRESET_NAME}
+        cmake --preset ${PRESET_NAME}
+        cmake --build ./out/build/${PRESET_NAME}
+        cd ./out/build/${PRESET_NAME} &&  ctest -C "${BUILD_TYPE}" --verbose
+      {{end}}
 
   test_release:
     - cmake -S . -B ./build -DCMAKE_BUILD_TYPE:STRING=Release -G '{{.CMAKE_GENERATOR | default "Ninja Multi-Config"}}'

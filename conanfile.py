@@ -29,9 +29,9 @@ class QtTestConan(ConanFile):
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
     options = {
-               "shared": [True, False],
-               "fPIC": [True, False],
-               "build_docs": [True, False]
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "build_docs": [True, False]
     }
 
     default_options = {
@@ -45,7 +45,7 @@ class QtTestConan(ConanFile):
     exports_sources = "CMakeLists.txt", "src/*", "include/*"
 
     no_copy_source = True
-    # generators = "CMakeDeps"
+    # generators = "CMake CMakeDeps"
 
     @property
     def _run_tests(self):

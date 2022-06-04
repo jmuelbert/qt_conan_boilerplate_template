@@ -142,9 +142,15 @@ jobs:
         run: |
           mkdir -p ./build
           cd ./build
-          conan install .. -s compiler.cppstd=17  --build missing
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${BUILD_TYPE}" -s compiler.version=13.1 -g CMakeToolchain
           cd ..
-          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} -DGIT_SHA:STRING=${{ github.sha }}
+          cmake -S . -B ./build -G "${{matrix.generator}}" \
+            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
+            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
+            # -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
+            -DOPT_ENABLE_COVERAGE:BOOL='OFF' \
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
+            -DGIT_SHA:STRING=${{ github.sha }}
 
       - name: "⚙️ Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"

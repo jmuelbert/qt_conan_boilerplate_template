@@ -1,13 +1,21 @@
 #! /bin/sh
-
+rm -rf out
 rm -rf build
-rm -rf cmake-build*
-mkdir -p build
-cd build || exit
-conan install .. -b missing -pr:b default -s build_type=Debug
+mkdir -p build || exit
+
+BUILD_TYPE="Debug"
+GENERATOR="Ninja"
+DEVELOPER_MODE=False
+COVERAGE=False
+TESTING=False
+
+cd ./build
+conan install ../conanfile.py -b missing -pr:b default -s build_type="${BUILD_TYPE}" -s compiler.version=13.1 -g CMakeToolchain
 cd ..
-cmake --preset Debug
-cmake --build --preset Debug
-
-conan install ./conanfile.py -s build_type=Debug -s compiler=apple-clang -s compiler.version=13.1 -s compiler.libcxx=libc++ -e=CONAN_CMAKE_TOOLCHAIN_FILE="./conan-dependencies/toolchain.cmake" -g=cmake_paths -g=json -g=cmake --build=missing -if=/Users/juergen/Projects/GitHub/build-qt_conan_boilerplate_template-Desktop_Qt_clang_64bit_qt_qt5-Debug/conan-dependencies
-
+cmake -S . -B ./build -G "${GENERATOR}" \
+    -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} \
+    -DENABLE_DEVELOPER_MODE:BOOL=${DEVELOPER_MODE} \
+    -DOPT_ENABLE_COVERAGE:BOOL=${COVERAGE} \
+    -DENABLE_TESTING:BOOL=${TESTING} \
+    -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
+cmake --build ./build

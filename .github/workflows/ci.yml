@@ -191,15 +191,19 @@ jobs:
           files: ./build/coverage.xml
 
   diagram:
+    name: Diagram
     runs-on: ubuntu-latest
-    - name: Update diagram
-      id: make_diagram
-      uses: githubocto/repo-visualizer@0.7.1
-      with:
-        output_file: "output-diagram.svg"
-        artifact_name: "my-diagram"
-    - name: Get artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: "my-diagram"
-        path: "downloads"
+
+    steps:
+      - name: Update diagram
+        id: make_diagram
+        uses: githubocto/repo-visualizer@0.7.1
+        with:
+          output_file: "output-diagram.svg"
+          artifact_name: "my-diagram"
+
+      - name: Get artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: "my-diagram"
+          path: "downloads"

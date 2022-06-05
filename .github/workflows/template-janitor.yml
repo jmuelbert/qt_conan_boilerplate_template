@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         compiler:
-          - gcc-11
+          - gcc-10
         generator:
           - "Unix Makefiles"
         build_type:
@@ -133,9 +133,16 @@ jobs:
 
       - name: Test simple configuration to make sure nothing broke
         run: |
-          cmake -S . -B ./build -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} -DENABLE_DEVELOPER_MODE:BOOL=${{ matrix.developer_mode }} -DOPT_ENABLE_COVERAGE:BOOL=OFF
+          mkdir -p ./build
+          cd ./build
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
+          cd ..
+          cmake -S . -B ./build -G "${{ matrix.generator }}" \
+            -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} \
+            -DENABLE_DEVELOPER_MODE:BOOL=${{ matrix.developer_mode }} \
+            -DOPT_ENABLE_COVERAGE:BOOL=OFF
           # Build it because we may have broken something in the cpp/hpp files
-          cmake --build build
+           cmake --build ./build --config ${{matrix.build_type}}
 
       - uses: EndBug/add-and-commit@v4
         # only commit and push if we are not a template project anymore!

@@ -36,8 +36,8 @@ jobs:
           - macos-11
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-13.0.0
-          - gcc-11
+          - llvm-10.0.0
+          - gcc-10
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -50,16 +50,16 @@ jobs:
         exclude:
           # mingw is determined by this author to be too buggy to support
           - os: macos-11
-            compiler: gcc-10
+            compiler: [gcc-10, llvm-13.0.0]
           - os: ubuntu-20.04
-            compiler: llvm-13.0.0
+            compiler: llvm-10.0.0
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
           - compiler: gcc-11
             gcov_executable: gcov
-          - compiler: llvm-13.0.0
+          - compiler: llvm-10.0.0
             gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations
@@ -105,6 +105,10 @@ jobs:
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
+
+      - name: Install deps
+        run: |
+          sudo apt install -y clang-dev
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache

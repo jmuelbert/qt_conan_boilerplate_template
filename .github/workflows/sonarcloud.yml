@@ -96,7 +96,7 @@ jobs:
 
       - name: Install deps
         run: |
-          echo "Nothing"
+          sudo apt install -y clang-dev
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v3

@@ -142,6 +142,13 @@ jobs:
       - name: Configure CMake
         shell: bash
         run: |
+          if (runner.os == 'linux' && matrix.compiler == 'gcc-10')
+            export CXX=g++-10
+            export CC=gcc-10
+          else
+            export CXX=clang-12
+            export CC=clang-12
+          fi
           mkdir -p ./build
           cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain

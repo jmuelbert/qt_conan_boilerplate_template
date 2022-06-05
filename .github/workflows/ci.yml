@@ -123,7 +123,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
-          toolset: 14.XX
+          toolset: 14.29
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -195,7 +195,20 @@ jobs:
           files: ./build/coverage.xml
 
   diagram:
-    name: Diagram
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Update diagram
+        uses: githubocto/repo-visualizer@0.7.1
+        with:
+          output_file: "images/diagram.svg"
+          excluded_paths: "dist,node_modules"
+
+  diagram-update:
+    name: Update-Diagram
     runs-on: ubuntu-latest
 
     steps:

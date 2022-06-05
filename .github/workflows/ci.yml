@@ -59,7 +59,7 @@ jobs:
           # if you try to use a compiler that does not have gcov set
           - compiler: gcc-10
             gcov_executable: gcov
-          - compiler: llvm-10.0.0
+          - compiler: llvm-9.0.0
             gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations

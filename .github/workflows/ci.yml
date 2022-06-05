@@ -109,6 +109,10 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+
       - name: Install deps
         if: runner.os == 'Linux'
         run: |

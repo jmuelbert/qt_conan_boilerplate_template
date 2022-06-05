@@ -139,6 +139,7 @@ jobs:
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
       - name: Configure CMake
+        shell: bash
         run: |
           mkdir -p ./build
           cd ./build

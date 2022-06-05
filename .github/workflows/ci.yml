@@ -62,13 +62,11 @@ jobs:
 
           - os: macosx-11
             compiler: apple-clang
-            generator: "Ninja Multi-Config"
             build_type: Release
             developer_mode: OFF
 
           - os: macosx-11
             compiler: apple-clang
-            generator: "Ninja Multi-Config"
             build_type: Debug
             developer_mode: On
 
@@ -116,6 +114,13 @@ jobs:
         run: |
           sudo apt install -y libclang-dev
 
+      - name: Install MSVC Windows deps
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+          toolset: 14.XX
+
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
@@ -123,24 +128,6 @@ jobs:
           build_type: ${{ matrix.build_type }}
           developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
-
-      - name: "🔧 Setup Cpp"
-        uses: aminya/setup-cpp@v1
-        with:
-          compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
-          cmake: true
-          ninja: true
-          conan: true
-          vcpkg: false
-          ccache: true
-          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-
-          cppcheck: true
-
-          gcovr: true
-          opencppcoverage: true
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -202,3 +189,17 @@ jobs:
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
           files: ./build/coverage.xml
+
+  diagram:
+    runs-on: ubuntu-latest
+    - name: Update diagram
+      id: make_diagram
+      uses: githubocto/repo-visualizer@0.7.1
+      with:
+        output_file: "output-diagram.svg"
+        artifact_name: "my-diagram"
+    - name: Get artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: "my-diagram"
+        path: "downloads"

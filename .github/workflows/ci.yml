@@ -15,7 +15,7 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
-  CLANG_TIDY_VERSION: "13.0.0"
+  CLANG_TIDY_VERSION: "12.0.0"
 
 jobs:
   Test:
@@ -36,7 +36,7 @@ jobs:
           - macos-11
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-9.0.0
+          - clang-12
           - gcc-10
         generator:
           - "Ninja Multi-Config"
@@ -47,19 +47,12 @@ jobs:
           - ON
           - OFF
 
-        exclude:
-          # mingw is determined by this author to be too buggy to support
-          - os: macos-11
-            compiler: gcc-10
-          - os: ubuntu-20.04
-            compiler: llvm-9.0.0
-
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
           - compiler: gcc-10
             gcov_executable: gcov
-          - compiler: llvm-10.0.0
+          - compiler: clang-12
             gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations
@@ -72,6 +65,12 @@ jobs:
             generator: "Ninja Multi-Config"
             build_type: Release
             developer_mode: OFF
+
+          - os: macosx-11
+            compiler: apple-clang
+            generator: "Ninja Multi-Config"
+            build_type: Debug
+            developer_mode: On
 
           - os: windows-2022
             compiler: msvc

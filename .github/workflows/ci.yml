@@ -36,7 +36,7 @@ jobs:
           - macos-11
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-10.0.0
+          - llvm-9.0.0
           - gcc-10
         generator:
           - "Ninja Multi-Config"
@@ -52,7 +52,7 @@ jobs:
           - os: macos-11
             compiler: gcc-10
           - os: ubuntu-20.04
-            compiler: llvm-10.0.0
+            compiler: llvm-9.0.0
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
@@ -113,8 +113,9 @@ jobs:
           fetch-depth: 0
 
       - name: Install deps
+        if: runner.os == 'Linux'
         run: |
-          sudo apt install -y clang-dev
+          sudo apt install -y libclang-dev
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache

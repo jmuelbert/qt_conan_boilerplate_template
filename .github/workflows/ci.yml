@@ -22,6 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      os: ubuntu-latest
 
       # Recommendations:
       #   * support at least 2 operating systems

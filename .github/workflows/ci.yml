@@ -46,14 +46,6 @@ jobs:
         qt_arch:
           - "win64_msvc2019_64"
 
-        exclude:
-          - os: ubuntu-20.04
-            compiler: apple-clang
-          - os: macosx-11
-            compiler: [clang-12, gcc-10]
-          - os: windows-2022
-            compiler: [clang-12, gcc-10]
-
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set

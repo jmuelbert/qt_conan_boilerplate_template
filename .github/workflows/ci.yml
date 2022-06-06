@@ -170,7 +170,7 @@ jobs:
         uses: jurplel/install-qt-action@v2
         with:
           version: ${{ matrix.version }}
-          host: ${{ runner.os }}
+          # host: ${{ runner.os }}
           target: $ {{ matrix.target }}
           arch: ${{ matrix.arch }}
           install-deps: "true"

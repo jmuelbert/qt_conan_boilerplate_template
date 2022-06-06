@@ -34,7 +34,7 @@ jobs:
         os:
           - ubuntu-latest
         generator:
-          - "Ninja Multi-Config"
+          - "Unix Makefiles"
         build_type:
           - Release
           - Debug

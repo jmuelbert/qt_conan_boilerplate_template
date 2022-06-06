@@ -1,6 +1,5 @@
-
-name: 'setup_cache'
-description: 'sets up the shared cache'
+name: "setup_cache"
+description: "sets up the shared cache"
 inputs:
   compiler:
     required: true
@@ -15,12 +14,11 @@ inputs:
     required: true
     type: string
 
-
 runs:
   using: "composite"
   steps:
     - name: Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         # You might want to add .ccache to your cache configuration?
         path: |
@@ -36,3 +34,9 @@ runs:
         restore-keys: |
           ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{ hashFiles('./conanfile.txt') }}
 
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: "${{ github.workspace }}/Qt"
+        key: ${{ runner.os }}-QtCache

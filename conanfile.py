@@ -92,7 +92,9 @@ class QtTestConan(ConanFile):
         self.requires("cli11/2.2.0")
         self.requires("spdlog/1.10.0")
         self.requires("fmt/8.1.1")
-        self.requires("qt/6.2.4")
+        qtDir = get_env("Qt6_Dir")
+        if qtDir == 0:
+            self.requires("qt/6.3.0")
 
     def build_requirements(self):
 

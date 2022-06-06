@@ -59,9 +59,12 @@ jobs:
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          - compiler: gcc-10
+          - os: ubuntu-20.04
+            compiler: gcc-10
             gcov_executable: gcov
-          - compiler: clang-12
+
+          - os: ubuntu-20.04
+            compiler: clang-12
             gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations
@@ -123,6 +126,7 @@ jobs:
         uses: actions/setup-python@v3
 
       - name: Install Python dependencies
+        shell: bash
         id: python-deps
         run: |
           python -m pip install --upgrade pip

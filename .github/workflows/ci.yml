@@ -171,7 +171,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
           # host: ${{ runner.os }}
-          target: $ {{ matrix.target }}
+          target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'

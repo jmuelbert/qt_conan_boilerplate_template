@@ -15,7 +15,7 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
-  CLANG_TIDY_VERSION: "12.0.0"
+  CLANG_TIDY_VERSION: "13.0.0"
 
 jobs:
   Test:
@@ -37,9 +37,8 @@ jobs:
           - windows-2019
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-12.0.0
-          - gcc-10
-          - apple-clang
+          - llvm-13.0.0
+          - gcc-11
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -52,34 +51,29 @@ jobs:
         exclude:
           # mingw is determined by this author to be too buggy to support
           - os: windows-2019
-            compiler: apple-clang
-            compiler: gcc-10
-
-          - os: macos-10.15
-            compiler: gcc-10
-
-          - os: ubuntu-20.04
-            compiler: apple-clang
+            compiler: gcc-11
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          - compiler: gcc-10
+          - compiler: gcc-11
             gcov_executable: gcov
 
-          - compiler: llvm-12.0.0
+          - compiler: llvm-13.0.0
             gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             qt_version: "6.3.0"
             qt_target: "desktop"
+            qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
             package_generator: TBZ2
 
           - build_type: Debug
             qt_version: "6.3.0"
             qt_target: "desktop"
+            qt_arch: "win64_msvc2019_64"
           # This exists solely to make sure a non-multiconfig build works
           - os: ubuntu-20.04
             compiler: gcc-10
@@ -93,28 +87,24 @@ jobs:
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Debug
-            qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
           - os: windows-2019
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Release
-            qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
           - os: windows-2019
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Debug
-            qt_arch: "win64_msvc2019_64"
             developer_mode: Off
 
           - os: windows-2019
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Release
-            qt_arch: "win64_msvc2019_64"
             developer_mode: Off
             package_generator: ZIP
 
@@ -156,12 +146,12 @@ jobs:
           echo "no deps..."
           # sudo apt install -y libclang-dev
 
-      - name: Install MSVC Windows deps
-        if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: amd64
-          toolset: 14.29
+      # - name: Install MSVC Windows deps
+      #   if: runner.os == 'Windows'
+      #   uses: ilammy/msvc-dev-cmd@v1
+      #   with:
+      #     arch: amd64
+      #     toolset: 14.29
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -170,6 +160,24 @@ jobs:
           build_type: ${{ matrix.build_type }}
           developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
+
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
+
+          cmake: true
+          ninja: true
+          conan: true
+          vcpkg: false
+          ccache: true
+          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
+
+          cppcheck: true
+
+          gcovr: true
+          opencppcoverage: true
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2

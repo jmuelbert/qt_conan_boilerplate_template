@@ -32,75 +32,85 @@ jobs:
       # and your own projects needs
       matrix:
         os:
-          - ubuntu-latest
+          - ubuntu-20.04
+          - macos-10.15
+          - windows-2019
+        compiler:
+          # you can specify the version after `-` like "llvm-13.0.0".
+          - llvm-12.0.0
+          - gcc-10
         generator:
-          - "Unix Makefiles"
+          - "Ninja Multi-Config"
         build_type:
           - Release
           - Debug
         developer_mode:
           - ON
           - OFF
-        qt_version:
-          - "6.3.0"
-        qt_target:
-          - "desktop"
-        qt_arch:
-          - "win64_msvc2019_64"
+
+        exclude:
+          # mingw is determined by this author to be too buggy to support
+          - os: windows-2019
+            compiler: gcc-10
+
+          - os: macos-10.15
+            compiler: gcc-10
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          - os: ubuntu-20.04
-            compiler: gcc-10
-            generator: "Unix Makefiles"
+          - compiler: gcc-10
             gcov_executable: gcov
 
-          - os: ubuntu-20.04
-            compiler: clang-12
-            generator: "Unix Makefiles"
+          - compiler: llvm-12.0.0
             gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
+            qt_version: "6.3.0"
+            qt_target: "desktop"
             developer_mode: OFF
             package_generator: TBZ2
 
-          - os: macosx-11
-            compiler: apple-clang
-            generator: "Ninja"
-            build_type: Release
-            developer_mode: OFF
-
-          - os: macosx-11
-            compiler: apple-clang
-            generator: "Ninja"
+          - build_type: Debug
+            qt_version: "6.3.0"
+            qt_target: "desktop"
+          # This exists solely to make sure a non-multiconfig build works
+          - os: ubuntu-20.04
+            compiler: gcc-10
+            generator: "Unix Makefiles"
             build_type: Debug
+            gcov_executable: gcov
             developer_mode: On
 
-          - os: windows-2022
+          # Windows msvc builds
+          - os: windows-2019
             compiler: msvc
-            generator: "Visual Studio 17 2022"
+            generator: "Visual Studio 16 2019"
             build_type: Debug
+            qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
-          - os: windows-2022
+          - os: windows-2019
             compiler: msvc
-            generator: "Visual Studio 17 2022"
+            generator: "Visual Studio 16 2019"
             build_type: Release
+            qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
-          - os: windows-2022
+          - os: windows-2019
             compiler: msvc
-            generator: "Visual Studio 17 2022"
+            generator: "Visual Studio 16 2019"
             build_type: Debug
-            developer_mode: OFF
+            qt_arch: "win64_msvc2019_64"
+            developer_mode: Off
 
-          - os: windows-2022
+          - os: windows-2019
             compiler: msvc
-            generator: "Visual Studio 17 2022"
+            generator: "Visual Studio 16 2019"
             build_type: Release
-            developer_mode: OFF
+            qt_arch: "win64_msvc2019_64"
+            developer_mode: Off
             package_generator: ZIP
 
     steps:

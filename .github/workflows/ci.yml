@@ -22,7 +22,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      os: ubuntu-latest
 
       # Recommendations:
       #   * support at least 2 operating systems
@@ -32,6 +31,8 @@ jobs:
       # Disable/enable builds in this list to meet the above recommendations
       # and your own projects needs
       matrix:
+        os:
+          - ubuntu-latest
         generator:
           - "Ninja Multi-Config"
         build_type:

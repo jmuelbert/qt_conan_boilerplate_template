@@ -126,7 +126,7 @@ jobs:
         id: python-deps
         run: |
           python -m pip install --upgrade pip
-          if [ -f ./.github/actions/workflows/reqierments.txt]; then
+          if [ -f ./.github/actions/workflows/reqierments.txt ]; then
             pip install -r ./.github/actions/workflows/reqierments.txt;
           fi
 

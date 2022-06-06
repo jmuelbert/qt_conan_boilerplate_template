@@ -34,6 +34,7 @@ jobs:
         os:
           - ubuntu-20.04
           - macos-11
+          - windows-2022
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
           - clang-12
@@ -46,6 +47,14 @@ jobs:
         developer_mode:
           - ON
           - OFF
+
+        exclude:
+          - os: ubuntu-20.04
+            compiler: apple-clang
+          - os: macosx-11
+            compiler: [clang-12, gcc-10]
+          - os: windows-2022
+            compiler: [clang-12, gcc-10]
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
@@ -109,9 +118,18 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: Install Conan
-        id: conan
-        uses: turtlebrowser/get-conan@main
+      - name: Install Python
+        id: python
+        uses: actions/setup-python@v3
+
+      - name: Install Python dependencies
+        id: python-deps
+        needs: python
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f ./.github/actions/workflows/reqierments.txt]; then
+            pip install -r ./.github/actions/workflows/reqierments.txt;
+          fi
 
       - name: Install deps
         if: runner.os == 'Linux'
@@ -142,13 +160,6 @@ jobs:
       - name: Configure CMake
         shell: bash
         run: |
-          if [runner.os == 'linux' && matrix.compiler == 'gcc-10']; then
-            export CXX=g++-10
-            export CC=gcc-10
-          else
-            export CXX=clang-12
-            export CC=clang-12
-          fi
           mkdir -p ./build
           cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
@@ -223,7 +234,7 @@ jobs:
         id: make_diagram
         uses: githubocto/repo-visualizer@0.7.1
         with:
-          output_file: "output-diagram.svg"
+          output_file: "images/diagram.svg"
           artifact_name: "my-diagram"
 
       - name: Get artifact

@@ -48,11 +48,6 @@ jobs:
           - ON
           - OFF
 
-        exclude:
-          # mingw is determined by this author to be too buggy to support
-          - os: windows-2019
-            # compiler: gcc-11
-
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
@@ -87,20 +82,7 @@ jobs:
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Release
-            developer_mode: On
-
-          - os: windows-2019
-            compiler: msvc
-            generator: "Visual Studio 16 2019"
-            build_type: Debug
-            developer_mode: Off
-
-          - os: windows-2019
-            compiler: msvc
-            generator: "Visual Studio 16 2019"
-            build_type: Release
-            developer_mode: Off
-            package_generator: ZIP
+            developer_mode: OFF
 
     steps:
       - name: Cancel Previous Runs
@@ -130,17 +112,17 @@ jobs:
       - name: Install Linux deps
         if: runner.os == 'Linux'
         run: |
-          sudo apt install -y libclang-dev ninja-build gcovr
+          sudo apt install -y libclang-dev ninja-build gcovr cchache
 
       - name: Install macOS deps
         if: runner.os == 'macOS'
         run: |
-          brew install ninja
+          brew install ninja ccache
 
       - name: Install Windows deps
         if: runner.os ==  'Windows'
         run: |
-          cinst ninja
+          cinst ninja ccache
 
       # - name: Install MSVC Windows deps
       #   if: runner.os == 'Windows'
@@ -187,8 +169,7 @@ jobs:
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
-            # -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
-            -DOPT_ENABLE_COVERAGE:BOOL='OFF' \
+            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
             -DGIT_SHA:STRING=${{ github.sha }}
 

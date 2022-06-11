@@ -115,10 +115,10 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: Install deps
+      - name: Install Linux deps
         if: runner.os == 'Linux'
         run: |
-          sudo apt install -y libclang-dev ninja-build gcovr
+          sudo apt install -y libclang-dev ninja-build gcovr cchache
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -161,7 +161,6 @@ jobs:
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
-            # -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
             -DOPT_ENABLE_COVERAGE:BOOL='OFF' \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
             -DGIT_SHA:STRING=${{ github.sha }}

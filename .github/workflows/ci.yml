@@ -127,10 +127,20 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: Install deps
+      - name: Install Linux deps
         if: runner.os == 'Linux'
         run: |
           sudo apt install -y libclang-dev ninja-build gcovr
+
+      - name: Install macOS deps
+        if: runner.os == 'macOS'
+        run: |
+          brew install ninja
+
+      - name: Install Windows deps
+        if: runner.os ==  'Windows'
+        run: |
+          cinst ninja
 
       # - name: Install MSVC Windows deps
       #   if: runner.os == 'Windows'
@@ -188,7 +198,7 @@ jobs:
           cmake --build ./build --config ${{matrix.build_type}}
 
       - name: "Unix - 🧪 Test and coverage"
-        if: runner.os != 'Windows'
+        if: runner.os == 'Linux'
         working-directory: ./build
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail

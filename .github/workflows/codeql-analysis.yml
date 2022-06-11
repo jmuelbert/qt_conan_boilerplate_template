@@ -135,12 +135,12 @@ jobs:
           version: ${{ matrix.qt_version }}
           # host: ${{ runner.os }}
           target: ${{ matrix.qt_target }}
-          arch: ${{ matrix.qt_arch }}
+          # arch: ${{ matrix.qt_arch }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
           setup-python: "true"
-          tools: "tools_ifw"
+          # tools: "tools_ifw"
           set-env: "true"
 
       - name: Cleanup Conan system packages (they are not properly cached)

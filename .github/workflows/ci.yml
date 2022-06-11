@@ -112,7 +112,7 @@ jobs:
       - name: Install Linux deps
         if: runner.os == 'Linux'
         run: |
-          sudo apt install -y libclang-dev ninja-build gcovr cchache
+          sudo apt install -y libclang-dev ninja-build gcovr ccache
 
       - name: Install macOS deps
         if: runner.os == 'macOS'

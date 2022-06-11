@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template/branch/main/graph/badge.svg)](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template)
-[![Language grade: C++](https://img.shields.io/lgtm/grade/cpp/github/jmuelbert/qt_conan_boilerplate_template)](https://lgtm.com/projects/g/jmuelbert/qt_conan_boilerplate_template/context:cpp)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/db5c8cf8529e45d19e38011419f74f96)](https://www.codacy.com/gh/jmuelbert/qt_conan_boilerplate_template/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jmuelbert/qt_conan_boilerplate_template&amp;utm_campaign=Badge_Grade)
 [![CodeQL](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jmuelbert_qt_conan_boilerplate_template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jmuelbert_qt_conan_boilerplate_template)
 [![GitHub Super-Linter](https://github.com/jmuelbert/qt_conan_boilerplate_template/workflows/Lint.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)

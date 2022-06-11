@@ -1,5 +1,6 @@
 # qt_conan_boilerplate_template
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ea19ed824956463a8aec9511a7f238a3)](https://app.codacy.com/gh/jmuelbert/qt_conan_boilerplate_template?utm_source=github.com&utm_medium=referral&utm_content=jmuelbert/qt_conan_boilerplate_template&utm_campaign=Badge_Grade_Settings)
 [![ci](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template/branch/main/graph/badge.svg)](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template)
 [![Language grade: C++](https://img.shields.io/lgtm/grade/cpp/github/jmuelbert/qt_conan_boilerplate_template)](https://lgtm.com/projects/g/jmuelbert/qt_conan_boilerplate_template/context:cpp)

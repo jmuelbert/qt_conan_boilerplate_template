@@ -35,10 +35,10 @@ jobs:
           - ubuntu-20.04
           - macos-10.15
           - windows-2019
-        compiler:
-          # you can specify the version after `-` like "llvm-13.0.0".
-          - llvm-13.0.0
-          - gcc-11
+        # compiler:
+        #   # you can specify the version after `-` like "llvm-13.0.0".
+        #   - llvm-13.0.0
+        #   - gcc-11
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -51,17 +51,11 @@ jobs:
         exclude:
           # mingw is determined by this author to be too buggy to support
           - os: windows-2019
-            compiler: gcc-11
+            # compiler: gcc-11
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
-          - compiler: gcc-11
-            gcov_executable: gcov
-
-          - compiler: llvm-13.0.0
-            gcov_executable: "llvm-cov gcov"
-
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             qt_version: "6.3.0"
@@ -114,13 +108,6 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - name: Check for llvm version mismatches
-        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('There is a mismatch between configured llvm compiler and clang-tidy version chosen')
-
       - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
@@ -143,8 +130,7 @@ jobs:
       - name: Install deps
         if: runner.os == 'Linux'
         run: |
-          echo "no deps..."
-          # sudo apt install -y libclang-dev
+          sudo apt install -y libclang-dev ninja-build gcovr
 
       # - name: Install MSVC Windows deps
       #   if: runner.os == 'Windows'
@@ -160,24 +146,6 @@ jobs:
           build_type: ${{ matrix.build_type }}
           developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
-
-      - name: Setup Cpp
-        uses: aminya/setup-cpp@v1
-        with:
-          compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
-          cmake: true
-          ninja: true
-          conan: true
-          vcpkg: false
-          ccache: true
-          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-
-          cppcheck: true
-
-          gcovr: true
-          opencppcoverage: true
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
@@ -227,12 +195,6 @@ jobs:
         run: |
           ctest -C ${{matrix.build_type}}
           gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
-
-      - name: Windows - Test and coverage
-        if: runner.os == 'Windows'
-        working-directory: ./build
-        run: |
-          OpenCppCoverage.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}}
 
       - name: CPack
         if: matrix.package_generator != ''

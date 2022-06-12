@@ -111,6 +111,14 @@ jobs:
         id: python
         uses: actions/setup-python@v3
 
+      - name: "🔧 Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          developer_mode: ${{ matrix.developer_mode }}
+          generator: ${{ matrix.generator }}
+
       - name: Install Python dependencies
         shell: bash
         id: python-deps
@@ -119,14 +127,6 @@ jobs:
           if [ -f ./.github/workflows/requirements.txt ]; then
             pip install -r ./.github/workflows/requirements.txt;
           fi
-
-      - name: "🔧 Setup Cache"
-        uses: ./.github/actions/setup_cache
-        with:
-          compiler: ${{ matrix.compiler }}
-          build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
-          generator: ${{ matrix.generator }}
 
       - name: Install Linux deps
         if: runner.os == 'Linux'

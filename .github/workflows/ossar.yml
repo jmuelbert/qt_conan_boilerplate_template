@@ -11,9 +11,14 @@ name: OSSAR
 on:
   push:
     branches: [main]
+    paths:
+      - ".github/workflows/ossar.yml"
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [main]
+    paths:
+      - ".github/workflows/ossar.yml"
+
   schedule:
     - cron: "23 20 * * 0"
 

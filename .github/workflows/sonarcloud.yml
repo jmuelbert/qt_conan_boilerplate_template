@@ -145,7 +145,6 @@ jobs:
           sudo apt install -y libclang-dev ninja-build gcovr ccache
 
       - name: Install Qt
-        if: matrix.language == 'cpp'
         uses: jurplel/install-qt-action@v2
         with:
           version: ${{ matrix.qt_version }}
@@ -160,7 +159,6 @@ jobs:
           set-env: "true"
 
       - name: Cleanup Conan system packages (they are not properly cached)
-        if: matrix.language == 'cpp'
         run: |
           conan remove -f '*/system'
 

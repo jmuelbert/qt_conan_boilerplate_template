@@ -1,14 +1,32 @@
 ---
 name: ci
+
 on:
-  pull_request:
-  release:
-    types: [published]
   push:
-    tags: ["*"]
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/ci.yml"
+  pull_request:
+    # The branches below must be a subset of the branches above
+    types: [opened, synchronize, reopened]
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/ci.yml"
 
 env:
   # Conan cache environment variables
@@ -100,6 +118,14 @@ jobs:
         id: python
         uses: actions/setup-python@v3
 
+      - name: "🔧 Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          developer_mode: ${{ matrix.developer_mode }}
+          generator: ${{ matrix.generator }}
+
       - name: Install Python dependencies
         shell: bash
         id: python-deps
@@ -130,14 +156,6 @@ jobs:
       #   with:
       #     arch: amd64
       #     toolset: 14.29
-
-      - name: "🔧 Setup Cache"
-        uses: ./.github/actions/setup_cache
-        with:
-          compiler: ${{ matrix.compiler }}
-          build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
-          generator: ${{ matrix.generator }}
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2

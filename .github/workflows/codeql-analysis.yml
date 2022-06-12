@@ -17,10 +17,12 @@ on:
     paths:
       - "**.cpp"
       - "**.h"
+      - "**.hpp"
       - "**.py"
       - cmake/**
       - src/**
       - CMakeLists.txt
+      - conanfile.py
       - ".github/workflows/codeql-analysis.yml"
   pull_request:
     # The branches below must be a subset of the branches above
@@ -28,11 +30,14 @@ on:
     paths:
       - "**.cpp"
       - "**.h"
+      - "**.hpp"
       - "**.py"
       - cmake/**
       - src/**
       - CMakeLists.txt
+      - conanfile.py
       - ".github/workflows/codeql-analysis.yml"
+
   schedule:
     - cron: "38 0 * * 5"
 
@@ -115,11 +120,6 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: Install Linux deps
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt install -y libclang-dev ninja-build gcovr ccache
-
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
@@ -127,6 +127,11 @@ jobs:
           build_type: ${{ matrix.build_type }}
           developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
+
+      - name: Install Linux deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt install -y libclang-dev ninja-build gcovr ccache
 
       - name: Install Qt
         if: matrix.language == 'cpp'

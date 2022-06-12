@@ -4,10 +4,10 @@ rm -rf build
 mkdir -p build || exit
 
 BUILD_TYPE="Debug"
-GENERATOR="Ninja"
+GENERATOR="Ninja Multi-Config"
 DEVELOPER_MODE=False
 COVERAGE=False
-TESTING=False
+TESTING=True
 
 cd ./build
 conan install ../conanfile.py -b missing -pr:b default -s build_type="${BUILD_TYPE}" -s compiler.version=13.1 -g CMakeToolchain

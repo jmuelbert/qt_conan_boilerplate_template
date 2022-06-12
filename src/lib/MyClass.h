@@ -10,7 +10,7 @@ class MyClass
   QString _text;
 
 public:
-  explicit MyClass(const QString &text);
+  explicit MyClass(const QString &text) { qDebug("Test!"); }
 
   QString appendIt(const QString &extra) const;
   QString text() const;

@@ -1,7 +1,8 @@
 #include "MyClass.h"
+#include <QObject>
 #include <QtTest>
 
-class Foo : public QObject
+class Foo
 {
   Q_OBJECT
 

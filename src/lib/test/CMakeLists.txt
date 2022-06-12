@@ -5,7 +5,6 @@ find_package(
   COMPONENTS Test
   REQUIRED)
 
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)

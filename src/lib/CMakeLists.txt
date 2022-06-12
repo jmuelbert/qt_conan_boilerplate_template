@@ -1,9 +1,7 @@
-
 include(CMakePackageConfigHelpers)
 include(CMakeFindDependencyMacro)
 include(GenerateExportHeader)
 include(GNUInstallDirs)
-
 
 find_package(
   Qt6
@@ -16,14 +14,15 @@ set(MOC_HEADERS)
 
 set(HEADER_FILES MyClass.h ${MOC_HEADERS})
 
-qt_add_library(MyLib STATIC ""  MANUAL_FINALIZATION)
+qt_add_library(
+  MyLib
+  STATIC
+  ""
+  MANUAL_FINALIZATION)
 
 add_library(MyLib::MyLib ALIAS MyLib)
 
-target_sources(MyLib PRIVATE 
-  ${SOURCE_FILES}
-  ${HEADER_FILES}
-  ${MOC_SOURCE_FILES})
+target_sources(MyLib PRIVATE ${SOURCE_FILES} ${HEADER_FILES} ${MOC_SOURCE_FILES})
 
 target_include_directories(MyLib INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
                                            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")

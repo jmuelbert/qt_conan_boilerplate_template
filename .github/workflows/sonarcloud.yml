@@ -131,10 +131,6 @@ jobs:
           developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
 
-      - name: Cleanup Conan system packages (they are not properly cached)
-        run: |
-          conan remove -f '*/system'
-
       - name: Install Python dependencies
         shell: bash
         id: python-deps

@@ -1,14 +1,6 @@
-#include "MyClass.h"
-#include <QObject>
-#include <QtTest>
 
-class Foo
-{
-  Q_OBJECT
 
-private slots:
-  void test1();
-};
+#include "testMain.h"
 
 void Foo::test1()
 {

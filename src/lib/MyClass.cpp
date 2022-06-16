@@ -2,6 +2,7 @@
 
 namespace mApp {
 
+MyClass::MyClass(const QString &text) : _text(text) { qDebug("Init text"); }
 
 QString MyClass::appendIt(const QString &extra) const { return _text + " " + extra; }
 

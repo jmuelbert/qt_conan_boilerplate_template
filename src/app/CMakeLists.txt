@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(
-  QtWidgetTest
-  VERSION 0.1
-  LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+
+find_package(fmt CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(CLI11 CONFIG REQUIRED)
 
 find_package(
   QT
@@ -18,6 +18,7 @@ find_package(
   Qt5
   REQUIRED
   COMPONENTS Widgets LinguistTools)
+
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
 set(TS_FILES QtWidgetTest_de_DE.ts)
@@ -49,7 +50,12 @@ else()
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(QtWidgetTest PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(QtWidgetTest 
+  PUBLIC project_options project_warnings
+  PRIVATE 
+    CLI11::CLI11 fmt::fmt spdlog::spdlog
+    Qt${QT_VERSION_MAJOR}::Widgets
+  )
 
 set_target_properties(
   QtWidgetTest
@@ -58,6 +64,9 @@ set_target_properties(
              MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
              MACOSX_BUNDLE TRUE
              WIN32_EXECUTABLE TRUE)
+
+
+target_include_directories(QtWidgetTest  PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
 
 if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(QtWidgetTest)

@@ -10,10 +10,10 @@ class MyClass
   QString _text;
 
 public:
-  explicit MyClass(const QString &text) { qDebug("Test!"); }
+  explicit MyClass(const QString &text);
 
-  QString appendIt(const QString &extra) const;
-  QString text() const;
+  [[nodiscard]] QString appendIt(const QString &extra) const;
+  [[nodiscard]] QString text() const;
 };
 
 }// namespace mApp

@@ -9,7 +9,7 @@ DEVELOPER_MODE=False
 COVERAGE=False
 TESTING=True
 
-cd ./build
+cd ./build || exit
 conan install ../conanfile.py -b missing -pr:b default -s build_type="${BUILD_TYPE}" -s compiler.version=13.1 -g CMakeToolchain
 cd ..
 cmake -S . -B ./build -G "${GENERATOR}" \
@@ -19,3 +19,6 @@ cmake -S . -B ./build -G "${GENERATOR}" \
     -DENABLE_TESTING:BOOL=${TESTING} \
     -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 cmake --build ./build
+cd build || exit
+ctest -VV -C "${BUILD_TYPE}"
+cd ..

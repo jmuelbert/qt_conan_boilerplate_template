@@ -11,7 +11,10 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-add_executable(testMain WIN32 testmain.cpp)
+qt_add_executable(testMain MANUAL_FINALIZATION testmain.cpp)
+
+set_target_properties(testMain
+  PROPERTIES WIN32_EXECUTABLE TRUE)
 
 if(WIN32)
   target_link_options(testMain PRIVATE "/entry:mainCRTStartup")
@@ -29,6 +32,8 @@ target_link_libraries(
           MyLib::MyLib
           myproject::project_options
           myproject::project_warnings)
+
+qt_finalize_executable(testMain)
 
 if(APPLE)
   # Since there appear to exist problems with NOT setting the RPATH when building

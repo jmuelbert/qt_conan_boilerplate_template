@@ -1,6 +1,6 @@
 
 
-#include "testMain.h"
+#include "testmain.h"
 
 void Foo::test1()
 {

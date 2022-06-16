@@ -105,7 +105,7 @@ RUN apt-get autoremove -y && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 ## Install aqinstall
-RUN pip install aqinstall
+RUN pip install aqtinstall
 
 ## Install Qt
 ARG QT=6.3.0

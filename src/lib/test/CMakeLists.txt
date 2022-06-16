@@ -11,7 +11,11 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-qt_add_executable(testMain MANUAL_FINALIZATION testmain.cpp testmain.h)
+qt_add_executable(
+  testMain
+  MANUAL_FINALIZATION
+  testmain.cpp
+  testmain.h)
 
 set_target_properties(testMain PROPERTIES WIN32_EXECUTABLE TRUE)
 

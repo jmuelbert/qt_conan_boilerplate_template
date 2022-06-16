@@ -1,4 +1,4 @@
-import platform
+
 from cpt.packager import ConanMultiPackager
 
 

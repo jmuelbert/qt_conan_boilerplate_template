@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -50,12 +49,13 @@ else()
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(QtWidgetTest 
+target_link_libraries(
+  QtWidgetTest
   PUBLIC project_options project_warnings
-  PRIVATE 
-    CLI11::CLI11 fmt::fmt spdlog::spdlog
-    Qt${QT_VERSION_MAJOR}::Widgets
-  )
+  PRIVATE CLI11::CLI11
+          fmt::fmt
+          spdlog::spdlog
+          Qt${QT_VERSION_MAJOR}::Widgets)
 
 set_target_properties(
   QtWidgetTest
@@ -65,8 +65,7 @@ set_target_properties(
              MACOSX_BUNDLE TRUE
              WIN32_EXECUTABLE TRUE)
 
-
-target_include_directories(QtWidgetTest  PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
+target_include_directories(QtWidgetTest PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
 
 if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(QtWidgetTest)

@@ -10,5 +10,5 @@ class Foo : public QObject
   Q_OBJECT
 
 private slots:
-  void static test1();
+  void test1();
 };

@@ -13,8 +13,7 @@ set(CMAKE_AUTORCC ON)
 
 qt_add_executable(testMain MANUAL_FINALIZATION testmain.cpp)
 
-set_target_properties(testMain
-  PROPERTIES WIN32_EXECUTABLE TRUE)
+set_target_properties(testMain PROPERTIES WIN32_EXECUTABLE TRUE)
 
 if(WIN32)
   target_link_options(testMain PRIVATE "/entry:mainCRTStartup")

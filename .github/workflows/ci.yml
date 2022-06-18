@@ -52,7 +52,6 @@ jobs:
         os:
           - ubuntu-20.04
           - macos-10.15
-          - windows-2019
         # compiler:
         #   # you can specify the version after `-` like "llvm-13.0.0".
         #   - llvm-13.0.0
@@ -135,12 +134,16 @@ jobs:
       - name: Install Linux deps
         if: runner.os == 'Linux'
         run: |
-          sudo apt install -y libclang-dev ninja-build gcovr ccache
+          sudo apt install -y libclang-dev \
+           ninja-build \
+           gcovr \
+           ccache \
+           cppcheck
 
       - name: Install macOS deps
         if: runner.os == 'macOS'
         run: |
-          brew install ninja ccache
+          brew install ninja ccache llvm
 
       - name: Install Windows deps
         if: runner.os ==  'Windows'

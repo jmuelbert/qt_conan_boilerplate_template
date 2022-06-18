@@ -86,20 +86,28 @@ jobs:
             compiler: gcc-10
             generator: "Unix Makefiles"
             build_type: Debug
+            qt_version: "6.3.0"
+            qt_target: "desktop"
             gcov_executable: gcov
-            developer_mode: On
+            developer_mode: ON
 
           # Windows msvc builds
           - os: windows-2019
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Debug
+            qt_version: "6.3.0"
+            qt_target: "desktop"
+            qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
           - os: windows-2019
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Release
+            qt_version: "6.3.0"
+            qt_target: "desktop"
+            qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
 
     steps:

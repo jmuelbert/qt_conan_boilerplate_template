@@ -165,7 +165,7 @@ jobs:
           # modules: 'qtcharts qtwebengine'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
           setup-python: "true"
-          tools: "tools_ifw"
+          # tools: "tools_ifw"
           set-env: "true"
 
       - name: Cleanup Conan system packages (they are not properly cached)

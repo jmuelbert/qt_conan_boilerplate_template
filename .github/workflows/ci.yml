@@ -68,10 +68,10 @@ jobs:
         qt_version: ["6.3.0"]
         qt_target: ["desktop"]
 
-        exclude:
-          # mingw is determined by this author to be too buggy to support
-          - os: windows-2019
-            compiler: gcc-11
+        # exclude:
+        # mingw is determined by this author to be too buggy to support
+        # - os: windows-2019
+        #  compiler: gcc-11
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break

@@ -91,14 +91,14 @@ jobs:
           # Windows msvc builds
           - os: windows-2019
             compiler: msvc
-            generator: "Visual Studio 16 2019"
+            generator: "Ninja Multi-Config"
             build_type: Debug
             qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
           - os: windows-2019
             compiler: msvc
-            generator: "Visual Studio 16 2019"
+            generator: "Ninja Multi-Config"
             build_type: Release
             qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
@@ -169,7 +169,7 @@ jobs:
           # modules: 'qtcharts qtwebengine'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
           setup-python: "true"
-          tools: "tools_ifw"
+          # tools: "tools_ifw"
           set-env: "true"
 
       - name: Cleanup Conan system packages (they are not properly cached)

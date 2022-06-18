@@ -68,40 +68,42 @@ jobs:
         qt_version: ["6.3.0"]
         qt_target: ["desktop"]
 
+        exclude:
+          # mingw is determined by this author to be too buggy to support
+          - os: windows-2019
+            compiler: gcc-11
+
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
           # if you try to use a compiler that does not have gcov set
           # Set up preferred package generators, for given build configurations
           - build_type: Release
-            qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
             package_generator: TBZ2
 
-          - build_type: Debug
-            qt_arch: "win64_msvc2019_64"
           # This exists solely to make sure a non-multiconfig build works
           - os: ubuntu-20.04
             compiler: gcc-10
             generator: "Unix Makefiles"
             build_type: Debug
-
             gcov_executable: gcov
             developer_mode: ON
 
           # Windows msvc builds
           - os: windows-2019
             compiler: msvc
-            generator: "Ninja Multi-Config"
+            generator: "Visual Studio 16 2019"
             build_type: Debug
             qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
           - os: windows-2019
             compiler: msvc
-            generator: "Ninja Multi-Config"
+            generator: "Visual Studio 16 2019"
             build_type: Release
             qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
+            package_generator: ZIP
 
     steps:
       - name: Cancel Previous Runs
@@ -151,12 +153,12 @@ jobs:
         run: |
           cinst ninja ccache
 
-      # - name: Install MSVC Windows deps
-      #   if: runner.os == 'Windows'
-      #   uses: ilammy/msvc-dev-cmd@v1
-      #   with:
-      #     arch: amd64
-      #     toolset: 14.29
+      - name: Install MSVC Windows deps
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+          toolset: 14.29
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2

@@ -52,10 +52,11 @@ jobs:
         os:
           - ubuntu-20.04
           - macos-11
-        # compiler:
-        #   # you can specify the version after `-` like "llvm-13.0.0".
-        #   - llvm-13.0.0
-        #   - gcc-11
+        compiler:
+          # you can specify the version after `-` like "llvm-13.0.0".
+          - llvm-13.0.0
+          - gcc-11
+
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -77,9 +78,11 @@ jobs:
 
           # This exists solely to make sure a non-multiconfig build works
           - os: ubuntu-20.04
-            compiler: gcc-10
+            compiler: clang
             generator: "Unix Makefiles"
             build_type: Debug
+            qt_version: "6.3.0"
+            qt_target: "desktop"
             gcov_executable: gcov
             developer_mode: ON
 
@@ -88,6 +91,8 @@ jobs:
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Debug
+            qt_version: "6.3.0"
+            qt_target: "desktop"
             qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
@@ -95,6 +100,8 @@ jobs:
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Release
+            qt_version: "6.3.0"
+            qt_target: "desktop"
             qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
 
@@ -139,8 +146,6 @@ jobs:
            gcovr \
            ccache \
            cppcheck
-          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
-          update-alternatives --install /usr/bin/g++ g++ /usr/bin/gcc-10 100
 
       - name: Install macOS deps
         if: runner.os == 'macOS'

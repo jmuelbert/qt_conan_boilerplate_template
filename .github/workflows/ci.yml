@@ -51,7 +51,7 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macos-10.15
+          - macos-11
         # compiler:
         #   # you can specify the version after `-` like "llvm-13.0.0".
         #   - llvm-13.0.0
@@ -139,11 +139,16 @@ jobs:
            gcovr \
            ccache \
            cppcheck
+          update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+          update-alternatives --install /usr/bin/g++ g++ /usr/bin/gcc-10 100
 
       - name: Install macOS deps
         if: runner.os == 'macOS'
         run: |
-          brew install ninja ccache llvm
+          brew install ninja ccache 
+          ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
+          ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
+          ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
 
       - name: Install Windows deps
         if: runner.os ==  'Windows'

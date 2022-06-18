@@ -57,6 +57,8 @@ jobs:
         #   # you can specify the version after `-` like "llvm-13.0.0".
         #   - llvm-13.0.0
         #   - gcc-11
+        generator:
+          - "Ninja Multi-Config"
         build_type:
           - Release
           - Debug
@@ -65,10 +67,6 @@ jobs:
           - OFF
         qt_version: ["6.3.0"]
         qt_target: ["desktop"]
-        CMAKE_GENERATOR:
-          - "Ninja Multi-Config"
-        CPACK_GENERATOR:
-          - ZIP
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
@@ -76,12 +74,12 @@ jobs:
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             developer_mode: OFF
-            CPACK_GENERATOR: TBZ2
+            package_generator: TBZ2
 
           # This exists solely to make sure a non-multiconfig build works
           - os: ubuntu-20.04
             compiler: gcc-10
-            CMAKE_GENERATOR: "Unix Makefiles"
+            generator: "Unix Makefiles"
             build_type: Debug
             gcov_executable: gcov
             developer_mode: ON
@@ -89,10 +87,10 @@ jobs:
           # Windows msvc builds
           - os: windows-2019
             compiler: msvc
+            generator: "Visual Studio 16 2019"
             build_type: Debug
             qt_arch: "win64_msvc2019_64"
             developer_mode: On
-            CMAKE_GENERATOR: "Visual Studio 16 2019"
 
           - os: windows-2019
             compiler: msvc
@@ -100,7 +98,6 @@ jobs:
             build_type: Release
             qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
-            CMAKE_GENERATOR: "Visual Studio 16 2019"
 
     steps:
       - name: Cancel Previous Runs
@@ -150,12 +147,12 @@ jobs:
         run: |
           cinst ninja ccache
 
-      - name: Install MSVC Windows deps
-        if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x64
-          toolset: 14.29
+      # - name: Install MSVC Windows deps
+      #   if: runner.os == 'Windows'
+      #   uses: ilammy/msvc-dev-cmd@v1
+      #   with:
+      #     arch: amd64
+      #     toolset: 14.29
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
@@ -168,7 +165,7 @@ jobs:
           # modules: 'qtcharts qtwebengine'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
           setup-python: "true"
-          # tools: "tools_ifw"
+          tools: "tools_ifw"
           set-env: "true"
 
       - name: Cleanup Conan system packages (they are not properly cached)

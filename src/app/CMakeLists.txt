@@ -76,11 +76,13 @@ if(UNIX AND NOT APPLE)
   include(GNUInstallDirs)
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
                  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
+          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
 
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop
                  @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop
+          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 
   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}.png")

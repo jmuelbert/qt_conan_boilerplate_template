@@ -143,7 +143,7 @@ jobs:
         run: |
           sudo apt-get -y -qq update
           sudo apt-get -y --no-install-recommends install \
-            ibclang-dev \
+            libclang-dev \
             ninja-build \
             gcovr \
             ccache \
@@ -331,6 +331,9 @@ jobs:
         # has meaningful results
       - name: Configure CMake
         shell: bash
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx}}
         run: |
           mkdir -p ./build
           cd ./build
@@ -347,6 +350,40 @@ jobs:
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cmake --build ./build --config ${{matrix.build_type}}
+
+      - name: "⚙️ Install go-appimage tool"
+        # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
+        # which is glibc 2.23. For more information, please see https://github.com/probonopd/linuxdeployqt/issues/340.
+        # Will try new tool https://github.com/probonopd/go-appimage written in golang by probonopd.
+        run: |
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - \
+          | grep "appimagetool-.*-${APPIMAGETOOL_ARCH}.AppImage" | head -n 1 | cut -d '"' -f 2) -O appimagetool
+          chmod +x appimagetool
+        env:
+          APPIMAGETOOL_ARCH: x86_64
+
+      - name: "📦 Create AppImage"
+        shell: bash
+        run: |
+          APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
+          cd $GITHUB_WORKSPACE
+          $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.jmbde.desktop
+          mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
+          cp \
+            $GITHUB_WORKSPACE/assets/icons/256-apps-jmbde.png \
+            ${APPIMAGE_DST_PATH}/
+          if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then
+            rm ${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0
+          fi
+          chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
+          $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
+          mv $GITHUB_WORKSPACE/jmbde-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}}.x86_64.AppImage
+      - name: "📤 Upload artifact: AppImage"
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}-qt${{matrix.qt_version}}-Linux.AppImage
+          path: |
+            $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}}.x86_64.AppImage
 
   diagram:
     name: Build diagram

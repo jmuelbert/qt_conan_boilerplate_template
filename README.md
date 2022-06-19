@@ -67,4 +67,6 @@ See [Catch2 tutorial](https://github.com/catchorg/Catch2/blob/master/docs/tutori
 
 See [libFuzzer Tutorial](https://github.com/google/fuzzing/blob/master/tutorial/libFuzzerTutorial.md)
 
-
+## Icons
+See Icons by [Icons8](https://icons8.com)
+  * [App Symbol](href="https://icons8.com/icon/Wg3R9l3UYLiq/app-symbol")

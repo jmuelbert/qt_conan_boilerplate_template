@@ -34,6 +34,10 @@ env:
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   CLANG_TIDY_VERSION: "13.0.0"
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  QT_VERSION: "6.3.0"
+  QT_TARGET: "desktop"
 
 jobs:
   tests:
@@ -65,8 +69,6 @@ jobs:
         developer_mode:
           - ON
           - OFF
-        qt_version: ["6.3.0"]
-        qt_target: ["desktop"]
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
@@ -81,8 +83,6 @@ jobs:
             compiler: clang
             generator: "Unix Makefiles"
             build_type: Debug
-            qt_version: "6.3.0"
-            qt_target: "desktop"
             gcov_executable: gcov
             developer_mode: ON
 
@@ -91,8 +91,6 @@ jobs:
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Debug
-            qt_version: "6.3.0"
-            qt_target: "desktop"
             qt_arch: "win64_msvc2019_64"
             developer_mode: On
 
@@ -100,8 +98,6 @@ jobs:
             compiler: msvc
             generator: "Visual Studio 16 2019"
             build_type: Release
-            qt_version: "6.3.0"
-            qt_target: "desktop"
             qt_arch: "win64_msvc2019_64"
             developer_mode: OFF
 
@@ -124,7 +120,6 @@ jobs:
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
-          compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
           developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
@@ -172,9 +167,9 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: ${{ matrix.qt_version }}
+          version: ${{ env.QT_VERSION }}
           # host: ${{ runner.os }}
-          target: ${{ matrix.qt_target }}
+          target: ${{ env.QT_TARGET }}
           arch: ${{ matrix.qt_arch }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
@@ -253,14 +248,8 @@ jobs:
           - Ninja
         developer_mode:
           - OFF
-        qt_version:
-          - "6.3.0"
-        qt_target:
-          - "desktop"
         qt_arch:
           - gcc_64
-        cmake_generator:
-          - ninja
         cc:
           - clang
         cxx:
@@ -311,14 +300,15 @@ jobs:
           sudo apt-get -y --no-install-recommends install \
             libclang-dev \
             ninja-build \
+            cpptest \
             ccache
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: ${{ matrix.qt_version }}
+          version: ${{ env.QT_VERSION }}
           # host: ${{ runner.os }}
-          target: ${{ matrix.qt_target }}
+          target: ${{ env.QT_TARGET }}
           arch: ${{ matrix.qt_arch }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
@@ -349,7 +339,7 @@ jobs:
       - name: "⚙️ Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}}
+          cmake --build ./build --config ${{matrix.build_type}} --parallel $(sysctl -n hw.logicalcpu)
 
       - name: "⚙️ Install go-appimage tool"
         # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
@@ -370,7 +360,7 @@ jobs:
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.jmbde.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
           cp \
-            $GITHUB_WORKSPACE/assets/icons/256-apps-jmbde.png \
+            $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png \
             ${APPIMAGE_DST_PATH}/
           if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then
             rm ${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0

@@ -52,7 +52,7 @@ jobs:
         os:
           - ubuntu-20.04
           - macos-11
-        compiler:
+        # compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
           # - llvm-13.0.0
           # - gcc-11

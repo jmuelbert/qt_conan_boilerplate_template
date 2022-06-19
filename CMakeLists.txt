@@ -34,7 +34,7 @@ include(${_project_options_SOURCE_DIR}/Index.cmake)
 
 # Set the project name and language
 project(
-  myproject
+  qt_conan_boilerplate_template
   VERSION 0.0.1
   DESCRIPTION ""
   HOMEPAGE_URL "https://github.com/jmuelbert/qt_conan_boilerplate_template"

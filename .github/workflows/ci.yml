@@ -30,7 +30,7 @@ on:
 
 env:
   # Target
-  TARGET_NAME: QtTest
+  TARGET_NAME: qt_conan_boilerplate_template
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
@@ -328,6 +328,7 @@ jobs:
           CC: ${{ matrix.cc }}
           CXX: ${{ matrix.cxx}}
         run: |
+          APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
           mkdir -p ./build
           cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
@@ -361,7 +362,7 @@ jobs:
         run: |
           APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
           cd $GITHUB_WORKSPACE
-          $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.jmbde.desktop
+          $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
           cp \
             $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png \
@@ -416,7 +417,7 @@ jobs:
           BUNDLE="org.jmuelbert.qt_conan_boilerplate.flatpak"
           MANIFEST_PATH=$GITHUB_WORKSPACE/packaging/flatpak/org.jmuelbert.qt_conan_boilerplate.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
-          APP_ID="org.jmuelbert.jmbde_QT"
+          APP_ID="org.jmuelbert.qt_conan_boilerplate"
           BRANCH="master"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}

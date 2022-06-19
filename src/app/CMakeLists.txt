@@ -94,10 +94,9 @@ if(UNIX AND NOT APPLE)
       COMMENT "Create the bin gz archive"
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1)
     add_custom_target(
-       man ALL
-       COMMENT "Create man-file"
-       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
-      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
-              DESTINATION "${DATAROOTDIR}/man/man1")
+      man ALL
+      COMMENT "Create man-file"
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${DATAROOTDIR}/man/man1")
   endif()
 endif()

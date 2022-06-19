@@ -74,7 +74,7 @@ class QtTestConan(ConanFile):
             return int(f"{compiler.version}0")
 
     def set_version(self):
-        content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
+        content = load(self, os.path.join(self.recipe_folder, "CMakeLists.txt"))
         version = re.search(
             r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content
         ).group(1)

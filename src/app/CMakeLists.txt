@@ -71,30 +71,26 @@ if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(QtWidgetTest)
 endif()
 
-if (UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE)
   # appdata
   include(GNUInstallDirs)
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
-    DESTINATION ${APPDATA_INSTALL_DIR})
+                 ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml DESTINATION ${APPDATA_INSTALL_DIR})
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop @ONLY)  
-  install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop
-    DESTINATION ${XDG_APPS_INSTALL_DIR})
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop
+                 @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
   # man page
   find_program(GZIP gzip)
   if(GZIP)
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
     add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1.gz
-    COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
-    COMMENT "Create the bin gz archive"
-    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/jmbde.1)
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1.gz
+      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
+      COMMENT "Create the bin gz archive"
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/jmbde.1)
     #  add_custom_target(
     #    man ALL
     #     COMMENT "Create man-file"

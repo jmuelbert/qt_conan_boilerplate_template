@@ -195,7 +195,7 @@ jobs:
           cd ..
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
+            -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
@@ -240,6 +240,10 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     # needs: tests
+    env:
+      APPIMAGE_DST_PATH: $GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx}}
 
     strategy:
       matrix:
@@ -324,11 +328,7 @@ jobs:
         # has meaningful results
       - name: Configure CMake
         shell: bash
-        env:
-          CC: ${{ matrix.cc }}
-          CXX: ${{ matrix.cxx}}
         run: |
-          APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
           mkdir -p ./build
           cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
@@ -360,7 +360,6 @@ jobs:
       - name: "📦 Create AppImage"
         shell: bash
         run: |
-          APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
           cd $GITHUB_WORKSPACE
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
@@ -373,6 +372,7 @@ jobs:
           chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
           $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
           mv $GITHUB_WORKSPACE/jmbde-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}}.x86_64.AppImage
+
       - name: "📤 Upload artifact: AppImage"
         uses: actions/upload-artifact@v3
         with:
@@ -422,6 +422,7 @@ jobs:
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate.flatpak $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+
       - name: "📤 Upload artifact: FlatPak"
         uses: actions/upload-artifact@v3
         with:

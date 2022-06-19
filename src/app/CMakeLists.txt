@@ -97,6 +97,6 @@ if(UNIX AND NOT APPLE)
       man ALL
       COMMENT "Create man-file"
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${DATAROOTDIR}/man/man1")
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${MANDIR}/man1")
   endif()
 endif()

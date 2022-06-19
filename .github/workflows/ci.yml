@@ -36,7 +36,7 @@ env:
   CLANG_TIDY_VERSION: "13.0.0"
 
 jobs:
-  Test:
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -53,9 +53,9 @@ jobs:
           - ubuntu-20.04
           - macos-11
         # compiler:
-          # you can specify the version after `-` like "llvm-13.0.0".
-          # - llvm-13.0.0
-          # - gcc-11
+        # you can specify the version after `-` like "llvm-13.0.0".
+        # - llvm-13.0.0
+        # - gcc-11
 
         generator:
           - "Ninja Multi-Config"
@@ -141,11 +141,13 @@ jobs:
       - name: Install Linux deps
         if: runner.os == 'Linux'
         run: |
-          sudo apt install -y libclang-dev \
-           ninja-build \
-           gcovr \
-           ccache \
-           cppcheck
+          sudo apt-get -y -qq update
+          sudo apt-get -y --no-install-recommends install \
+            ibclang-dev \
+            ninja-build \
+            gcovr \
+            ccache \
+            cppcheck
 
       - name: Install macOS deps
         if: runner.os == 'macOS'
@@ -235,9 +237,120 @@ jobs:
           name: ${{ runner.os }}-coverage
           files: ./build/coverage.xml
 
+  appimage-build:
+    name: "🐧 Build appimage on ${{ matrix.os }} for ${{ matrix.qt_version }}"
+
+    runs-on: ${{ matrix.os }}
+    # needs: tests
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        build_type:
+          - Release
+        generator:
+          - Ninja
+        developer_mode:
+          - OFF
+        qt_version:
+          - "6.3.0"
+        qt_target:
+          - "desktop"
+        qt_arch:
+          - gcc_64
+        cmake_generator:
+          - ninja
+        cc:
+          - clang
+        cxx:
+          - clang++
+      fail-fast: true
+
+    steps:
+      - name: "⚙️ Get the version"
+        id: get_version
+        shell: bash
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.5.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: "🧰 Checkout"
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Install Python
+        id: python
+        uses: actions/setup-python@v3
+
+      - name: "🔧 Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          developer_mode: ${{ matrix.developer_mode }}
+          generator: ${{ matrix.generator }}
+
+      - name: Install Python dependencies
+        shell: bash
+        id: python-deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f ./.github/workflows/requirements.txt ]; then
+            pip install -r ./.github/workflows/requirements.txt;
+          fi
+
+      - name: "⚙️ Install dependencies"
+        run: |
+          sudo apt-get -y -qq update
+          sudo apt-get -y --no-install-recommends install \
+            libclang-dev \
+            ninja-build \
+            ccache
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: ${{ matrix.qt_version }}
+          # host: ${{ runner.os }}
+          target: ${{ matrix.qt_target }}
+          arch: ${{ matrix.qt_arch }}
+          install-deps: "true"
+          # modules: 'qtcharts qtwebengine'
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          setup-python: "true"
+          # tools: "tools_ifw"
+          set-env: "true"
+
+        # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
+        # has meaningful results
+      - name: Configure CMake
+        shell: bash
+        run: |
+          mkdir -p ./build
+          cd ./build
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
+          cd ..
+          cmake -S . -B ./build -G "${{matrix.generator}}" \
+            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
+            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
+            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
+            -DGIT_SHA:STRING=${{ github.sha }}
+
+      - name: "⚙️ Build"
+        # Execute the build.  You can specify a specific target with "--target <NAME>"
+        run: |
+          cmake --build ./build --config ${{matrix.build_type}}
+
   diagram:
     name: Build diagram
-    needs: Test
+    needs: tests
     runs-on: ubuntu-latest
 
     steps:

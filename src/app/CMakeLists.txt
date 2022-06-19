@@ -73,6 +73,7 @@ endif()
 
 if (UNIX AND NOT APPLE)
   # appdata
+  include(GNUInstallDirs)
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml

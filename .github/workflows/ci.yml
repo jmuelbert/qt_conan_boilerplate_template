@@ -300,8 +300,8 @@ jobs:
           sudo apt-get -y --no-install-recommends install \
             libclang-dev \
             ninja-build \
-            cpptest \
-            ccache
+            ccache \
+            cppcheck
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2

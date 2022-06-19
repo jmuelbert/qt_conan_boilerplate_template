@@ -76,12 +76,13 @@ if(UNIX AND NOT APPLE)
   include(GNUInstallDirs)
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
                  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml DESTINATION ${APPDATA_INSTALL_DIR})
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml DESTINATION "${DATAROOTDIR}/metainfo")
 
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop
                  @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION "${DATAROOTDIR}/applications")
 
+  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION  "${DATAROOTDIR}/icons/${PROJECT_NAME}.png")
   # man page
   find_program(GZIP gzip)
   if(GZIP)
@@ -90,12 +91,12 @@ if(UNIX AND NOT APPLE)
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1.gz
       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
       COMMENT "Create the bin gz archive"
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/jmbde.1)
-    #  add_custom_target(
-    #    man ALL
-    #     COMMENT "Create man-file"
-    #    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/jmbde.1.gz)
-    #   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/jmbde.1.gz
-    #           DESTINATION ${MAN_INSTALL_DIR}/man1/)
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1)
+    add_custom_target(
+       man ALL
+       COMMENT "Create man-file"
+       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1.gz)
+      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1.gz
+              DESTINATION "${DATAROOTDIR}/man/man1")
   endif()
 endif()

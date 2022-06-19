@@ -82,7 +82,8 @@ if(UNIX AND NOT APPLE)
                  @ONLY)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop DESTINATION "${DATAROOTDIR}/applications")
 
-  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION  "${DATAROOTDIR}/icons/${PROJECT_NAME")
+  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+          DESTINATION "${DATAROOTDIR}/icons/${PROJECT_NAME}.png")
   # man page
   find_program(GZIP gzip)
   if(GZIP)

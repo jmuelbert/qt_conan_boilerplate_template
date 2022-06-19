@@ -190,6 +190,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p ./build
+          mkdir -p ${APPIMAGE_DST_PATH}
           cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cd ..

@@ -92,7 +92,7 @@ if(UNIX AND NOT APPLE)
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
       COMMENT "Create the bin gz archive"
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/{PROJECT_NAME}.1)
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1)
     add_custom_target(
       man ALL
       COMMENT "Create man-file"

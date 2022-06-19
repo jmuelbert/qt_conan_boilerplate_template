@@ -29,6 +29,8 @@ on:
       - ".github/workflows/ci.yml"
 
 env:
+  # Target
+  TARGET_NAME: QtTest
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
@@ -339,7 +341,7 @@ jobs:
       - name: "⚙️ Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}} --parallel $(sysctl -n hw.logicalcpu)
+          cmake --build ./build --config ${{matrix.build_type}}
 
       - name: "⚙️ Install go-appimage tool"
         # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
@@ -407,23 +409,22 @@ jobs:
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak install -y --noninteractive flathub org.kde.Sdk//5.15 org.kde.Platform//5.15
 
-
-      - name: '📦 Create flatpak'
+      - name: "📦 Create flatpak"
         run: |
-          BUNDLE="org.jmuelbert.QT_Conan_BoilerPlate.flatpak"
-          MANIFEST_PATH=$GITHUB_WORKSPACE/packaging/flatpak/org.jmuelbert.QT_Conan_BoilerPlate.yml
+          BUNDLE="org.jmuelbert.qt_conan_boilerplate.flatpak"
+          MANIFEST_PATH=$GITHUB_WORKSPACE/packaging/flatpak/org.jmuelbert.qt_conan_boilerplate.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="org.jmuelbert.jmbde_QT"
           BRANCH="master"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
-          mv $GITHUB_WORKSPACE/org.jmuelbert.jmbde-QT.flatpak $GITHUB_WORKSPACE/org.jmuelbert.jmbde-QT_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
-      - name: '📤 Upload artifact: FlatPak'
+          mv $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate.flatpak $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+      - name: "📤 Upload artifact: FlatPak"
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.TARGET_NAME }}-Qt${{ matrix.qt_version}}-${{matrix.build-type}}.flatpak
+          name: ${{ env.TARGET_NAME }}-QT${{ matrix.qt_version}}-${{matrix.build-type}}.flatpak
           path: |
-            $GITHUB_WORKSPACE/org.jmuelbert.jmbde-QT_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+            $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
   diagram:
     name: Build diagram

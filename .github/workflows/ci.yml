@@ -311,7 +311,7 @@ jobs:
             ccache \
             cppcheck
 
-      - name: Install Qt
+      - name: "⚙️ Install Qt" 
         uses: jurplel/install-qt-action@v2
         with:
           version: ${{ env.QT_VERSION }}
@@ -431,9 +431,180 @@ jobs:
           path: |
             $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
+  snap-build:
+    name: "🐧 Build snap on ubuntu-20.04"
+    runs-on: ubuntu-20.04
+    # needs: tests
+
+    steps:
+      - name: "⚙️ Get the version"
+        id: get_version
+        shell: bash
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.5.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: "🧰 Checkout"
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: "📦 Create snap"
+        uses: snapcore/action-build@v1
+        id: snapcraft
+        with:
+          snapcraft-args: --enable-experimental-extensions
+
+      - name: Rename snap name
+        shell: bash
+        run: |
+          ls
+          mkdir -p $GITHUB_WORKSPACE/build
+          cp ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/build/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap
+      - name: "📤 Upload artifact: SnapPack"
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.TARGET_NAME }}-$GITHUB_WORKSPACE/build/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap.amd64.snap
+          path: |
+            $GITHUB_WORKSPACE/build/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap
+
+  macos-build:
+    name: "🍎 ${{ matrix.os }} -${{ matrix.qt_version}}"
+    runs-on: ${{ matrix.os }}
+    # needs: tests
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+        build_type:
+          - Release
+        generator:
+          - "Ninja Multi-Config"
+        developer_mode:
+          - OFF
+        macos_target:
+          - 10.15
+        qt_arch:
+          - clang_64
+        arch:
+          - clang_64
+       fail-fast: true
+
+    steps:
+      - name: "⚙️ Get the version"
+        id: get_version
+        shell: bash
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.5.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: "🧰 Checkout"
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Install Python
+        id: python
+        uses: actions/setup-python@v3
+
+      - name: "🔧 Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          developer_mode: ${{ matrix.developer_mode }}
+          generator: ${{ matrix.generator }}
+
+      - name: Install Python dependencies
+        shell: bash
+        id: python-deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f ./.github/workflows/requirements.txt ]; then
+            pip install -r ./.github/workflows/requirements.txt;
+          fi
+
+      - name: "⚙️ Install Qt" 
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: ${{ env.QT_VERSION }}
+          # host: ${{ runner.os }}
+          target: ${{ env.QT_TARGET }}
+          arch: ${{ matrix.qt_arch }}
+          install-deps: "true"
+          # modules: 'qtcharts qtwebengine'
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          setup-python: "true"
+          # tools: "tools_ifw"
+          set-env: "true"
+
+      - name: '⚙️ Install dependencies'
+        if: runner.os == 'macOS'
+        run: |
+          brew upgrade cmake
+          brew install ninja ccache pkg-config
+          ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
+          ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
+          ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
+
+      - name: Cleanup Conan system packages (they are not properly cached)
+        run: |
+          conan remove -f '*/system'
+
+        # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
+        # has meaningful results
+      - name: Configure CMake
+        shell: bash
+        run: |
+          mkdir -p ./build
+          mkdir -p ./build/usr
+          cd ./build
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
+          cd ..
+          cmake -S . -B ./build -G "${{matrix.generator}}" \
+            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
+            -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
+            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
+            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
+            -DGIT_SHA:STRING=${{ github.sha }}
+
+      - name: "⚙️ Build"
+        # Execute the build.  You can specify a specific target with "--target <NAME>"
+        run: |
+          cmake --build ./build --config ${{matrix.build_type}}
+
+      - name: '📦 Package application (macdeployqt and zipfile)'
+        working-directory: ${{runner.workspace}}/build
+        run: |
+          macdeployqt ./app/${{env.TARGET_NAME}}.app -qmldir=. -appstore-compliant -libpath=./app/${{env.TARGET_NAME}}.app/Contents/Frameworks -verbose=1 -dmg
+          cp ./app/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
+          # ZIP application "%AppName%-%Version%-macOS.zip"
+          ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip
+          cp ./${{env.TARGET_NAME}}.zip ${{runner.workspace}}/${{env.TARGET_NAME}}.zip
+      - name: Upload dmg artifact for macOS - ${{ matrix.qt_version }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.dmg
+          path: ${{runner.workspace}}/${{ env.TARGET_NAME }}.dmg
+
+      - name: Upload zip artifact for macOS - ${{ matrix.qt_version }}-${env.BUILD_TYPE}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}-macos.zip
+          path: ${{runner.workspace}}/${{ env.TARGET_NAME }}*.zip
+
   diagram:
     name: Build diagram
-    # needs: tests
+    needs: tests
     runs-on: ubuntu-latest
 
     steps:

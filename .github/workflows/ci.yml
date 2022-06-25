@@ -205,6 +205,7 @@ jobs:
               cc: clang,
               cxx: clang++,
               generator: "Ninja",
+              package_generator: TBZ2,
             }
           - {
               os: macos-11,
@@ -212,6 +213,7 @@ jobs:
               qt_arch: clang_64,
               arch: clang_64,
               generator: "Ninja Multi-Config",
+              package_generator: TBZ2,
             }
           - {
               os: windows-2019,
@@ -222,6 +224,7 @@ jobs:
               arch: x64,
               pak_arch: win64,
               generator: "Ninja Multi-Config",
+              package_generator: ZIP,
             }
 
     steps:
@@ -329,7 +332,7 @@ jobs:
       - name: "⚙️ Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}}
+          cmake --build ./build --config ${{matrix.build_type}} --target install
 
       - name: CPack
         working-directory: ./build
@@ -377,8 +380,12 @@ jobs:
         run: |
           APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
           cd $GITHUB_WORKSPACE
-          macdeployqt ${APPIMAGE_DST_PATH}/${{env.TARGET_NAME}}.app -qmldir=. -appstore-compliant -libpath=./app/${{env.TARGET_NAME}}.app/Contents/Frameworks -verbose=1 -dmg
-          cp ./app/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
+          macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
+              -qmldir=. \
+              -appstore-compliant \
+              -libpath=${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app/Contents/Frameworks \
+              -verbose=1 -dmg
+          cp ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
           # ZIP application "%AppName%-%Version%-macOS.zip"
           ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip
           cp ./${{env.TARGET_NAME}}.zip ${{runner.workspace}}/${{env.TARGET_NAME}}.zip

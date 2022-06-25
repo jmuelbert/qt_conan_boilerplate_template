@@ -513,7 +513,8 @@ jobs:
 
   windows-build:
     name: "🧊 ${{ matrix.os }} - ${{ env.QT_VERSION }}"
-    runs-on: ${{ matrix.os }}    strategy:
+    runs-on: ${{ matrix.os }}
+    strategy:
       matrix:
         os:
           - windows-2019

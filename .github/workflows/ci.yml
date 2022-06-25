@@ -237,22 +237,19 @@ jobs:
           files: ./build/coverage.xml
 
   build:
-    name: "Build for ${{ matrix.os }}"
+    name: "Build for ${{ matrix.config.os }}"
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     # needs: tests
     env:
       APPIMAGE_DST_PATH: $GITHUB_WORKSPACE/ARCH_BUILDDIR
-      CC: ${{ matrix.cc }}
-      CXX: ${{ matrix.cxx}}
 
     strategy:
       fail-fast: false
       matrix:
         build_type:
           - Release
-        generator:
-          - "Ninja Multi-Config"
+
         developer_mode:
           - OFF
 
@@ -263,12 +260,14 @@ jobs:
               compiler: clang,
               cc: clang,
               cxx: clang++,
+              generator: "Ninja",
             }
           - {
               os: macos-11,
               macos_target: 10.15,
               qt_arch: clang_64,
               arch: clang_64,
+              generator: "Ninja Multi-Config",
             }
           - {
               os: windows-2019,
@@ -278,6 +277,7 @@ jobs:
               qt_arch: win64_msvc2019_64,
               arch: x64,
               pak_arch: win64,
+              generator: "Ninja Multi-Config",
             }
 
     steps:
@@ -304,10 +304,10 @@ jobs:
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
-          compiler: ${{ matrix.compiler }}
+          compiler: ${{ matrix.config.compiler }}
           build_type: ${{ matrix.build_type }}
           developer_mode: ${{ matrix.developer_mode }}
-          generator: ${{ matrix.generator }}
+          generator: ${{ matrix.config.generator }}
 
       - name: Install Python dependencies
         shell: bash
@@ -318,7 +318,7 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: "⚙️ Install dependencies"
+      - name: "⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
           sudo apt-get -y -qq update
@@ -328,7 +328,7 @@ jobs:
             ccache \
             cppcheck
 
-      - name: "⚙️ Install dependencies"
+      - name: "⚙️ Install macos dependencies"
         if: runner.os == 'macOS'
         run: |
           brew upgrade cmake
@@ -355,7 +355,7 @@ jobs:
           version: ${{ env.QT_VERSION }}
           # host: ${{ runner.os }}
           target: ${{ env.QT_TARGET }}
-          arch: ${{ matrix.qt_arch }}
+          arch: ${{ matrix.config.qt_arch }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
@@ -372,7 +372,7 @@ jobs:
           cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cd ..
-          cmake -S . -B ./build -G "${{matrix.generator}}" \
+          cmake -S . -B ./build -G "${{matrix.config.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \

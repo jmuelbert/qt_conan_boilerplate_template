@@ -249,19 +249,46 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
+          - ubuntu-20.04
+          - macos-11
         build_type:
           - Release
         generator:
-          - Ninja
+          - "Ninja Multi-Config"
         developer_mode:
           - OFF
+
         qt_arch:
           - gcc_64
         cc:
           - clang
         cxx:
           - clang++
+
+        exclude:
+          - os: macos-11
+            compiler: gcc-11
+
+        include:
+          - build_type: Release
+
+          - os: macos-11
+            generator:
+              - "Ninja Multi-Config"
+            developer_mode:
+              - OFF
+            macos_target:
+              - 10.15
+            qt_arch:
+              - clang_64
+            arch:
+              - clang_64
+
+          # - os: windows-2019
+          #   compiler: mscv
+          #   cc: cl
+          #   cxx: cl
+
       fail-fast: true
 
     steps:
@@ -336,7 +363,7 @@ jobs:
           cd ..
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
+            -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
@@ -362,6 +389,7 @@ jobs:
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE
+          ls 
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
           if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then

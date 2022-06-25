@@ -837,7 +837,7 @@ jobs:
   upload:
     name: "🗂 Create release and upload artifacts"
     needs:
-      - appimage-build
+      - build
       - flatpak-build
       - snap-build
       - macos-build

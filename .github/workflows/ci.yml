@@ -185,8 +185,6 @@ jobs:
 
     runs-on: ${{ matrix.config.os }}
     # needs: tests
-    env:
-      APPIMAGE_DST_PATH: $GITHUB_WORKSPACE/ARCH_BUILDDIR
 
     strategy:
       fail-fast: false
@@ -315,7 +313,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         run: |
-          APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
+          APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
           mkdir -p ${APPIMAGE_DST_PATH}
           mkdir -p ./build
           cd ./build
@@ -355,8 +353,9 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
+          APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
           cd $GITHUB_WORKSPACE
+          ls 
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
           if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then
@@ -376,9 +375,9 @@ jobs:
 
       - name: "📦 Package application (macdeployqt and zipfile)"
         if: runner.os == 'macOS'
-        working-directory: ${{runner.workspace}}/build
         run: |
-          APPIMAGE_DST_PATH=$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
+          ls
+          APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
           cd $GITHUB_WORKSPACE
           macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
               -qmldir=. \

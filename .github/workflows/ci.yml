@@ -772,7 +772,7 @@ jobs:
           output_file: "images/diagram.svg"
           excluded_paths: "dist,node_modules"
 
-releaseNotes:
+  releaseNotes:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     needs: upload
@@ -782,9 +782,9 @@ releaseNotes:
         uses: release-drafter/release-drafter@v5.20.0
         with:
           publish: "${{ steps.check-version.outputs.tag != '' }}"
-          tag: '${{ steps.check-version.outputs.tag }}'
+          tag: "${{ steps.check-version.outputs.tag }}"
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   changeLog:
     if: startsWith(github.ref, 'refs/tags/')
@@ -849,7 +849,7 @@ releaseNotes:
 
   # Upload continous build
   upload:
-    name: '🗂 Create release and upload artifacts'
+    name: "🗂 Create release and upload artifacts"
     needs:
       - appimage-build
       - flatpak-build
@@ -859,12 +859,12 @@ releaseNotes:
 
     runs-on: ubuntu-latest
     steps:
-      - name: '📥 Download artifacts'
+      - name: "📥 Download artifacts"
         uses: actions/download-artifact@v3
-      - name: '🗂 Inspect directory after downloading artifacts'
+      - name: "🗂 Inspect directory after downloading artifacts"
         run: ls -alFR
 
-      - name: '📤 Upload Release: AppImage'
+      - name: "📤 Upload Release: AppImage"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -874,7 +874,7 @@ releaseNotes:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: FlatPak'
+      - name: "📤 Upload Release: FlatPak"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -884,7 +884,7 @@ releaseNotes:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: snap'
+      - name: "📤 Upload Release: snap"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -894,7 +894,7 @@ releaseNotes:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: macOS'
+      - name: "📤 Upload Release: macOS"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -904,7 +904,7 @@ releaseNotes:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: windows'
+      - name: "📤 Upload Release: windows"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v1-release
         with:
@@ -914,7 +914,7 @@ releaseNotes:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: zip for windows'
+      - name: "📤 Upload Release: zip for windows"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v1-release
         with:

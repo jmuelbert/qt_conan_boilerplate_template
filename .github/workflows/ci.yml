@@ -236,13 +236,13 @@ jobs:
           name: ${{ runner.os }}-coverage
           files: ./build/coverage.xml
 
-  appimage-build:
-    name: "🐧 Build appimage on ${{ matrix.os }} for ${{ matrix.qt_version }}"
+  build:
+    name: "Build for ${{ matrix.os }}"
 
     runs-on: ${{ matrix.os }}
     # needs: tests
     env:
-      APPIMAGE_DST_PATH: $GITHUB_WORKSPACE/${{TARGET_NAME}}.AppDir
+      APPIMAGE_DST_PATH: $GITHUB_WORKSPACE/ARCH_BUILDDIR
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx}}
 

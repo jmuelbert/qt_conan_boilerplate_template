@@ -382,7 +382,7 @@ jobs:
             $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}}.x86_64.AppImage
 
   macos-build:
-    name: "🍎 ${{ matrix.os }} - ${{ QT_VERSION }}"
+    name: "🍎 ${{ matrix.os }}}"
     runs-on: ${{ matrix.os }}
     # needs: tests
     strategy:
@@ -512,7 +512,7 @@ jobs:
           path: ${{runner.workspace}}/${{ env.TARGET_NAME }}*.zip
 
   windows-build:
-    name: "🧊 ${{ matrix.os }} - ${{ QT_VERSION }}"
+    name: "🧊 ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

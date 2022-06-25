@@ -329,10 +329,9 @@ jobs:
       - name: "⚙️ Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}} --target install
+          cmake --build ./build --config ${{matrix.build_type}}
 
       - name: CPack
-        if: matrix.package_generator != ''
         working-directory: ./build
         run: |
           cpack -C ${{matrix.build_type}} -G ${{matrix.package_generator}}

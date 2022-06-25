@@ -686,8 +686,6 @@ jobs:
       - build
       - flatpak-build
       - snap-build
-      - macos-build
-      - windows-build
 
     runs-on: ubuntu-latest
     steps:

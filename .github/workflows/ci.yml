@@ -260,6 +260,8 @@ jobs:
 
         qt_arch:
           - gcc_64
+        compiler:
+          - clang
         cc:
           - clang
         cxx:

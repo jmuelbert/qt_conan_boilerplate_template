@@ -348,7 +348,7 @@ jobs:
           fi
 
       - name: "⚙️ Install dependencies"
-        if: runner.os != 'Linux'
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get -y -qq update
           sudo apt-get -y --no-install-recommends install \

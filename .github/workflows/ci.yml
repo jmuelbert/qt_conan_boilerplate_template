@@ -242,7 +242,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     # needs: tests
     env:
-      APPIMAGE_DST_PATH: $GITHUB_WORKSPACE/${TARGET_NAME}.AppDir
+      APPIMAGE_DST_PATH: $GITHUB_WORKSPACE/${{TARGET_NAME}}.AppDir
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx}}
 
@@ -311,7 +311,7 @@ jobs:
             ccache \
             cppcheck
 
-      - name: "⚙️ Install Qt"
+      - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v2
         with:
           version: ${{ env.QT_VERSION }}
@@ -364,9 +364,6 @@ jobs:
           cd $GITHUB_WORKSPACE
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
-          cp \
-            $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png \
-            ${APPIMAGE_DST_PATH}/
           if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then
             rm ${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0
           fi
@@ -494,6 +491,7 @@ jobs:
       - name: "📦 Package application (macdeployqt and zipfile)"
         working-directory: ${{runner.workspace}}/build
         run: |
+          ls 
           macdeployqt ./app/${{env.TARGET_NAME}}.app -qmldir=. -appstore-compliant -libpath=./app/${{env.TARGET_NAME}}.app/Contents/Frameworks -verbose=1 -dmg
           cp ./app/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
           # ZIP application "%AppName%-%Version%-macOS.zip"
@@ -580,12 +578,12 @@ jobs:
         run: |
           cinst ninja ccache
 
-      - name: "⚙️ Configure MSVC"
-        uses: ilammy/msvc-dev-cmd@v1.10.0
-        with:
-          # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
-          toolset: 14.2
-          arch: ${{ matrix.pak_arch }}
+      # - name: "⚙️ Configure MSVC"
+      #   uses: ilammy/msvc-dev-cmd@v1.10.0
+      #   with:
+      #     # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
+      #     toolset: 14.2
+      #     arch: ${{ matrix.pak_arch }}
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2

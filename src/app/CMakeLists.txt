@@ -81,7 +81,7 @@ if(UNIX AND NOT APPLE)
 
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
                  ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.desktop
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 
   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"

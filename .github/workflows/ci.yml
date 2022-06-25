@@ -526,8 +526,8 @@ jobs:
           - OFF
         qt_arch:
           - win64_msvc2019_64
-        arch:
-          - x64
+        # arch:
+        #  - x64
         pak_arch:
           - win64
         cc:
@@ -574,20 +574,6 @@ jobs:
           if [ -f ./.github/workflows/requirements.txt ]; then
             pip install -r ./.github/workflows/requirements.txt;
           fi
-
-      - name: "⚙️ Install Qt"
-        uses: jurplel/install-qt-action@v2
-        with:
-          version: ${{ env.QT_VERSION }}
-          # host: ${{ runner.os }}
-          target: ${{ env.QT_TARGET }}
-          arch: ${{ matrix.qt_arch }}
-          install-deps: "true"
-          # modules: 'qtcharts qtwebengine'
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
-          setup-python: "true"
-          # tools: "tools_ifw"
-          set-env: "true"
 
       - name: Install Windows deps
         if: runner.os ==  'Windows'

@@ -30,7 +30,7 @@ on:
 
 env:
   # Target
-  TARGET_NAME: qt_conan_boilerplate
+  TARGET_NAME: qt_conan_boilerplate_template
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
@@ -57,51 +57,15 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macos-11
-        # compiler:
-        # you can specify the version after `-` like "llvm-13.0.0".
-        # - llvm-13.0.0
-        # - gcc-11
 
         generator:
-          - "Ninja Multi-Config"
+          - "Ninja"
         build_type:
           - Release
           - Debug
         developer_mode:
           - ON
           - OFF
-
-        include:
-          # Add appropriate variables for gcov version required. This will intentionally break
-          # if you try to use a compiler that does not have gcov set
-          # Set up preferred package generators, for given build configurations
-          - build_type: Release
-            developer_mode: OFF
-            package_generator: TBZ2
-
-          # This exists solely to make sure a non-multiconfig build works
-          - os: ubuntu-20.04
-            compiler: clang
-            generator: "Unix Makefiles"
-            build_type: Debug
-            gcov_executable: gcov
-            developer_mode: ON
-
-          # Windows msvc builds
-          - os: windows-2019
-            compiler: msvc
-            generator: "Visual Studio 16 2019"
-            build_type: Debug
-            qt_arch: "win64_msvc2019_64"
-            developer_mode: On
-
-          - os: windows-2019
-            compiler: msvc
-            generator: "Visual Studio 16 2019"
-            build_type: Release
-            qt_arch: "win64_msvc2019_64"
-            developer_mode: OFF
 
     steps:
       - name: Cancel Previous Runs
@@ -145,26 +109,6 @@ jobs:
             gcovr \
             ccache \
             cppcheck
-
-      - name: Install macOS deps
-        if: runner.os == 'macOS'
-        run: |
-          brew install ninja ccache 
-          ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
-          ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
-          ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
-
-      - name: Install Windows deps
-        if: runner.os ==  'Windows'
-        run: |
-          cinst ninja ccache
-
-      # - name: Install MSVC Windows deps
-      #   if: runner.os == 'Windows'
-      #   uses: ilammy/msvc-dev-cmd@v1
-      #   with:
-      #     arch: amd64
-      #     toolset: 14.29
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
@@ -386,6 +330,12 @@ jobs:
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cmake --build ./build --config ${{matrix.build_type}} --target install
+
+      - name: CPack
+        if: matrix.package_generator != ''
+        working-directory: ./build
+        run: |
+          cpack -C ${{matrix.build_type}} -G ${{matrix.package_generator}}
 
       - name: "⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'

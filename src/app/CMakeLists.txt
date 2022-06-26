@@ -71,10 +71,72 @@ if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(QtWidgetTest)
 endif()
 
-if(UNIX AND NOT APPLE)
-  # appdata
-  include(GNUInstallDirs)
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
+if(WIN32)
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in
+    ${PROJECT_BINARY_DIR}/app.rc @ONLY)
+
+  install(TARGETS QtWidgetTest ${INSTALL_TARGETS_DEFAULT_ARGS})
+  add_custom_command( TARGET QtWidgetTest POST_BUILD COMMAND
+    ${Qt6_DIR}/../../../bin/windeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe
+    --compiler-runtime --verbose 2 --dir ${CMAKE_BINARY_DIR}/winqt/)
+
+  # See
+  # https://cmake.org/cmake/help/v3.15/prop_tgt/MACOSX_BUNDLE_INFO_PLIST.html
+
+elseif(APPLE)
+  set_target_properties(
+    QtWidgetTest PROPERTIES OUTPUT_NAME QtWidgetTest
+                             INSTALL_RPATH "@executable_path/../Frameworks")
+
+  set_property(
+    TARGET QtWidgetTest
+    PROPERTY MACOSX_BUNDLE_INFO_PLIST
+           ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
+
+  # the MacOSX bundle display name property (CFBundleDisplayName) is not
+  # currently supported by cmake, so has to be set for all targets in this cmake
+  # file
+  set(MACOSX_BUNDLE_DISPLAY_NAME QtWidgetTest)
+  set_target_properties(QtWidgetTest PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER
+                                                 "io.github.jmuelbert.QtWidgetTest")
+  set_target_properties(QtWidgetTest PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME
+                                                 "QtWidgetTest")
+  set_target_properties(QtWidgetTest PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME
+                                                 "QtWidgetTest")
+  set_target_properties(
+    QtWidgetTest PROPERTIES MACOSX_BUNDLE_INFO_STRING
+                             "QtWidgetTest - A Test program")
+  set_target_properties(
+    QtWidgetTest PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING
+                             "QtWidgetTest ${PROJECT_VERSION}")
+  set_target_properties(
+    QtWidgetTest PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING
+                             "${PROJECT_VERSION}")
+  set_target_properties(QtWidgetTest PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION
+                                                 "${PROJECT_VERSION}")
+  set_target_properties(QtWidgetTest PROPERTIES MACOSX_BUNDLE_ICON_FILE
+                                                 "${ICONS_SOURCES}")
+  set_target_properties(QtWidgetTest PROPERTIES MACOSX_BUNDLE_COPYRIGHT
+                                                 "2022 Jürgen Mülbert")
+
+  install(
+    TARGETS QtWidgetTest
+    BUNDLE DESTINATION . COMPONENT Runtime
+    RUNTIME DESTINATION bin COMPONENT Runtime)
+
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in
+                 ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json @ONLY)
+
+  add_custom_command(TARGET QtWidgetTest POST_BUILD COMMAND
+    ${Qt6_DIR}/../../../bin/macdeployqt ${CMAKE_BINARY_DIR}/QtWidgetTest.app)
+
+  elseif(UNIX AND NOT APPLE)
+    # appdata
+    include(GNUInstallDirs)
+
+    install(TARGETS QtWidgetTest ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
                  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
@@ -92,7 +154,7 @@ if(UNIX AND NOT APPLE)
     configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
-      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
+      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > QtWidgetTest.1.gz
       COMMENT "Create the bin gz archive"
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1)
     add_custom_target(

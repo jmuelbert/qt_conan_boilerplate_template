@@ -40,10 +40,15 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 
   qt_add_translations(${PROJECT_NAME} TS_FILES ${TS_FILES})
-  qt_add_resources(${PROJECT_NAME} "translations"
-    PREFIX "/i18n"
-    BASE "${CMAKE_CURRENT_BINARY_DIR}"
-    FILES "${qm_files}")
+  qt_add_resources(
+    ${PROJECT_NAME}
+    "translations"
+    PREFIX
+    "/i18n"
+    BASE
+    "${CMAKE_CURRENT_BINARY_DIR}"
+    FILES
+    "${qm_files}")
 else()
   if(ANDROID)
     add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES})
@@ -58,9 +63,9 @@ endif()
 
 # App bundles on macOS have an .app suffix
 if(APPLE)
-    set(executable_path "$<TARGET_FILE_NAME:${PROJECT_NAME}>.app")
+  set(executable_path "$<TARGET_FILE_NAME:${PROJECT_NAME}>.app")
 else()
-    set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
+  set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
 endif()
 
 target_link_libraries(
@@ -88,7 +93,11 @@ endif()
 # The following script must only be executed at install time
 set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
 
-file(GENERATE OUTPUT ${deploy_script} CONTENT "
+file(
+  GENERATE
+  OUTPUT ${deploy_script}
+  CONTENT
+    "
 # Including the file pointed to by QT_DEPLOY_SUPPORT ensures the generated
 # deployment script has access to qt_deploy_runtime_dependencies()
 include(\"${QT_DEPLOY_SUPPORT}\")
@@ -102,11 +111,11 @@ qt_deploy_runtime_dependencies(
 # Omitting RUNTIME DESTINATION will install a non-bundle target to CMAKE_INSTALL_BINDIR,
 # which coincides with the default value of QT_DEPLOY_BIN_DIR used above, './bin'.
 # Installing macOS bundles always requires an explicit BUNDLE DESTINATION option.
-install(TARGETS ${PROJECT_NAME}    # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
-                                   #                           and ./binHelperApp.exe
-        BUNDLE  DESTINATION .      # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
+install(TARGETS ${PROJECT_NAME} # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
+                                #                           and ./binHelperApp.exe
+        BUNDLE DESTINATION . # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
 )
-install(SCRIPT ${deploy_script})    # Add its runtime dependencies
+install(SCRIPT ${deploy_script}) # Add its runtime dependencies
 
 # if(WIN32)
 #   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)

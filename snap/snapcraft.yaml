@@ -1,7 +1,7 @@
 ---
 name: qtcanonboilerplate
-adopt-info: qt_canon_boilerplate
-icon: assets/icons/qt_canon_boilerplate.png
+adopt-info:  qtcanonboilerplate
+icon: assets/icons/icons8-app-symbol-80.png
 
 base: core20
 grade: stable
@@ -12,13 +12,13 @@ architectures:
   - build-on: amd64
     run-on: amd64
 
-summary: A BDE tool.
+summary: A test.
 description: qt_canon_boilerplate is a test app.
 
 version: "0.6.0"
 
 apps:
-  qt_canon_boilerplate:
+   qtcanonboilerplate:
     command: usr/bin/qt_canon_boilerplate
     common-id: com.github.jmuelbert.qt_canon_boilerplate
     extensions:
@@ -30,7 +30,7 @@ apps:
       - wayland
       - x11
 parts:
-  qt_canon_boilerplate:
+   qtcanonboilerplate:
     plugin: cmake
     source: .
     cmake-parameters:

@@ -328,9 +328,16 @@ jobs:
             -DGIT_SHA:STRING=${{ github.sha }}
 
       - name: "⚙️ Build"
+        if: runner.os != 'Linux'
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cmake --build ./build --config ${{matrix.build_type}}
+
+      - name: "⚙️ Build"
+        if: runner.os == 'Linux'
+        # Execute the build.  You can specify a specific target with "--target <NAME>"
+        run: |
+          cmake --build ./build --config ${{matrix.build_type}} --target install
 
       - name: "⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'

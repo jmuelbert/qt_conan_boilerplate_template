@@ -91,14 +91,14 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 if(APPLE OR WIN32)
-# The following script must only be executed at install time
-set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
+  # The following script must only be executed at install time
+  set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
 
-file(
-  GENERATE
-  OUTPUT ${deploy_script}
-  CONTENT
-    "
+  file(
+    GENERATE
+    OUTPUT ${deploy_script}
+    CONTENT
+      "
 # Including the file pointed to by QT_DEPLOY_SUPPORT ensures the generated
 # deployment script has access to qt_deploy_runtime_dependencies()
 include(\"${QT_DEPLOY_SUPPORT}\")
@@ -109,101 +109,101 @@ qt_deploy_runtime_dependencies(
     VERBOSE
 )")
 
-# Omitting RUNTIME DESTINATION will install a non-bundle target to CMAKE_INSTALL_BINDIR,
-# which coincides with the default value of QT_DEPLOY_BIN_DIR used above, './bin'.
-# Installing macOS bundles always requires an explicit BUNDLE DESTINATION option.
-install(TARGETS ${PROJECT_NAME} # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
-                                #                           and ./binHelperApp.exe
-        BUNDLE DESTINATION . # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
-)
-install(SCRIPT ${deploy_script}) # Add its runtime dependencies
+  # Omitting RUNTIME DESTINATION will install a non-bundle target to CMAKE_INSTALL_BINDIR,
+  # which coincides with the default value of QT_DEPLOY_BIN_DIR used above, './bin'.
+  # Installing macOS bundles always requires an explicit BUNDLE DESTINATION option.
+  install(TARGETS ${PROJECT_NAME} # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
+                                  #                           and ./binHelperApp.exe
+          BUNDLE DESTINATION . # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
+  )
+  install(SCRIPT ${deploy_script}) # Add its runtime dependencies
 
-# if(WIN32)
-#   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
+  # if(WIN32)
+  #   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
 
-#   install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
+  #   install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-#   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-#     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}")
+  #   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+  #     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}")
 
-#   add_custom_command(
-#     TARGET ${PROJECT_NAME}
-#     POST_BUILD
-#     COMMAND ${Qt6_DIR}/../../../bin/windeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe --compiler-runtime --verbose 2
-#             --dir ${CMAKE_BINARY_DIR}/winqt/)
+  #   add_custom_command(
+  #     TARGET ${PROJECT_NAME}
+  #     POST_BUILD
+  #     COMMAND ${Qt6_DIR}/../../../bin/windeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe --compiler-runtime --verbose 2
+  #             --dir ${CMAKE_BINARY_DIR}/winqt/)
 
-#   # See
-#   # https://cmake.org/cmake/help/v3.15/prop_tgt/MACOSX_BUNDLE_INFO_PLIST.html
+  #   # See
+  #   # https://cmake.org/cmake/help/v3.15/prop_tgt/MACOSX_BUNDLE_INFO_PLIST.html
 
-# elseif(APPLE)
-#   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME} INSTALL_RPATH
-#                                                                                "@executable_path/../Frameworks")
+  # elseif(APPLE)
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME} INSTALL_RPATH
+  #                                                                                "@executable_path/../Frameworks")
 
-#   set_property(TARGET ${PROJECT_NAME} PROPERTY MACOSX_BUNDLE_INFO_PLIST
-#                                                ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
+  #   set_property(TARGET ${PROJECT_NAME} PROPERTY MACOSX_BUNDLE_INFO_PLIST
+  #                                                ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
 
-#   # the MacOSX bundle display name property (CFBundleDisplayName) is not
-#   # currently supported by cmake, so has to be set for all targets in this cmake
-#   # file
-#   set(MACOSX_BUNDLE_DISPLAY_NAME ${PROJECT_NAME})
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${PROJECT_NAME}")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${PROJECT_NAME}")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME} - A Test program")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING
-#                                                    "${PROJECT_NAME} ${PROJECT_VERSION}")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "${ICONS_SOURCES}")
-#   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2022 Jürgen Mülbert")
+  #   # the MacOSX bundle display name property (CFBundleDisplayName) is not
+  #   # currently supported by cmake, so has to be set for all targets in this cmake
+  #   # file
+  #   set(MACOSX_BUNDLE_DISPLAY_NAME ${PROJECT_NAME})
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${PROJECT_NAME}")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${PROJECT_NAME}")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME} - A Test program")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING
+  #                                                    "${PROJECT_NAME} ${PROJECT_VERSION}")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "${ICONS_SOURCES}")
+  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2022 Jürgen Mülbert")
 
-#   install(
-#     TARGETS ${PROJECT_NAME}
-#     BUNDLE DESTINATION . COMPONENT Runtime
-#     RUNTIME DESTINATION bin COMPONENT Runtime)
+  #   install(
+  #     TARGETS ${PROJECT_NAME}
+  #     BUNDLE DESTINATION . COMPONENT Runtime
+  #     RUNTIME DESTINATION bin COMPONENT Runtime)
 
-#   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-#       DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}")
+  #   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+  #       DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}")
 
-#   install(FILES ${qm_files} DESTINATION "translations")
+  #   install(FILES ${qm_files} DESTINATION "translations")
 
-#   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json
-#                  @ONLY)
+  #   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json
+  #                  @ONLY)
 
-#   # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND
-#   #   ${Qt6_DIR}/../../../bin/macdeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.app)
+  #   # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND
+  #   #   ${Qt6_DIR}/../../../bin/macdeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.app)
 
 elseif(UNIX AND NOT APPLE)
-   # appdata
-   # GNUInstallDirs is called from qt_standard_settings()
+  # appdata
+  # GNUInstallDirs is called from qt_standard_settings()
 
-   install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
+  install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
-   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
-           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
+                 ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
+          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
 
-   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY)
-   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
-           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
+                 ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
+          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 
-   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}")
-   # man page
-   find_program(GZIP gzip)
-   if(GZIP)
-     configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
-     add_custom_command(
-       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
-       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
-       COMMENT "Create the bin gz archive"
-       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1)
-     add_custom_target(
-       man ALL
-       COMMENT "Create man-file"
-       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
-     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
-   endif()
- endif()
+  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}")
+  # man page
+  find_program(GZIP gzip)
+  if(GZIP)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
+    add_custom_command(
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
+      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
+      COMMENT "Create the bin gz archive"
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1)
+    add_custom_target(
+      man ALL
+      COMMENT "Create man-file"
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
+  endif()
+endif()

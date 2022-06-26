@@ -357,7 +357,7 @@ jobs:
         run: |
           APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
           cd $GITHUB_WORKSPACE
-          ls 
+          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
           if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then
@@ -400,14 +400,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.dmg
-          path: ${{runner.workspace}}/${{ env.TARGET_NAME }}.dmg
+          path: build/${{ env.TARGET_NAME }}*.dmg
 
       - name: Upload zip artifact for macOS - ${{ matrix.qt_version }}-${env.BUILD_TYPE}}
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}-macos.zip
-          path: ${{runner.workspace}}/${{ env.TARGET_NAME }}*.zip
+          path: build/${{ env.TARGET_NAME }}*.bz2
 
       - name: Compress Zip Archive
         if: runner.os ==  'Windows'

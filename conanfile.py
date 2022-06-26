@@ -96,7 +96,7 @@ class QtTestConan(ConanFile):
             self.requires("qt/6.3.0")
 
     def build_requirements(self):
-
+        self.requires("extra-cmake-modules/5.93.0")
         if self.options.build_docs:
             self.tool_requires("doxygen/1.9.4")
 

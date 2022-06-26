@@ -85,6 +85,7 @@ if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(${PROJECT_NAME})
 endif()
 
+if(APPLE OR WIN32)
 # The following script must only be executed at install time
 set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
 
@@ -163,37 +164,37 @@ install(SCRIPT ${deploy_script})    # Add its runtime dependencies
 #   # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND
 #   #   ${Qt6_DIR}/../../../bin/macdeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.app)
 
-# elseif(UNIX AND NOT APPLE)
-#   # appdata
-#   # GNUInstallDirs is called from qt_standard_settings()
+elseif(UNIX AND NOT APPLE)
+   # appdata
+   # GNUInstallDirs is called from qt_standard_settings()
 
-#   install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
+   install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-#   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
-#                  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
-#   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
-#           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
+   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
+   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
+           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
 
-#   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
-#                  ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY)
-#   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
-#           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY)
+   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
+           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 
-#   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-#           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}")
-#   # man page
-#   find_program(GZIP gzip)
-#   if(GZIP)
-#     configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
-#     add_custom_command(
-#       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
-#       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
-#       COMMENT "Create the bin gz archive"
-#       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1)
-#     add_custom_target(
-#       man ALL
-#       COMMENT "Create man-file"
-#       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
-#     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
-#   endif()
-# endif()
+   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}")
+   # man page
+   find_program(GZIP gzip)
+   if(GZIP)
+     configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
+     add_custom_command(
+       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
+       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
+       COMMENT "Create the bin gz archive"
+       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1)
+     add_custom_target(
+       man ALL
+       COMMENT "Create man-file"
+       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
+     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
+   endif()
+ endif()

@@ -332,11 +332,6 @@ jobs:
         run: |
           cmake --build ./build --config ${{matrix.build_type}} --target install
 
-      - name: CPack
-        working-directory: ./build
-        run: |
-          cpack -C ${{matrix.build_type}} -G ${{matrix.package_generator}}
-
       - name: "⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'
         # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
@@ -376,18 +371,20 @@ jobs:
       - name: "📦 Package application (macdeployqt and zipfile)"
         if: runner.os == 'macOS'
         run: |
+          cpack -C Release -G TBZ2
+          cpack -C Release -G DragNDrop
           ls
           APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
-          cd $GITHUB_WORKSPACE
-          macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
-              -qmldir=. \
-              -appstore-compliant \
-              -libpath=${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app/Contents/Frameworks \
-              -verbose=1 -dmg
-          cp ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
-          # ZIP application "%AppName%-%Version%-macOS.zip"
-          ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip
-          cp ./${{env.TARGET_NAME}}.zip ${{runner.workspace}}/${{env.TARGET_NAME}}.zip
+          # cd $GITHUB_WORKSPACE
+          # macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
+          #     -qmldir=. \
+          #     -appstore-compliant \
+          #     -libpath=${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app/Contents/Frameworks \
+          #     -verbose=1 -dmg
+          # cp ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
+          # # ZIP application "%AppName%-%Version%-macOS.zip"
+          # ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip
+          # cp ./${{env.TARGET_NAME}}.zip ${{runner.workspace}}/${{env.TARGET_NAME}}.zip
 
       - name: Upload dmg artifact for macOS - ${{ matrix.qt_version }}
         if: runner.os == 'macOS'

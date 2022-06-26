@@ -127,8 +127,8 @@ elseif(APPLE)
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in
                  ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json @ONLY)
 
-  add_custom_command(TARGET QtWidgetTest POST_BUILD COMMAND
-    ${Qt6_DIR}/../../../bin/macdeployqt ${CMAKE_BINARY_DIR}/QtWidgetTest.app)
+  # add_custom_command(TARGET QtWidgetTest POST_BUILD COMMAND
+  #   ${Qt6_DIR}/../../../bin/macdeployqt ${CMAKE_BINARY_DIR}/QtWidgetTest.app)
 
   elseif(UNIX AND NOT APPLE)
     # appdata
@@ -147,7 +147,7 @@ elseif(APPLE)
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 
   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}.png")
+          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}")
   # man page
   find_program(GZIP gzip)
   if(GZIP)

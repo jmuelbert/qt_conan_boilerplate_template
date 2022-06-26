@@ -84,10 +84,11 @@ if(WIN32)
   # https://cmake.org/cmake/help/v3.15/prop_tgt/MACOSX_BUNDLE_INFO_PLIST.html
 
 elseif(APPLE)
-  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME} INSTALL_RPATH "@executable_path/../Frameworks")
+  set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME} INSTALL_RPATH
+                                                                               "@executable_path/../Frameworks")
 
   set_property(TARGET ${PROJECT_NAME} PROPERTY MACOSX_BUNDLE_INFO_PLIST
-                                            ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
+                                               ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
 
   # the MacOSX bundle display name property (CFBundleDisplayName) is not
   # currently supported by cmake, so has to be set for all targets in this cmake
@@ -97,7 +98,8 @@ elseif(APPLE)
   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${PROJECT_NAME}")
   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME} - A Test program")
-  set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING "${PROJECT_NAME} ${PROJECT_VERSION}")
+  set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING
+                                                   "${PROJECT_NAME} ${PROJECT_VERSION}")
   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "${ICONS_SOURCES}")

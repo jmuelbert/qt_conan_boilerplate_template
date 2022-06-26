@@ -1,7 +1,7 @@
 ---
-name: qt_canon_boilserplate
-adopt-info: qt_canon_boilserplate
-icon: assets/icons/qt_canon_boilserplate.png
+name: qtcanonboilerplate
+adopt-info: qt_canon_boilerplate
+icon: assets/icons/qt_canon_boilerplate.png
 
 base: core20
 grade: stable
@@ -13,14 +13,14 @@ architectures:
     run-on: amd64
 
 summary: A BDE tool.
-description: qt_canon_boilserplate is a free bde tool.
+description: qt_canon_boilerplate is a test app.
 
 version: "0.6.0"
 
 apps:
-  qt_canon_boilserplate:
-    command: usr/bin/qt_canon_boilserplate
-    common-id: com.github.jmuelbert.qt_canon_boilserplate
+  qt_canon_boilerplate:
+    command: usr/bin/qt_canon_boilerplate
+    common-id: com.github.jmuelbert.qt_canon_boilerplate
     extensions:
       - kde-neon
     plugs:
@@ -30,7 +30,7 @@ apps:
       - wayland
       - x11
 parts:
-  qt_canon_boilserplate:
+  qt_canon_boilerplate:
     plugin: cmake
     source: .
     cmake-parameters:
@@ -62,7 +62,7 @@ parts:
   extra-cmake-modules:
     source: https://github.com/KDE/extra-cmake-modules.git
     source-depth: 1
-    source-tag: v5.77.0
+    source-tag: v5.93.0
     plugin: cmake
     cmake-parameters:
       - -DCMAKE_BUILD_TYPE=Release

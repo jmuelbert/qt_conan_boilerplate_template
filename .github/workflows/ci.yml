@@ -330,7 +330,7 @@ jobs:
       - name: "⚙️ Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}} --target install
+          cmake --build ./build --config ${{matrix.build_type}}
 
       - name: "⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'
@@ -371,10 +371,12 @@ jobs:
       - name: "📦 Package application (macdeployqt and zipfile)"
         if: runner.os == 'macOS'
         run: |
+          cd build
+          ls
           cpack -C Release -G TBZ2
           cpack -C Release -G DragNDrop
-          ls
-          APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
+
+          # APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
           # cd $GITHUB_WORKSPACE
           # macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
           #     -qmldir=. \

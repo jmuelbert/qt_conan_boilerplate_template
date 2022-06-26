@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Exec=jmbde %F
-Name=jmbde
+Exec=qt_conan_boilerplate_template %F
+Name=qt_conan_boilerplate_template
 GenericName=Company Collector
 Comment=application to collect data in a company
-Icon=jmbde
+Icon=icons8-app-symbol-80
 Terminal=false
 Categories=X-Tool;X-Business;X-Qt;

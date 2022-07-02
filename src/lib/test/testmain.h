@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QtTest>
 
-#include "MyClass.h"
+#include "myclass/MyClass.h"
 
 class Foo : public QObject
 {

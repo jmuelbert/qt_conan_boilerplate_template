@@ -73,12 +73,12 @@ class QtTestConan(ConanFile):
         else:
             return int(f"{compiler.version}0")
 
-    def set_version(self):
-        content = load(self, os.path.join(self.recipe_folder, "CMakeLists.txt"))
-        version = re.search(
-            r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content
-        ).group(1)
-        self.version = version.strip()
+    # def set_version(self):
+    #     content = load(self, os.path.join(self.recipe_folder, "CMakeLists.txt"))
+    #     version = re.search(
+    #         r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content
+    #     ).group(1)
+    #     self.version = version.strip()
 
     def config_options(self):
         if self.settings.os == "Windows":

@@ -1,4 +1,29 @@
-cmake_minimum_required(VERSION 3.15...3.23)
+cmake_minimum_required(VERSION 3.15...3.23 FATAL_ERROR)
+
+# Meta information about the project
+
+set(META_PROJECT_NAME "qtconanboilerplate")
+
+# Declare project
+project("${META_PROJECT_NAME}-tests" C CXX)
+
+# Set policies
+set_policy(CMP0054 NEW) # ENABLE CMP0054: Only interpret if() arguments as variables or keywords when unquoted.
+set_policy(CMP0042 NEW) # ENABLE CMP0042: MACOSX_RPATH is enabled by default.
+set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all target types.
+
+# Compiler settings and options
+
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/CompileOptions.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/Custom.cmake)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+else()
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+endif()
+
 
 find_package(
   Qt6
@@ -23,38 +48,12 @@ if(WIN32)
   target_link_options(testMain PRIVATE "/entry:mainCRTStartup")
 endif()
 
-add_test(NAME testMain COMMAND testMain)
-
-if(WIN32 OR APPLE)
-  set_tests_properties(testMain PROPERTIES ENVIRONMENT "PATH=${CONAN_BIN_DIRS_QT}\;$ENV{PATH}")
-endif()
-
 target_link_libraries(
   testMain
   PRIVATE Qt6::Test
-          MyLib::MyLib
-          myproject::project_options
-          myproject::project_warnings)
+  ${META_PROJECT_NAME}::myclass
+)
 
 qt_finalize_executable(testMain)
 
-if(APPLE)
-  # Since there appear to exist problems with NOT setting the RPATH when building
-  # by enabling CMAKE_KEEP_RPATH and others, we just set the libs absolute paths
-  # to the conan lib dir.
-
-  function(
-    ChangeRPath
-    target
-    file
-    new)
-    add_custom_command(
-      TARGET testMain
-      POST_BUILD
-      COMMAND ${CMAKE_INSTALL_NAME_TOOL} -change @rpath/${file} ${new}/${file} $<TARGET_FILE:testMain>)
-  endfunction()
-
-  foreach(qt_lib IN LISTS CONAN_LIBS_QT)
-    changerpath(testMain lib${qt_lib}.6.dylib ${CONAN_LIB_DIRS_QT})
-  endforeach()
-endif()
+add_test(NAME testMain COMMAND testMain)

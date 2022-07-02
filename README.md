@@ -9,25 +9,18 @@
 
 ## About qt_conan_boilerplate_template
 
-This is a C++ Best Practices GitHub template for getting up and running with C++ quickly.
-
-By default (collectively known as `ENABLE_DEVELOPER_MODE`)
-
- * Address Sanitizer and Undefined Behavior Sanitizer enabled where possible
- * Warnings as errors
- * clang-tidy and cppcheck static analysis
- * conan for dependencies
+This is a qt_conan_boilerplate_template GitHub template for getting up and running with C++ quickly.
 
 It includes
 
- * examples for fuzz, unit, and constexpr testing
- * large github action testing matrix
+* examples for fuzz, unit, and constexpr testing
+* large github action testing matrix
 
 It requires
 
- * cmake
- * conan
- * a compiler
+* cmake
+* conan
+* a compiler
 
 For a simplified project, check out the [qt_conan_boilerplate_template](https://github.com/jmuelbert/qt_conan_boilerplate_template).
 
@@ -48,16 +41,7 @@ setting up your project and committed the changes.
 
 Now you can clone the project locally and get to work!
 
-    git clone https://github.com/<user>/<your_new_repo>.git
-
-
-
-## More Details
-
- * [Dependency Setup](README_dependencies.md)
- * [Building Details](README_building.md)
- * [Troubleshooting](README_troubleshooting.md)
- * [Docker](README_docker.md)
+    git clone https://github.com/jmuelbert/qt_conan_boilerplate_template.git
 
 ## Testing
 

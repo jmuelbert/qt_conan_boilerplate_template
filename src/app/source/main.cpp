@@ -9,17 +9,14 @@
 #include <QLocale>
 #include <QTranslator>
 
-// This file will be generated automatically when you run the CMake configuration step.
-// It creates a namespace called `myproject`.
-// You can modify the source template at `configured_files/config.hpp.in`.
-#include <internal_use_only/config.hpp>
+#include "qtwidgettest/mainwindow.h"
 
-#include "mainwindow.h"
+#include "qtconanboilerplate/qtconanboilerplate-version.h"
 
 int main(int argc, char *argv[])
 {
   try {
-    CLI::App cliApp{ fmt::format("{} version {}", myproject::cmake::project_name, myproject::cmake::project_version) };
+    CLI::App cliApp{ fmt::format("{} version {}", QTCONANBOILERPLATE_PROJECT_NAME, QTCONANBOILERPLATE_VERSION) };
 
     std::optional<std::string> message;
     cliApp.add_option("-m,--message", message, "A message to print back out");
@@ -29,7 +26,7 @@ int main(int argc, char *argv[])
     CLI11_PARSE(cliApp, argc, argv);
 
     if (show_version) {
-      fmt::print("{}\n", myproject::cmake::project_version);
+      fmt::print("{}\n", QTCONANBOILERPLATE_VERSION);
       return EXIT_SUCCESS;
     }
 

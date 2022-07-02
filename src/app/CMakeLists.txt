@@ -1,9 +1,55 @@
-cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# 
+# External dependencies
+# 
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# find_package(THIRDPARTY REQUIRED)
+
+
+# 
+# Library name and options
+# 
+
+# Target name
+set(target qtwidgettest)
+
+# Exit here if required dependencies are not met
+message(STATUS "App ${target}")
+
+# Set API export file and macro
+string(MAKE_C_IDENTIFIER ${target} target_id)
+string(TOUPPER ${target_id} target_id)
+set(feature_file         "include/${target}/${target}_features.h")
+set(export_file          "include/${target}/${target}_export.h")
+set(template_export_file "include/${target}/${target}_api.h")
+set(export_macro         "${target_id}_API")
+
+# 
+# Sources
+# 
+
+set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${target}")
+set(source_path  "${CMAKE_CURRENT_SOURCE_DIR}/source")
+
+set(headers
+    ${include_path}/mainwindow.h
+)
+
+set(sources
+    ${source_path}/main.cpp
+    ${source_path}/mainwindow.cpp
+    ${source_path}/mainwindow.ui
+)
+
+set(TS_FILES translations/QtWidgetTest_de_DE.ts)
+
+# Group source files
+set(header_group "Header Files (API)")
+set(source_group "Source Files")
+source_group_by_path(${include_path} "\\\\.h$|\\\\.hpp$" 
+    ${header_group} ${headers})
+source_group_by_path(${source_path}  "\\\\.cpp$|\\\\.c$|\\\\.h$|\\\\.hpp$" 
+    ${source_group} ${sources})
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -23,25 +69,22 @@ find_package(
 
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
-set(TS_FILES QtWidgetTest_de_DE.ts)
 
-set(PROJECT_SOURCES
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
-    mainwindow.ui)
+# 
+# Create app
+# 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_standard_project_setup()
-  qt_add_executable(${PROJECT_NAME} MANUAL_FINALIZATION ${PROJECT_SOURCES})
+  qt_add_executable(${target} MANUAL_FINALIZATION  ${sources} ${headers})
   # Define target properties for Android with Qt 6 as:
-  #    set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+  #    set_property(TARGET ${target} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
   #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
   # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 
-  qt_add_translations(${PROJECT_NAME} TS_FILES ${TS_FILES})
+  qt_add_translations(${target}  TS_FILES ${TS_FILES})
   qt_add_resources(
-    ${PROJECT_NAME}
+    ${target} 
     "translations"
     PREFIX
     "/i18n"
@@ -51,159 +94,165 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     "${qm_files}")
 else()
   if(ANDROID)
-    add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES})
+    add_library(${target}  SHARED ${sources} ${headers})
     # Define properties for Android with Qt 5 after find_package() calls as:
     #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
   else()
-    add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+    add_executable(${target}${sources} ${headers})
   endif()
 
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-# App bundles on macOS have an .app suffix
-if(APPLE)
-  set(executable_path "$<TARGET_FILE_NAME:${PROJECT_NAME}>.app")
+# Create feature detection header
+# Compilers: https://cmake.org/cmake/help/v3.1/variable/CMAKE_LANG_COMPILER_ID.html#variable:CMAKE_%3CLANG%3E_COMPILER_ID
+# Feature: https://cmake.org/cmake/help/v3.1/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html
+
+# Check for availability of module; use pre-generated version if not found
+if (WriterCompilerDetectionHeaderFound)
+    write_compiler_detection_header(
+        FILE ${feature_file}
+        PREFIX ${target_id}
+        COMPILERS AppleClang Clang GNU MSVC
+        FEATURES cxx_alignas cxx_alignof cxx_constexpr cxx_final cxx_noexcept cxx_nullptr cxx_sizeof_member cxx_thread_local
+        VERSION 3.2
+    )
 else()
-  set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${PROJECT_NAME}>")
+    file(
+        COPY ${PROJECT_SOURCE_DIR}/src/codegeneration/${target}_features.h
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
+        USE_SOURCE_PERMISSIONS
+    )
 endif()
 
-target_link_libraries(
-  ${PROJECT_NAME}
-  PUBLIC project_options project_warnings
-  PRIVATE CLI11::CLI11
-          fmt::fmt
-          spdlog::spdlog
-          Qt${QT_VERSION_MAJOR}::Widgets)
 
-set_target_properties(
-  ${PROJECT_NAME}
-  PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-             MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-             MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-             MACOSX_BUNDLE TRUE
-             WIN32_EXECUTABLE TRUE)
 
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
+# 
+# Project options
+# 
+
+set_target_properties(${target}
+    PROPERTIES
+    ${DEFAULT_PROJECT_OPTIONS}
+    INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}"
+    FOLDER "${IDE_FOLDER}"
+    VERSION "${META_VERSION}"
+    SOVERSION "${META_VERSION_MAJOR}"
+)
+
+
+# 
+# Include directories
+# 
+
+target_include_directories(${target}
+    PRIVATE
+    ${PROJECT_BINARY_DIR}/src/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+
+    PUBLIC
+    ${DEFAULT_INCLUDE_DIRECTORIES}
+
+    INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+
+# 
+# Libraries
+# 
+
+target_link_libraries(${target}
+    PRIVATE
+
+    PUBLIC
+    ${DEFAULT_LIBRARIES}
+
+    INTERFACE
+)
+
+
+# 
+# Compile definitions
+# 
+
+target_compile_definitions(${target}
+    PRIVATE
+
+    PUBLIC
+    $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_id}_STATIC_DEFINE>
+    ${DEFAULT_COMPILE_DEFINITIONS}
+
+    INTERFACE
+)
+
+
+# 
+# Compile options
+# 
+
+target_compile_options(${target}
+    PRIVATE
+
+
+    PUBLIC
+    ${DEFAULT_COMPILE_OPTIONS}
+
+    INTERFACE
+)
+
+
+# 
+# Linker options
+# 
+
+target_link_libraries(${target}
+    PRIVATE
+    CLI11::CLI11
+    fmt::fmt
+    spdlog::spdlog
+    Qt${QT_VERSION_MAJOR}::Widgets
+    
+    PUBLIC
+    ${DEFAULT_LINKER_OPTIONS}
+
+    INTERFACE
+)
+
 
 if(QT_VERSION_MAJOR EQUAL 6)
-  qt_finalize_executable(${PROJECT_NAME})
+  qt_finalize_executable(${target})
 endif()
 
-if(APPLE OR WIN32)
-  # The following script must only be executed at install time
-  set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
+#
+# Target Health
+#
 
-  file(
-    GENERATE
-    OUTPUT ${deploy_script}
-    CONTENT
-      "
-# Including the file pointed to by QT_DEPLOY_SUPPORT ensures the generated
-# deployment script has access to qt_deploy_runtime_dependencies()
-include(\"${QT_DEPLOY_SUPPORT}\")
-qt_deploy_runtime_dependencies(
-    EXECUTABLE \"${executable_path}\"
-    # ADDITIONAL_EXECUTABLES \"${helper_app_path}\"
-    GENERATE_QT_CONF
-    VERBOSE
-)")
+perform_health_checks(
+    ${target}
+    ${sources}
+    ${headers}
+)
+
+# 
+# Deployment
+# 
+
+# Library
+install(TARGETS ${target}
+    EXPORT  "${target}-export"            COMPONENT dev
+    RUNTIME DESTINATION ${INSTALL_BIN}    COMPONENT runtime
+    LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
+    ARCHIVE DESTINATION ${INSTALL_LIB}    COMPONENT dev
+)
 
   # Omitting RUNTIME DESTINATION will install a non-bundle target to CMAKE_INSTALL_BINDIR,
   # which coincides with the default value of QT_DEPLOY_BIN_DIR used above, './bin'.
   # Installing macOS bundles always requires an explicit BUNDLE DESTINATION option.
-  install(TARGETS ${PROJECT_NAME} # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
+  install(TARGETS ${target} # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
                                   #                           and ./binHelperApp.exe
           BUNDLE DESTINATION . # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
   )
-  install(SCRIPT ${deploy_script}) # Add its runtime dependencies
-
-  # if(WIN32)
-  #   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
-
-  #   install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
-
-  #   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-  #     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}")
-
-  #   add_custom_command(
-  #     TARGET ${PROJECT_NAME}
-  #     POST_BUILD
-  #     COMMAND ${Qt6_DIR}/../../../bin/windeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe --compiler-runtime --verbose 2
-  #             --dir ${CMAKE_BINARY_DIR}/winqt/)
-
-  #   # See
-  #   # https://cmake.org/cmake/help/v3.15/prop_tgt/MACOSX_BUNDLE_INFO_PLIST.html
-
-  # elseif(APPLE)
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME} INSTALL_RPATH
-  #                                                                                "@executable_path/../Frameworks")
-
-  #   set_property(TARGET ${PROJECT_NAME} PROPERTY MACOSX_BUNDLE_INFO_PLIST
-  #                                                ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
-
-  #   # the MacOSX bundle display name property (CFBundleDisplayName) is not
-  #   # currently supported by cmake, so has to be set for all targets in this cmake
-  #   # file
-  #   set(MACOSX_BUNDLE_DISPLAY_NAME ${PROJECT_NAME})
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${PROJECT_NAME}")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${PROJECT_NAME}")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_STRING "${PROJECT_NAME} - A Test program")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_LONG_VERSION_STRING
-  #                                                    "${PROJECT_NAME} ${PROJECT_VERSION}")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "${ICONS_SOURCES}")
-  #   set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_COPYRIGHT "2022 Jürgen Mülbert")
-
-  #   install(
-  #     TARGETS ${PROJECT_NAME}
-  #     BUNDLE DESTINATION . COMPONENT Runtime
-  #     RUNTIME DESTINATION bin COMPONENT Runtime)
-
-  #   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-  #       DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}")
-
-  #   install(FILES ${qm_files} DESTINATION "translations")
-
-  #   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json
-  #                  @ONLY)
-
-  #   # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND
-  #   #   ${Qt6_DIR}/../../../bin/macdeployqt ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.app)
-
-elseif(UNIX AND NOT APPLE)
-  # appdata
-  # GNUInstallDirs is called from qt_standard_settings()
-
-  install(TARGETS ${PROJECT_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
-
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
-                 ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
-          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo")
-
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
-                 ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
-          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
-
-  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-          DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/${PROJECT_NAME}")
-  # man page
-  find_program(GZIP gzip)
-  if(GZIP)
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
-    add_custom_command(
-      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
-      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
-      COMMENT "Create the bin gz archive"
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1)
-    add_custom_target(
-      man ALL
-      COMMENT "Create man-file"
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
-  endif()
-endif()

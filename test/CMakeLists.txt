@@ -23,20 +23,19 @@ include(Catch)
 
 add_library(catch_main OBJECT catch_main.cpp)
 target_link_libraries(catch_main PUBLIC Catch2::Catch2)
-target_link_libraries(catch_main PRIVATE myproject::project_options)
 
 # Provide a simple smoke test to make sure that the CLI works and can display a --help message
-add_test(NAME cli.has_help COMMAND qt_conan_boilerplate_template --help)
+add_test(NAME cli.has_help COMMAND ../Debug/qtwidgettestd --help)
 
 # Provide a test to verify that the version being reported from the application
 # matches the version given to CMake. This will be important once you package
 # your program. Real world shows that this is the kind of simple mistake that is easy
 # to make, but also easy to test for.
-add_test(NAME cli.version_matches COMMAND qt_conan_boilerplate_template --version)
+add_test(NAME cli.version_matches COMMAND ../Debug/qtwidgettestd --version)
 set_tests_properties(cli.version_matches PROPERTIES PASS_REGULAR_EXPRESSION "${PROJECT_VERSION}")
 
 add_executable(tests tests.cpp)
-target_link_libraries(tests PRIVATE myproject::project_warnings myproject::project_options catch_main)
+target_link_libraries(tests PRIVATE catch_main)
 
 # automatically discover tests that are defined in catch based test files you can modify the unittests. Set TEST_PREFIX
 # to whatever you want, or use different for different binaries
@@ -55,7 +54,7 @@ catch_discover_tests(
 
 # Add a file containing a set of constexpr tests
 add_executable(constexpr_tests constexpr_tests.cpp)
-target_link_libraries(constexpr_tests PRIVATE myproject::project_options myproject::project_warnings catch_main)
+target_link_libraries(constexpr_tests PRIVATE catch_main)
 
 catch_discover_tests(
   constexpr_tests
@@ -73,7 +72,7 @@ catch_discover_tests(
 # Disable the constexpr portion of the test, and build again this allows us to have an executable that we can debug when
 # things go wrong with the constexpr testing
 add_executable(relaxed_constexpr_tests constexpr_tests.cpp)
-target_link_libraries(relaxed_constexpr_tests PRIVATE myproject::project_options myproject::project_warnings catch_main)
+target_link_libraries(relaxed_constexpr_tests PRIVATE catch_main)
 target_compile_definitions(relaxed_constexpr_tests PRIVATE -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
 
 catch_discover_tests(

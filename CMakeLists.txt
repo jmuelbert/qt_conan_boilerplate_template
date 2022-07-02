@@ -1,188 +1,231 @@
-cmake_minimum_required(VERSION 3.16...3.23)
+cmake_minimum_required(VERSION 3.16...3.23 FATAL_ERROR)
 
-# Not ideal to use this global variable, but necessary to make sure
-# that tooling and projects use the same version
+#
+# Configure CMake environment
+#
+
 set(CMAKE_CXX_STANDARD 17)
-
-# strongly encouraged to enable this globally to avoid conflicts between
-# -Wpedantic being enabled and -std=c++20 and -std=gnu++20 for example
-# when compiling with PCH enabled
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# set(CMAKE_TOOLCHAIN_FILE ${CMAKE_BINARY_DIR}/generators/conan_toolchain.cmake)
-# Note: by default ENABLE_DEVELOPER_MODE is True
-# This means that all analysis (sanitizers, static analysis)
-# is enabled and all warnings are treated as errors
-# if you want to switch this behavior, change TRUE to FALSE
-set(ENABLE_DEVELOPER_MODE
-    TRUE
-    CACHE BOOL "Enable 'developer mode'")
+# Register general cmake commands
+include(cmake/Custom.cmake)
 
-# Change this to false if you want to disable warnings_as_errors in developer mode
-set(OPT_WARNINGS_AS_ERRORS_DEVELOPER_DEFAULT TRUE)
+# Register general cmake commands
+include(cmake/Custom.cmake)
 
-# Add project_options - v0.22.4
-# https://github.com/cpp-best-practices/project_options
-include(FetchContent)
-FetchContent_Declare(_project_options URL https://github.com/aminya/project_options/archive/refs/tags/v0.22.4.zip)
-FetchContent_MakeAvailable(_project_options)
-include(${_project_options_SOURCE_DIR}/Index.cmake)
+# Set policies
+set_policy(CMP0054 NEW) # ENABLE CMP0054: Only interpret if() arguments as variables or keywords when unquoted.
+set_policy(CMP0042 NEW) # ENABLE CMP0042: MACOSX_RPATH is enabled by default.
+set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all target types.
+set_policy(CMP0077 NEW) # ENABLE CMP0077: option() honors normal variables
 
-# uncomment to enable vcpkg:
-# # Setup vcpkg - should be called before defining project()
-# run_vcpkg()
+# Include cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Set the project name and language
-project(
-  qt_conan_boilerplate_template
-  VERSION 0.0.1
-  DESCRIPTION ""
-  HOMEPAGE_URL "https://github.com/jmuelbert/qt_conan_boilerplate_template"
-  LANGUAGES CXX C)
+include(GenerateExportHeader)
 
-# This variable is set by project() in CMake 3.21+
-string(
-  COMPARE EQUAL
-          "${CMAKE_SOURCE_DIR}"
-          "${PROJECT_SOURCE_DIR}"
-          PROJECT_IS_TOP_LEVEL)
-if(PROJECT_IS_TOP_LEVEL)
-  # Consider the CTest module, which creates targets and options!
-  # Only needed if you want to enable submissions to a CDash server.
-  include(CTest)
+set(WriterCompilerDetectionHeaderFound NOTFOUND)
+# This module is only available with CMake >=3.1, so check whether it could be found
+# BUT in CMake 3.1 this module doesn't recognize AppleClang as compiler, so just use it as of CMake 3.2
+if(${CMAKE_VERSION} VERSION_GREATER "3.2")
+  include(WriteCompilerDetectionHeader OPTIONAL RESULT_VARIABLE WriterCompilerDetectionHeaderFound)
 endif()
 
-set(GIT_SHA
-    "Unknown"
-    CACHE STRING "SHA this build was generated from")
-string(
-  SUBSTRING "${GIT_SHA}"
-            0
-            8
-            GIT_SHORT_SHA)
+# Include custom cmake modules
+include(cmake/Coverage.cmake)
+include(cmake/GenerateTemplateExportHeader.cmake)
+include(cmake/GetGitRevisionDescription.cmake)
+include(cmake/HealthCheck.cmake)
 
-get_property(BUILDING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(BUILDING_MULTI_CONFIG)
-  if(NOT CMAKE_BUILD_TYPE)
-    # Make sure that all supported configuration types have their
-    # associated conan packages available. You can reduce this
-    # list to only the configuration types you use, but only if one
-    # is not forced-set on the command line for VS
-    message(TRACE "Setting up multi-config build types")
-    set(CMAKE_CONFIGURATION_TYPES
-        Debug
-        Release
-        RelWithDebInfo
-        MinSizeRel
-        CACHE STRING "Enabled build types" FORCE)
+#
+# Project description and (meta) information
+#
+
+# Get git revision
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+string(
+  SUBSTRING "${GIT_SHA1}"
+            0
+            12
+            GIT_REV)
+if(NOT GIT_SHA1)
+  set(GIT_REV "0")
+endif()
+
+# Meta information about the project
+set(META_PROJECT_NAME "qtconanboilerplate")
+set(META_PROJECT_DESCRIPTION "CMake QT Conan Boilerplate")
+set(META_AUTHOR_ORGANIZATION "Jürgen Mülbert")
+set(META_AUTHOR_DOMAIN "https://github.comjmuelbert/qt_conan_boilerplate_template/")
+set(META_AUTHOR_MAINTAINER "juergen.muelbert@gmail.com")
+set(META_VERSION_MAJOR "0")
+set(META_VERSION_MINOR "0")
+set(META_VERSION_PATCH "1")
+set(META_VERSION_REVISION "${GIT_REV}")
+set(META_VERSION "${META_VERSION_MAJOR}.${META_VERSION_MINOR}.${META_VERSION_PATCH}")
+set(META_NAME_VERSION "${META_PROJECT_NAME} v${META_VERSION} (${META_VERSION_REVISION})")
+set(META_CMAKE_INIT_SHA "${GIT_REV}")
+
+string(MAKE_C_IDENTIFIER ${META_PROJECT_NAME} META_PROJECT_ID)
+string(TOUPPER ${META_PROJECT_ID} META_PROJECT_ID)
+
+#
+# Project configuration options
+#
+
+# Project options
+option(BUILD_SHARED_LIBS "Build shared instead of static libraries." ON)
+option(OPTION_SELF_CONTAINED "Create a self-contained install with all dependencies." OFF)
+option(OPTION_BUILD_TESTS "Build tests." ON)
+option(OPTION_BUILD_DOCS "Build documentation." OFF)
+option(OPTION_BUILD_EXAMPLES "Build examples." OFF)
+option(OPTION_ENABLE_COVERAGE "Add coverage information." OFF)
+
+#
+# Declare project
+#
+
+# Generate folders for IDE targets (e.g., VisualStudio solutions)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(IDE_FOLDER "")
+
+# Declare project
+project(${META_PROJECT_NAME} C CXX)
+
+# Set output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+
+# Create version file
+file(WRITE "${PROJECT_BINARY_DIR}/VERSION" "${META_NAME_VERSION}")
+
+#
+# Project Health Check Setup
+#
+
+# Add cmake-init template check cmake targets
+add_check_template_target(${META_CMAKE_INIT_SHA})
+
+# Configure health check tools
+enable_cppcheck(ON)
+enable_clang_tidy(ON)
+enable_coverage(${OPTION_ENABLE_COVERAGE})
+
+#
+# Compiler settings and options
+#
+
+include(cmake/CompileOptions.cmake)
+
+#
+# Deployment/installation setup
+#
+
+# Get project name
+set(project ${META_PROJECT_NAME})
+
+# Check for system dir install
+set(SYSTEM_DIR_INSTALL FALSE)
+if("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr" OR "${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")
+  set(SYSTEM_DIR_INSTALL TRUE)
+endif()
+
+# Installation paths
+if(UNIX AND SYSTEM_DIR_INSTALL)
+  # Install into the system (/usr/bin or /usr/local/bin)
+  set(INSTALL_ROOT "share/${project}") # /usr/[local]/share/<project>
+  set(INSTALL_CMAKE "share/${project}/cmake") # /usr/[local]/share/<project>/cmake
+  set(INSTALL_EXAMPLES "share/${project}") # /usr/[local]/share/<project>
+  set(INSTALL_DATA "share/${project}") # /usr/[local]/share/<project>
+  set(INSTALL_BIN "bin") # /usr/[local]/bin
+  set(INSTALL_SHARED "lib") # /usr/[local]/lib
+  set(INSTALL_LIB "lib") # /usr/[local]/lib
+  set(INSTALL_INCLUDE "include") # /usr/[local]/include
+  set(INSTALL_DOC "share/doc/${project}") # /usr/[local]/share/doc/<project>
+  set(INSTALL_SHORTCUTS "share/applications") # /usr/[local]/share/applications
+  set(INSTALL_ICONS "share/pixmaps") # /usr/[local]/share/pixmaps
+  set(INSTALL_INIT "/etc/init") # /etc/init (upstart init scripts)
+else()
+  # Install into local directory
+  set(INSTALL_ROOT ".") # ./
+  set(INSTALL_CMAKE "cmake") # ./cmake
+  set(INSTALL_EXAMPLES ".") # ./
+  set(INSTALL_DATA ".") # ./
+  set(INSTALL_BIN ".") # ./
+  set(INSTALL_SHARED "lib") # ./lib
+  set(INSTALL_LIB "lib") # ./lib
+  set(INSTALL_INCLUDE "include") # ./include
+  set(INSTALL_DOC "doc") # ./doc
+  set(INSTALL_SHORTCUTS "misc") # ./misc
+  set(INSTALL_ICONS "misc") # ./misc
+  set(INSTALL_INIT "misc") # ./misc
+endif()
+
+# Set runtime path
+set(CMAKE_SKIP_BUILD_RPATH FALSE) # Add absolute path to all dependencies for BUILD
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) # Use CMAKE_INSTALL_RPATH for INSTALL
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE) # Do NOT add path to dependencies for INSTALL
+
+if(NOT SYSTEM_DIR_INSTALL)
+  # Find libraries relative to binary
+  if(APPLE)
+    set(EXECUTABLE_INSTALL_RPATH "@loader_path/../../../${INSTALL_LIB}")
+    set(LIBRARY_INSTALL_RPATH "@loader_path/../../../${INSTALL_LIB}")
   else()
-    message(TRACE "User chose a specific build type, so we are using that")
-    set(CMAKE_CONFIGURATION_TYPES
-        ${CMAKE_BUILD_TYPE}
-        CACHE STRING "Enabled build types" FORCE)
+    set(EXECUTABLE_INSTALL_RPATH "$ORIGIN/${INSTALL_LIB}")
+    set(LIBRARY_INSTALL_RPATH "$ORIGIN")
   endif()
 endif()
 
-include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
+#
+# Project modules
+#
 
-# defaulted_project_options sets recommended defaults and provides user and developer
-# modes and full GUI support for choosing options at configure time
-
-# for more flexibility, look into project_options() macro
-
-# Any default can be overridden
-# set(<feature_name>_DEFAULT <value>) - set default for both user and developer modes
-# set(<feature_name>_DEVELOPER_DEFAULT <value>) - set default for developer mode
-# set(<feature_name>_USER_DEFAULT <value>) - set default for user mode
-
-# Initialize project_options variable related to this project
-# This overwrites `project_options` and sets `project_warnings`
-# uncomment the options to enable them:
-dynamic_project_options(
-  # Note: PCH is disabled by default in developer mode because these headers become
-  # globally included and they can mask other errors
-  PCH_HEADERS
-  <vector>
-  <string> # This is a list of headers to pre-compile, here are some common ones
-  # ENABLE_CONAN
-  ENABLE_CLANG_TIDY
-  ENABLE_COVERAGE
-  ENABLE_CPPCHECK
-  # ENABLE_DOXYGEN
-  # CONAN_OPTIONS    # Extra options to pass to conan
-  # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
-  # CLANG_WARNINGS   # Override the defaults for the CLANG warnings
-  # GCC_WARNINGS     # Override the defaults for the GCC warnings
-  CPPCHECK_OPTIONS
-  --enable=style,performance,warning,portability
-  --inline-suppr
-  # We cannot act on a bug/missing feature of cppcheck
-  --suppress=cppcheckError
-  --suppress=internalAstError
-  # if a file does not have an internalAstError, we get an unmatchedSuppression error
-  --suppress=unmatchedSuppression
-  --suppress=passedByValue
-  --suppress=syntaxError
-  --inconclusive)
-
-target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
-# TODO: The INTERFACE library NAMESPACE ALIAS are missing! CK
-add_library(myproject::project_options INTERFACE IMPORTED)
-add_library(myproject::project_warnings INTERFACE IMPORTED)
-
-# configure files based on CMake configuration options
-add_subdirectory(configured_files)
-
-# Adding the src:
 add_subdirectory(src)
+add_subdirectory(docs)
+add_subdirectory(deploy)
 
-# Adding the tests:
-option(ENABLE_TESTING "Enable the tests" ${PROJECT_IS_TOP_LEVEL})
-if(ENABLE_TESTING)
+# Tests
+if(OPTION_BUILD_TESTS)
+  set(IDE_FOLDER "Tests")
   enable_testing()
-  message(AUTHOR_WARNING "Building Tests. Be sure to check out test/constexpr_tests.cpp for constexpr testing")
   add_subdirectory(test)
 endif()
 
-option(ENABLE_FUZZING "Enable the fuzz tests" OFF)
-if(ENABLE_FUZZING)
-  message(AUTHOR_WARNING "Building Fuzz Tests, using fuzzing sanitizer https://www.llvm.org/docs/LibFuzzer.html")
-  add_subdirectory(fuzz_test)
-endif()
+#
+# Deployment (global project files)
+#
 
-# If MSVC is being used, and ASAN is enabled, we need to set the debugger environment
-# so that it behaves well with MSVC's debugger, and we can run the target from visual studio
-if(MSVC)
-  get_all_installable_targets(all_targets)
-  message("all_targets=${all_targets}")
-  set_target_properties(${all_targets} PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
-endif()
+# Install version file
+install(
+  FILES "${PROJECT_BINARY_DIR}/VERSION"
+  DESTINATION ${INSTALL_ROOT}
+  COMPONENT runtime)
 
-# set the startup project for the "play" button in MSVC
-set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT app)
+# Install cmake find script for the project
+install(
+  FILES ${META_PROJECT_NAME}-config.cmake
+  DESTINATION ${INSTALL_ROOT}
+  COMPONENT dev)
 
-if(CMAKE_SKIP_INSTALL_RULES)
-  return()
-elseif(NOT PROJECT_IS_TOP_LEVEL)
-  return()
-endif()
+# Install the project meta files
+install(
+  FILES AUTHORS
+  DESTINATION ${INSTALL_ROOT}
+  COMPONENT runtime)
+install(
+  FILES LICENSE
+  DESTINATION ${INSTALL_ROOT}
+  COMPONENT runtime)
+install(
+  FILES README.md
+  DESTINATION ${INSTALL_ROOT}
+  COMPONENT runtime)
 
-# Add other targets that you want installed here, be default we just package the one executable
-# we know we want to ship
-# package_project(
-#  TARGETS
-#  QtWidgetTest
-#  project_options
-#  project_warnings
-# FIXME: this does not work! CK
-# PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
-# )
-
-# Experience shows that explicit package naming can help make it easier to sort
-# out potential ABI related issues before they start, while helping you
-# track a build to a specific GIT SHA
-set(CPACK_PACKAGE_FILE_NAME
-    "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
-)
-
-include(CPack)
+# Install runtime data
+install(
+  DIRECTORY ${PROJECT_SOURCE_DIR}/data
+  DESTINATION ${INSTALL_DATA}
+  COMPONENT runtime)

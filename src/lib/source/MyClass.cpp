@@ -1,4 +1,4 @@
-#include "MyClass.h"
+#include "myclass/MyClass.h"
 
 namespace mApp {
 

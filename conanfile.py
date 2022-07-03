@@ -88,7 +88,6 @@ class QtTestConan(ConanFile):
         self.options["qt"].qttranslations = True
 
     def requirements(self):
-        self.requires("cli11/2.2.0")
         self.requires("spdlog/1.10.0")
         self.requires("fmt/8.1.1")
         qtDir = get_env("Qt6_Dir")

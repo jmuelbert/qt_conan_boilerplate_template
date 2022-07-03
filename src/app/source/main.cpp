@@ -1,11 +1,12 @@
+#include <QtCore/qcoreapplication.h>
 #include <functional>
 #include <iostream>
 #include <optional>
 
-#include <CLI/CLI.hpp>
 #include <spdlog/spdlog.h>
 
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QLocale>
 #include <QTranslator>
 
@@ -15,34 +16,44 @@
 
 int main(int argc, char *argv[])
 {
-  try {
-    CLI::App cliApp{ fmt::format("{} version {}", QTCONANBOILERPLATE_PROJECT_NAME, QTCONANBOILERPLATE_VERSION) };
+  std::optional<std::string> message;
 
-    std::optional<std::string> message;
-    cliApp.add_option("-m,--message", message, "A message to print back out");
-    bool show_version = false;
-    cliApp.add_flag("--version", show_version, "Show version information");
+  // Use the default logger (stdout, multi-threaded, colored)
+  spdlog::info("Hello, {}!", "World");
 
-    CLI11_PARSE(cliApp, argc, argv);
-
-    if (show_version) {
-      fmt::print("{}\n", QTCONANBOILERPLATE_VERSION);
-      return EXIT_SUCCESS;
-    }
-
-    // Use the default logger (stdout, multi-threaded, colored)
-    spdlog::info("Hello, {}!", "World");
-
-    if (message) {
-      fmt::print("Message: '{}'\n", *message);
-    } else {
-      fmt::print("No Message Provided :(\n");
-    }
-  } catch (const std::exception &e) {
-    spdlog::error("Unhandled exception in main: {}", e.what());
+  if (message) {
+    fmt::print("Message: '{}'\n", *message);
+  } else {
+    fmt::print("No Message Provided :(\n");
   }
 
   QApplication app(argc, argv);
+
+  QCoreApplication::setApplicationName(QTCONANBOILERPLATE_PROJECT_NAME);
+  QCoreApplication::setApplicationVersion(QTCONANBOILERPLATE_VERSION);
+
+  QCommandLineParser parser;
+
+  parser.setApplicationDescription(QTCONANBOILERPLATE_PROJECT_DESCRIPTION);
+  parser.addHelpOption();
+  parser.addVersionOption();
+
+  parser.addPositionalArgument("source", QCoreApplication::translate("main", "Source file to copy."));
+  parser.addPositionalArgument("destination", QCoreApplication::translate("main", "Destination directory."));
+
+  // Process the actual command line arguments given by the user
+  parser.process(app);
+
+  const QCommandLineOption helpOption = parser.addHelpOption();
+  const QCommandLineOption versionOption = parser.addVersionOption();
+
+  // A boolean option with a single name (-p)
+  QCommandLineOption showProgressOption("p", QCoreApplication::translate("main", "Show progress during copy"));
+  parser.addOption(showProgressOption);
+
+  if (parser.isSet(versionOption)) app.exit();
+
+  if (parser.isSet(helpOption)) app.exit();
 
   QTranslator translator;
   const QStringList uiLanguages = QLocale::system().uiLanguages();

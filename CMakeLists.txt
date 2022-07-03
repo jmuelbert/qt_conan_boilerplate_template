@@ -133,35 +133,81 @@ if("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr" OR "${CMAKE_INSTALL_PREFIX}" STREQU
 endif()
 
 # Installation paths
-if(UNIX AND SYSTEM_DIR_INSTALL)
-  # Install into the system (/usr/bin or /usr/local/bin)
-  set(INSTALL_ROOT "share/${project}") # /usr/[local]/share/<project>
-  set(INSTALL_CMAKE "share/${project}/cmake") # /usr/[local]/share/<project>/cmake
-  set(INSTALL_EXAMPLES "share/${project}") # /usr/[local]/share/<project>
-  set(INSTALL_DATA "share/${project}") # /usr/[local]/share/<project>
-  set(INSTALL_BIN "bin") # /usr/[local]/bin
-  set(INSTALL_SHARED "lib") # /usr/[local]/lib
-  set(INSTALL_LIB "lib") # /usr/[local]/lib
-  set(INSTALL_INCLUDE "include") # /usr/[local]/include
-  set(INSTALL_DOC "share/doc/${project}") # /usr/[local]/share/doc/<project>
-  set(INSTALL_SHORTCUTS "share/applications") # /usr/[local]/share/applications
-  set(INSTALL_ICONS "share/pixmaps") # /usr/[local]/share/pixmaps
-  set(INSTALL_INIT "/etc/init") # /etc/init (upstart init scripts)
+if(APPLE)
+  set(BUNDLE_APP_NAME ${target})
+
+  # Make sure default prefix on mac is /Applications, dunnow why but it does not default to it
+  # probably because we do not enabled built in bundle support in the main project
+  string(
+    COMPARE EQUAL
+            "${CMAKE_INSTALL_PREFIX}"
+            "/usr/local"
+            CMP_RESULT)
+  if(CMP_RESULT)
+    set(CMAKE_INSTALL_PREFIX "/Applications")
+  endif()
+
+  set(BUNDLE_INSTALL_DIR ".")
+  set(RESOURCES_INSTALL_DIR "${BUNDLE_INSTALL_DIR}/${BUNDLE_APP_NAME}/Contents/Resources")
+  set(BIN_INSTALL_DIR "${BUNDLE_INSTALL_DIR}/${BUNDLE_APP_NAME}/Contents/MacOS")
+  set(LIB_INSTALL_DIR "${BUNDLE_INSTALL_DIR}/${BUNDLE_APP_NAME}/Contents/Frameworks")
+  set(PLUGIN_INSTALL_DIR "${BUNDLE_INSTALL_DIR}/${BUNDLE_APP_NAME}/Contents/PlugIns/${META_PROJECT_NAME}")
+  set(LIBEXEC_INSTALL_DIR "${BIN_INSTALL_DIR}")
+  set(MAN_INSTALL_DIR "${RESOURCES_INSTALL_DIR}/man/man1")
+  set(DOC_INSTALL_DIR "${RESOURCES_INSTALL_DIR}/docs")
+  set(QCH_INSTALL_DIR "${RESOURCES_INSTALL_DIR}/docs")
+  set(TRANSLATION_INSTALL_DIR "${RESOURCES_INSTALL_DIR}/translations")
+  set(INCLUDE_INSTALL_DIR "${RESOURCES_INSTALL_DIR}/include/${META_PROJECT_NAME}")
+  set(CMAKECONFIG_INSTALL_DIR "${RESOURCES_INSTALL_DIR}/cmake/${META_PROJECT_ID}")
+  set(ECM_MKSPECS_INSTALL_DIR "${RESOURCES_INSTALL_DIR}/${ECM_MKSPECS_INSTALL_DIR}")
 else()
-  # Install into local directory
-  set(INSTALL_ROOT ".") # ./
-  set(INSTALL_CMAKE "cmake") # ./cmake
-  set(INSTALL_EXAMPLES ".") # ./
-  set(INSTALL_DATA ".") # ./
-  set(INSTALL_BIN ".") # ./
-  set(INSTALL_SHARED "lib") # ./lib
-  set(INSTALL_LIB "lib") # ./lib
-  set(INSTALL_INCLUDE "include") # ./include
-  set(INSTALL_DOC "doc") # ./doc
-  set(INSTALL_SHORTCUTS "misc") # ./misc
-  set(INSTALL_ICONS "misc") # ./misc
-  set(INSTALL_INIT "misc") # ./misc
+  # Set installation paths
+  # This takes care of installing into "lib64" on distros that use that, for instance,
+  # by setting CMAKE_INSTALL_FULL_LIBDIR.
+  include(GNUInstallDirs)
+
+  set(BIN_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}") # relative, usually "bin"
+  set(LIB_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}") # "lib" or "lib64"
+  set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/${META_PROJECT_NAME}")
+  set(CMAKECONFIG_INSTALL_DIR ${LIB_INSTALL_DIR}/cmake/${META_PROJECT_ID})
+  set(DATAROOTDIR
+      "${CMAKE_INSTALL_DATAROOTDIR}"
+      CACHE PATH "Define install directory for read-only architecture-independent data")
+  set(XDG_APPS_INSTALL_DIR "${DATAROOTDIR}/applications")
+  set(APPDATA_INSTALL_DIR "${DATAROOTDIR}/metainfo")
+  set(ICON_INSTALL_DIR "${DATAROOTDIR}/icons")
+  set(MAN_INSTALL_DIR "${DATAROOTDIR}/man/man1")
+  set(QCH_INSTALL_DIR
+      "${CMAKE_INSTALL_DOCDIR}"
+      CACHE PATH "Install location of Qt Assistant help files.")
+  if(WIN32)
+    set(PLUGIN_INSTALL_DIR "plugins/${META_PROJECT_NAME}")
+    set(LIBEXEC_INSTALL_DIR "${BIN_INSTALL_DIR}")
+    set(DOC_INSTALL_DIR .)
+    set(TRANSLATION_INSTALL_DIR "translations")
+  else()
+    set(PLUGIN_INSTALL_DIR "${LIB_INSTALL_DIR}/${META_PROJECT_NAME}")
+    set(LIBEXEC_INSTALL_DIR "${LIB_INSTALL_DIR}/${META_PROJECT_NAME}/libexec")
+    set(DOC_INSTALL_DIR "${DATAROOTDIR}/doc/${META_PROJECT_NAME}/")
+    set(TRANSLATION_INSTALL_DIR "${DATAROOTDIR}/${META_PROJECT_NAME}/translations")
+  endif()
 endif()
+
+set(INSTALL_TARGETS_DEFAULT_ARGS
+    RUNTIME
+    DESTINATION
+    ${BIN_INSTALL_DIR}
+    LIBRARY
+    DESTINATION
+    ${LIB_INSTALL_DIR}
+    ARCHIVE
+    DESTINATION
+    ${LIB_INSTALL_DIR}
+    COMPONENT
+    Devel
+    BUNDLE
+    DESTINATION
+    ${BUNDLE_INSTALL_DIR})
 
 # Set runtime path
 set(CMAKE_SKIP_BUILD_RPATH FALSE) # Add absolute path to all dependencies for BUILD
@@ -201,31 +247,38 @@ endif()
 # Install version file
 install(
   FILES "${PROJECT_BINARY_DIR}/VERSION"
-  DESTINATION ${INSTALL_ROOT}
+  DESTINATION ${BIN_INSTALL_DIR}
   COMPONENT runtime)
 
 # Install cmake find script for the project
 install(
   FILES ${META_PROJECT_NAME}-config.cmake
-  DESTINATION ${INSTALL_ROOT}
+  DESTINATION ${BIN_INSTALL_DIR}
   COMPONENT dev)
 
 # Install the project meta files
 install(
   FILES AUTHORS
-  DESTINATION ${INSTALL_ROOT}
+  DESTINATION ${BIN_INSTALL_DIR}
   COMPONENT runtime)
 install(
   FILES LICENSE
-  DESTINATION ${INSTALL_ROOT}
+  DESTINATION ${BIN_INSTALL_DIR}
   COMPONENT runtime)
 install(
   FILES README.md
-  DESTINATION ${INSTALL_ROOT}
+  DESTINATION ${BIN_INSTALL_DIR}
   COMPONENT runtime)
 
+if(APPLE)
 # Install runtime data
 install(
   DIRECTORY ${PROJECT_SOURCE_DIR}/data
-  DESTINATION ${INSTALL_DATA}
+  DESTINATION ${RESOURCES_INSTALL_DIR}
   COMPONENT runtime)
+else()
+install(
+  DIRECTORY ${PROJECT_SOURCE_DIR}/data
+  DESTINATION ${APPDATA_INSTALL_DIR}
+  COMPONENT runtime)
+endif()

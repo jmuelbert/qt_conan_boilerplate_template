@@ -73,9 +73,6 @@ target_sources(${target} PRIVATE ${sources} ${headers} ${MOC_SOURCE_FILES})
 
 
 
-
-
-
 # Export library for downstream projects
 export(TARGETS ${target} NAMESPACE ${META_PROJECT_NAME}:: FILE ${PROJECT_BINARY_DIR}/cmake/${target}/${target}-export.cmake)
 
@@ -223,20 +220,20 @@ perform_health_checks(
 # Library
 install(TARGETS ${target}
     EXPORT  "${target}-export"            COMPONENT dev
-    RUNTIME DESTINATION ${INSTALL_BIN}    COMPONENT runtime
-    LIBRARY DESTINATION ${INSTALL_SHARED} COMPONENT runtime
-    ARCHIVE DESTINATION ${INSTALL_LIB}    COMPONENT dev
+    RUNTIME DESTINATION ${BIN_INSTALL_DIR}    COMPONENT runtime
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR} COMPONENT runtime
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}    COMPONENT dev
 )
 
 # Header files
 install(DIRECTORY
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${target} DESTINATION ${INSTALL_INCLUDE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${target} DESTINATION ${INCLUDE_INSTALL_DIR}
     COMPONENT dev
 )
 
 # Generated header files
 install(DIRECTORY
-    ${CMAKE_CURRENT_BINARY_DIR}/include/${target} DESTINATION ${INSTALL_INCLUDE}
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${target} DESTINATION ${INCLUDE_INSTALL_DIR}
     COMPONENT dev
 )
 

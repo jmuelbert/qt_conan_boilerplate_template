@@ -1,18 +1,26 @@
 cmake_minimum_required(VERSION 3.15...3.23)
 
-project(CmakeConfigPackageTests LANGUAGES CXX)
+# Meta information about the project
+set(META_PROJECT_NAME "qtwidgettest")
 
-# ---- Test as standalone project the exported config package ----
+# Declare project
+project("${META_PROJECT_NAME}-tests" C CXX)
 
-if(PROJECT_IS_TOP_LEVEL OR TEST_INSTALLED_VERSION)
-  enable_testing()
+# Set policies
+set_policy(CMP0054 NEW) # ENABLE CMP0054: Only interpret if() arguments as variables or keywords when unquoted.
+set_policy(CMP0042 NEW) # ENABLE CMP0042: MACOSX_RPATH is enabled by default.
+set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all target types.
 
-  find_package(myproject CONFIG REQUIRED) # for intro, project_options, ...
+# Compiler settings and options
 
-  if(NOT TARGET myproject::project_options)
-    message(FATAL_ERROR "Required config package not found!")
-    return() # be strictly paranoid for Template Janitor github action! CK
-  endif()
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/CompileOptions.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Custom.cmake)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+else()
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 endif()
 
 # ---- Dependencies ----
@@ -20,19 +28,6 @@ endif()
 find_package(Catch2 CONFIG REQUIRED)
 
 include(Catch)
-
-add_library(catch_main OBJECT catch_main.cpp)
-target_link_libraries(catch_main PUBLIC Catch2::Catch2)
-
-# Provide a simple smoke test to make sure that the CLI works and can display a --help message
-add_test(NAME cli.has_help COMMAND ../Debug/qtwidgettestd --help)
-
-# Provide a test to verify that the version being reported from the application
-# matches the version given to CMake. This will be important once you package
-# your program. Real world shows that this is the kind of simple mistake that is easy
-# to make, but also easy to test for.
-add_test(NAME cli.version_matches COMMAND ../Debug/qtwidgettestd --version)
-set_tests_properties(cli.version_matches PROPERTIES PASS_REGULAR_EXPRESSION "${PROJECT_VERSION}")
 
 add_executable(tests tests.cpp)
 target_link_libraries(tests PRIVATE catch_main)

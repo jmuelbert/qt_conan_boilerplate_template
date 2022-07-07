@@ -200,7 +200,7 @@ target_link_libraries(
 
 target_link_libraries(
   ${target}
-  PRIVATE CLI11::CLI11
+  PRIVATE 
           fmt::fmt
           spdlog::spdlog
           Qt${QT_VERSION_MAJOR}::Widgets

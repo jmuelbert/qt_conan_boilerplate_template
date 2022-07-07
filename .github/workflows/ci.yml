@@ -210,7 +210,7 @@ jobs:
               macos_target: 10.15,
               qt_arch: clang_64,
               arch: clang_64,
-              generator: "Ninja Multi-Config",
+              generator: "Ninja",
               package_generator: TBZ2,
             }
           - {
@@ -221,7 +221,7 @@ jobs:
               qt_arch: win64_msvc2019_64,
               arch: x64,
               pak_arch: win64,
-              generator: "Ninja Multi-Config",
+              generator: "Ninja",
               package_generator: ZIP,
             }
 

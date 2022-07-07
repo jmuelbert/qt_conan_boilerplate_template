@@ -200,10 +200,7 @@ target_link_libraries(
 
 target_link_libraries(
   ${target}
-  PRIVATE 
-          fmt::fmt
-          spdlog::spdlog
-          Qt${QT_VERSION_MAJOR}::Widgets
+  PRIVATE fmt::fmt spdlog::spdlog Qt${QT_VERSION_MAJOR}::Widgets
   PUBLIC ${DEFAULT_LINKER_OPTIONS}
   INTERFACE)
 

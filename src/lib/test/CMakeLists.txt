@@ -14,16 +14,15 @@ set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all ta
 
 # Compiler settings and options
 
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/CompileOptions.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/Custom.cmake)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/CompileOptions.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/Custom.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
 else()
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 endif()
-
 
 find_package(
   Qt6
@@ -48,11 +47,7 @@ if(WIN32)
   target_link_options(testMain PRIVATE "/entry:mainCRTStartup")
 endif()
 
-target_link_libraries(
-  testMain
-  PRIVATE Qt6::Test
-  ${META_PROJECT_NAME}::myclass
-)
+target_link_libraries(testMain PRIVATE Qt6::Test ${META_PROJECT_NAME}::myclass)
 
 qt_finalize_executable(testMain)
 

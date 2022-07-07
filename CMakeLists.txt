@@ -271,14 +271,14 @@ install(
   COMPONENT runtime)
 
 if(APPLE)
-# Install runtime data
-install(
-  DIRECTORY ${PROJECT_SOURCE_DIR}/data
-  DESTINATION ${RESOURCES_INSTALL_DIR}
-  COMPONENT runtime)
+  # Install runtime data
+  install(
+    DIRECTORY ${PROJECT_SOURCE_DIR}/data
+    DESTINATION ${RESOURCES_INSTALL_DIR}
+    COMPONENT runtime)
 else()
-install(
-  DIRECTORY ${PROJECT_SOURCE_DIR}/data
-  DESTINATION ${APPDATA_INSTALL_DIR}
-  COMPONENT runtime)
+  install(
+    DIRECTORY ${PROJECT_SOURCE_DIR}/data
+    DESTINATION ${APPDATA_INSTALL_DIR}
+    COMPONENT runtime)
 endif()

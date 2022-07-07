@@ -4,10 +4,9 @@
 
 # find_package(THIRDPARTY REQUIRED)
 
-
-# 
+#
 # App name and options
-# 
+#
 
 # Target name
 set(target qtwidgettest)
@@ -73,10 +72,12 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_standard_project_setup()
-  qt_add_executable(${target} 
-    WIN32 MACOSX_BUNDLE
-    MANUAL_FINALIZATION  
-    ${sources} 
+  qt_add_executable(
+    ${target}
+    WIN32
+    MACOSX_BUNDLE
+    MANUAL_FINALIZATION
+    ${sources}
     ${headers})
   # Define target properties for Android with Qt 6 as:
   #    set_property(TARGET ${target} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -99,10 +100,7 @@ else()
     # Define properties for Android with Qt 5 after find_package() calls as:
     #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
   else()
-    add_executable(${target} 
-        WIN32 MACOSX_BUNDLE
-        ${sources} 
-        ${headers})
+    add_executable(${target} WIN32 MACOSX_BUNDLE ${sources} ${headers})
   endif()
 
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
@@ -143,12 +141,11 @@ endif()
 # Project options
 #
 
-set_target_properties(${target}
-    PROPERTIES
-    ${DEFAULT_PROJECT_OPTIONS}
-    INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}"
-    FOLDER "${IDE_FOLDER}"
-)
+set_target_properties(
+  ${target}
+  PROPERTIES ${DEFAULT_PROJECT_OPTIONS} INSTALL_RPATH
+             "${LIBRARY_INSTALL_RPATH}" FOLDER
+             "${IDE_FOLDER}")
 
 #
 # Include directories
@@ -193,19 +190,13 @@ target_compile_options(
 
 #
 # Linker options
-# 
+#
 
-target_link_libraries(${target}
-    PRIVATE
-    fmt::fmt
-    spdlog::spdlog
-    Qt${QT_VERSION_MAJOR}::Widgets
-    
-    PUBLIC
-    ${DEFAULT_LINKER_OPTIONS}
-
-    INTERFACE
-)
+target_link_libraries(
+  ${target}
+  PRIVATE fmt::fmt spdlog::spdlog Qt${QT_VERSION_MAJOR}::Widgets
+  PUBLIC ${DEFAULT_LINKER_OPTIONS}
+  INTERFACE)
 
 target_link_libraries(
   ${target}
@@ -232,58 +223,56 @@ perform_health_checks(${target} ${sources} ${headers})
 
 if(APPLE OR WIN32)
 
-if(APPLE)
+  if(APPLE)
 
-  set(executable_path "$<TARGET_FILE_NAME:${target}>.app")
+    set(executable_path "$<TARGET_FILE_NAME:${target}>.app")
 
+    set_property(TARGET ${target} PROPERTY MACOSX_BUNDLE_INFO_PLIST
+                                           ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
 
-  set_property(TARGET ${target} PROPERTY MACOSX_BUNDLE_INFO_PLIST
-                                               ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
+    # the MacOSX bundle display name property (CFBundleDisplayName) is not
+    # currently supported by cmake, so has to be set for all targets in this cmake
+    # file
+    set(MACOSX_BUNDLE_DISPLAY_NAME ${target})
+    set_target_properties(
+      ${target}
+      PROPERTIES BUNDLE True
+                 MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${target}"
+                 MACOSX_BUNDLE_BUNDLE_NAME "${target}"
+      PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${target}"
+                 MACOSX_BUNDLE_INFO_STRING "${target} - A Test program"
+                 MACOSX_BUNDLE_LONG_VERSION_STRING "${target} ${META_VERSION}"
+                 MACOSX_BUNDLE_SHORT_VERSION_STRING "${META_VERSION}"
+                 MACOSX_BUNDLE_BUNDLE_VERSION "${META_VERSION}"
+      PROPERTIES MACOSX_BUNDLE_ICON_FILE "${ICONS_SOURCES}" MACOSX_BUNDLE_COPYRIGHT "2022 ${META_AUTHOR_ORGANIZATION}")
 
-  # the MacOSX bundle display name property (CFBundleDisplayName) is not
-  # currently supported by cmake, so has to be set for all targets in this cmake
-  # file
-  set(MACOSX_BUNDLE_DISPLAY_NAME ${target})
-  set_target_properties(${target} PROPERTIES 
-    BUNDLE True
-    MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${target}"
-    MACOSX_BUNDLE_BUNDLE_NAME "${target}"
-    PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${target}"
-    MACOSX_BUNDLE_INFO_STRING "${target} - A Test program"
-    MACOSX_BUNDLE_LONG_VERSION_STRING "${target} ${META_VERSION}" 
-    MACOSX_BUNDLE_SHORT_VERSION_STRING "${META_VERSION}"
-    MACOSX_BUNDLE_BUNDLE_VERSION "${META_VERSION}"
-    PROPERTIES MACOSX_BUNDLE_ICON_FILE "${ICONS_SOURCES}"
-    MACOSX_BUNDLE_COPYRIGHT "2022 ${META_AUTHOR_ORGANIZATION}")
-  
-  install(
-    TARGETS ${target}
-        BUNDLE DESTINATION . COMPONENT Runtime)
+    install(TARGETS ${target} BUNDLE DESTINATION . COMPONENT Runtime)
 
-  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-        DESTINATION ${RESOURCES_INSTALL_DIR})
+    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION ${RESOURCES_INSTALL_DIR})
 
-  install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
+    install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json
-                 @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json
+                   @ONLY)
 
+  elseif(WIN32)
+    set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${target}>")
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
 
-elseif(WIN32)
-  set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${target}>")
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
+    install(TARGETS ${target} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-  install(TARGETS ${target} ${INSTALL_TARGETS_DEFAULT_ARGS})
+    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${ICON_INSTALL_DIR}")
 
-  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-    DESTINATION "${ICON_INSTALL_DIR}")
+    install(FILES ${qm_files} DESTINATION${TRANSLATION_INSTALL_DIR})
+  endif()
+  # The following script must only be executed at install time
+  set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${target}.cmake")
 
-  install(FILES ${qm_files} DESTINATION${TRANSLATION_INSTALL_DIR})
-endif()
-# The following script must only be executed at install time
-set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${target}.cmake")
-
-file(GENERATE OUTPUT ${deploy_script} CONTENT "
+  file(
+    GENERATE
+    OUTPUT ${deploy_script}
+    CONTENT
+      "
 # Including the file pointed to by QT_DEPLOY_SUPPORT ensures the generated
 # deployment script has access to qt_deploy_runtime_dependencies()
 include(\"${QT_DEPLOY_SUPPORT}\")
@@ -293,48 +282,45 @@ qt_deploy_runtime_dependencies(
     GENERATE_QT_CONF
     VERBOSE
 )")
-install(SCRIPT ${deploy_script})    # Add its runtime dependencies
+  install(SCRIPT ${deploy_script}) # Add its runtime dependencies
 elseif(UNIX AND NOT APPLE)
-   # appdata
-   # GNUInstallDirs is called from qt_standard_settings()
+  # appdata
+  # GNUInstallDirs is called from qt_standard_settings()
 
-   install(TARGETS ${target} ${INSTALL_TARGETS_DEFAULT_ARGS})
+  install(TARGETS ${target} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/${target}.appdata.xml @ONLY)
-   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target}.appdata.xml
-           DESTINATION "${APPDATA_INSTALL_DIR}")
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${target}.appdata.xml
+                 @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target}.appdata.xml DESTINATION "${APPDATA_INSTALL_DIR}")
 
-   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
-                  ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${target}.desktop @ONLY)
-   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${target}.desktop
-           DESTINATION "${XDG_APPS_INSTALL_DIR}")
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
+                 ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${target}.desktop @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${target}.desktop DESTINATION "${XDG_APPS_INSTALL_DIR}")
 
-   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-           DESTINATION "${ICON_INSTALL_DIR}")
+  install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${ICON_INSTALL_DIR}")
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
-   # man page
-   find_program(GZIP gzip)
-   if(GZIP)
-     configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${target}.1 @ONLY)
-     add_custom_command(
-       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz
-       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${target}.1 > ${target}.1.gz
-       COMMENT "Create the bin gz archive"
-       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${target}.1)
-     add_custom_target(
-       man ALL
-       COMMENT "Create man-file"
-       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz)
-     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz DESTINATION "${MAN_INSTALL_DIR}")
-   endif()
+  # man page
+  find_program(GZIP gzip)
+  if(GZIP)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${target}.1 @ONLY)
+    add_custom_command(
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz
+      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${target}.1 > ${target}.1.gz
+      COMMENT "Create the bin gz archive"
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${target}.1)
+    add_custom_target(
+      man ALL
+      COMMENT "Create man-file"
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz DESTINATION "${MAN_INSTALL_DIR}")
+  endif()
 endif()
 
 # Tests
 if(OPTION_BUILD_TESTS)
-    set(IDE_FOLDER "Tests")
-    enable_testing()
-    add_subdirectory(test)
+  set(IDE_FOLDER "Tests")
+  enable_testing()
+  add_subdirectory(test)
 endif()

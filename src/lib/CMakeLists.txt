@@ -85,9 +85,7 @@ add_library(${META_PROJECT_NAME}::${target} ALIAS ${target})
 target_sources(${target} PRIVATE ${sources} ${headers} ${MOC_SOURCE_FILES})
 #
 # Include directories
-# 
-
-
+#
 
 # Export library for downstream projects
 export(
@@ -212,24 +210,25 @@ perform_health_checks(${target} ${sources} ${headers})
 #
 
 # Library
-install(TARGETS ${target}
-    EXPORT  "${target}-export"            COMPONENT dev
-    RUNTIME DESTINATION ${BIN_INSTALL_DIR}    COMPONENT runtime
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR} COMPONENT runtime
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}    COMPONENT dev
-)
+install(
+  TARGETS ${target}
+  EXPORT "${target}-export"
+  COMPONENT dev
+  RUNTIME DESTINATION ${BIN_INSTALL_DIR} COMPONENT runtime
+  LIBRARY DESTINATION ${LIB_INSTALL_DIR} COMPONENT runtime
+  ARCHIVE DESTINATION ${LIB_INSTALL_DIR} COMPONENT dev)
 
 # Header files
-install(DIRECTORY
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${target} DESTINATION ${INCLUDE_INSTALL_DIR}
-    COMPONENT dev
-)
+install(
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${target}
+  DESTINATION ${INCLUDE_INSTALL_DIR}
+  COMPONENT dev)
 
 # Generated header files
-install(DIRECTORY
-    ${CMAKE_CURRENT_BINARY_DIR}/include/${target} DESTINATION ${INCLUDE_INSTALL_DIR}
-    COMPONENT dev
-)
+install(
+  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
+  DESTINATION ${INCLUDE_INSTALL_DIR}
+  COMPONENT dev)
 
 # CMake config
 install(

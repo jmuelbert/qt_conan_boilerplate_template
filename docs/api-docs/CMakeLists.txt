@@ -43,13 +43,12 @@ configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 
 # Invoke doxygen
 add_custom_command(
-    OUTPUT              ${doxyfile_html}
-    DEPENDS             ${doxyfile} ${META_PROJECT_NAME}::myclass # ${META_PROJECT_NAME}::fiblib
-    WORKING_DIRECTORY   ${path}
-    COMMAND             ${CMAKE_COMMAND} -E copy_directory ${path} ${doxyfile_directory} # ToDO, configure doxygen to use source as is
-    COMMAND             ${DOXYGEN} \"${doxyfile}\"
-    COMMENT             "Creating doxygen documentation."
-)
+  OUTPUT ${doxyfile_html}
+  DEPENDS ${doxyfile} ${META_PROJECT_NAME}::myclass # ${META_PROJECT_NAME}::fiblib
+  WORKING_DIRECTORY ${path}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${path} ${doxyfile_directory} # ToDO, configure doxygen to use source as is
+  COMMAND ${DOXYGEN} \"${doxyfile}\"
+  COMMENT "Creating doxygen documentation.")
 
 # Declare target
 add_custom_target(${target} ALL DEPENDS ${doxyfile_html})
@@ -60,7 +59,6 @@ add_dependencies(docs ${target})
 #
 
 install(
-    DIRECTORY ${doxyfile_directory}
-    DESTINATION ${DOC_INSTALL_DIR}
-    COMPONENT docs
-)
+  DIRECTORY ${doxyfile_directory}
+  DESTINATION ${DOC_INSTALL_DIR}
+  COMPONENT docs)

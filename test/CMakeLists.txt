@@ -13,14 +13,14 @@ set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all ta
 
 # Compiler settings and options
 
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/CompileOptions.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Custom.cmake)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/CompileOptions.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Custom.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 else()
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 endif()
 
 # ---- Dependencies ----

@@ -194,7 +194,9 @@ target_link_libraries(
   PUBLIC ${DEFAULT_LINKER_OPTIONS}
   INTERFACE)
 
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 qt_finalize_target(${target})
+endif()
 
 #
 # Target Health
@@ -222,10 +224,10 @@ install(
   COMPONENT dev)
 
 # Generated header files
-install(
-  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
-  DESTINATION ${INCLUDE_INSTALL_DIR}
-  COMPONENT dev)
+# install(
+#   DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
+#   DESTINATION ${INCLUDE_INSTALL_DIR}
+#   COMPONENT dev)
 
 # CMake config
 install(

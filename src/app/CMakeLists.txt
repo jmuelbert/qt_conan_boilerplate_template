@@ -313,7 +313,7 @@ elseif(UNIX AND NOT APPLE)
    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
            DESTINATION "${ICON_INSTALL_DIR}")
 
-    install(FILES ${qm_files} DESTINATION${TRANSLATION_INSTALL_DIR})
+    install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
    # man page
    find_program(GZIP gzip)

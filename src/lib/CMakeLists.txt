@@ -47,20 +47,37 @@ source_group_by_path(
   ${source_group}
   ${sources})
 
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 #
 # Create library
 #
 
 find_package(
+  QT
+  NAMES
   Qt6
-  COMPONENTS Core
-  REQUIRED)
+  Qt5
+  REQUIRED
+  COMPONENTS Core)
 
-qt_add_library(
-  ${target}
-  STATIC
-  ""
-  MANUAL_FINALIZATION)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+  qt_standard_project_setup()
+  qt_add_library(
+    ${target}
+    STATIC
+    ""
+    MANUAL_FINALIZATION)
+else()
+  add_library(${target}
+    STATIC
+    ""
+    )
+endif()
 
 # Create namespaced alias
 add_library(${META_PROJECT_NAME}::${target} ALIAS ${target})

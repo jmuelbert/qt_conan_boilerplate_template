@@ -13,16 +13,15 @@ set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all ta
 
 # Compiler settings and options
 
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/CompileOptions.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/Custom.cmake)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/CompileOptions.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/Custom.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
 else()
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
-    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 endif()
-
 
 # ---- Dependencies ----
 
@@ -31,9 +30,9 @@ find_package(Catch2 CONFIG REQUIRED)
 include(Catch)
 
 if(APPLE)
-set(executable_path "qtwidgettest.app/Contents/MacOS/qtwidgettest")
+  set(executable_path "qtwidgettest.app/Contents/MacOS/qtwidgettest")
 else()
-set(executable_path "qtwidgettest")
+  set(executable_path "qtwidgettest")
 endif()
 
 add_library(catch_main OBJECT catch_main.cpp)
@@ -48,4 +47,3 @@ add_test(NAME cli.has_help COMMAND ${executable_path} --help)
 # to make, but also easy to test for.
 add_test(NAME cli.version_matches COMMAND ${executable_path} --version)
 set_tests_properties(cli.version_matches PROPERTIES PASS_REGULAR_EXPRESSION "${PROJECT_VERSION}")
-

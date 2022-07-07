@@ -195,7 +195,7 @@ target_link_libraries(
   INTERFACE)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-qt_finalize_target(${target})
+  qt_finalize_target(${target})
 endif()
 
 #

@@ -73,10 +73,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     ""
     MANUAL_FINALIZATION)
 else()
-  add_library(${target}
-    STATIC
-    ""
-    )
+  add_library(${target} STATIC "")
 endif()
 
 # Create namespaced alias

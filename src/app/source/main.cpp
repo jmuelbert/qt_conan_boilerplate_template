@@ -16,16 +16,16 @@
 
 int main(int argc, char *argv[])
 {
-  std::optional<std::string> message;
+  //   std::optional<std::string> message;
 
-  // Use the default logger (stdout, multi-threaded, colored)
-  spdlog::info("Hello, {}!", "World");
+  //   // Use the default logger (stdout, multi-threaded, colored)
+  //   spdlog::info("Hello, {}!", "World");
 
-  if (message) {
-    fmt::print("Message: '{}'\n", *message);
-  } else {
-    fmt::print("No Message Provided :(\n");
-  }
+  //   if (message) {
+  //     fmt::print("Message: '{}'\n", *message);
+  //   } else {
+  //     fmt::print("No Message Provided :(\n");
+  //   }
 
   QApplication app(argc, argv);
 

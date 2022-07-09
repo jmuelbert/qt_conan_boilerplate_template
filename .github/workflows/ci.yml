@@ -482,9 +482,10 @@ jobs:
       - name: Setup Flathub
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install flathub org.kde.Platform//5.15-21.08
-          flatpak install flathub org.kde.Sdk//5.15-21.08
-          # flatpak install -y --noninteractive flathub org.kde.Sdk//5.15 org.kde.Platform//5.15
+          flatpak install -y --noninteractive flathub install flathub org.freedesktop.Sdk//20.08
+          flatpak install -y --noninteractive flathub install flathub org.freedesktop.Platform.GL//20.08
+          flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
+          flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
 
       - name: "📦 Create flatpak"
         run: |

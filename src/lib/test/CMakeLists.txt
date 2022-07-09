@@ -41,7 +41,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Test)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 
+if(${QT_VERSION_MAJOR} GREATER_EQUAL)
 qt_standard_project_setup()
 qt_add_executable(
   testMain

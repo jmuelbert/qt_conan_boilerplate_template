@@ -49,9 +49,7 @@ qt_add_executable(
   testmain.cpp
   testmain.h)
 else()
-  add_executable( testMain
-  testmain.cpp
-  testmain.h)
+  add_executable(testMain testmain.cpp testmain.h)
 endif()
 
 set_target_properties(testMain PROPERTIES WIN32_EXECUTABLE TRUE)
@@ -60,14 +58,11 @@ if(WIN32)
   target_link_options(testMain PRIVATE "/entry:mainCRTStartup")
 endif()
 
-target_link_libraries(testMain 
-  PRIVATE 
-  Qt${QT_VERSION_MAJOR}::Core
-  Qt${QT_VERSION_MAJOR}::Test 
-  ${META_PROJECT_NAME}::myclass)
+target_link_libraries(testMain PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Test
+                                       ${META_PROJECT_NAME}::myclass)
 
 if(QT_VERSION_MAJOR EQUAL 6)
-qt_finalize_executable(testMain)
+  qt_finalize_executable(testMain)
 endif()
 
 add_test(NAME testMain COMMAND testMain)

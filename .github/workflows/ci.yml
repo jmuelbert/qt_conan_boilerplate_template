@@ -302,6 +302,7 @@ jobs:
           # host: ${{ runner.os }}
           target: ${{ env.QT_TARGET }}
           arch: ${{ matrix.config.qt_arch }}
+          dir: "${{ github.workspace }}/build/"
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
@@ -312,19 +313,13 @@ jobs:
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
       - name: Configure CMake
-        shell: bash
         if: runner.os ==  'Windows'
-        env:
-          CC: cl
-          CXX: cl
+        working-directory: build
+        shell: pwsh
         run: |
-          APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
-          mkdir -p ${APPIMAGE_DST_PATH}
-          mkdir -p ./build
-          cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
-          cd ..
-          cmake -S . -B ./build -G "${{matrix.config.generator}}" \
+          cmake $env:GITHUB_WORKSPACE `
+            -G "${{matrix.config.generator}}" `
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
@@ -352,20 +347,26 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
             -DGIT_SHA:STRING=${{ github.sha }}
 
-      - name: "⚙️ Build"
+      - name: "📦 Build and package application (macdeployqt and zipfile)"
         if: runner.os == 'macOS'
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}}
+          cmake --build ./build --config ${{matrix.build_type}} --target pack
+
+          # APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
+          # cd $GITHUB_WORKSPACE
+          # macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
+          #     -qmldir=. \
+          #     -appstore-compliant \
+          #     -libpath=${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app/Contents/Frameworks \
+          #     -verbose=1 -dmg
+          # cp ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
+          # # ZIP application "%AppName%-%Version%-macOS.zip"
 
       - name: "⚙️ Build"
         if: runner.os ==  'Windows'
-        env:
-          CC: cl
-          CXX: cl
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
+        working-directory: build
         run: |
-          cmake --build ./build --config ${{matrix.build_type}}
+          cmake --build . --config ${{matrix.build_type}} --target  pack
 
       - name: "⚙️ Build"
         if: runner.os == 'Linux'
@@ -409,25 +410,11 @@ jobs:
           path: |
             $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
 
-      - name: "📦 Package application (macdeployqt and zipfile)"
+      - name: Make kac zparchiv
         if: runner.os == 'macOS'
         run: |
-          cd build
-          ls
-          cpack -C Release -G TBZ2
-          cpack -C Release -G DragNDrop
-
-          # APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
-          # cd $GITHUB_WORKSPACE
-          # macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
-          #     -qmldir=. \
-          #     -appstore-compliant \
-          #     -libpath=${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app/Contents/Frameworks \
-          #     -verbose=1 -dmg
-          # cp ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
-          # # ZIP application "%AppName%-%Version%-macOS.zip"
-          # ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip
-          # cp ./${{env.TARGET_NAME}}.zip ${{runner.workspace}}/${{env.TARGET_NAME}}.zip
+          ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip
+          cp ./${{env.TARGET_NAME}}.zip ${{runner.workspace}}/${{env.TARGET_NAME}}.zip
 
       - name: Upload dmg artifact for macOS - ${{ matrix.qt_version }}
         if: runner.os == 'macOS'
@@ -506,8 +493,8 @@ jobs:
       - name: Setup Flathub
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y --noninteractive flathub install flathub org.freedesktop.Sdk//20.08
-          flatpak install -y --noninteractive flathub install flathub org.freedesktop.Platform.GL//20.08
+          flatpak install -y --noninteractive flathub org.freedesktop.Sdk//20.08
+          flatpak install -y --noninteractive flathub sorg.freedesktop.Platform.GL//20.08
           flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
           flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
 

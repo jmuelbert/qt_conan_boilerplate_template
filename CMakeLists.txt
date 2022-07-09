@@ -11,9 +11,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Register general cmake commands
 include(cmake/Custom.cmake)
 
-# Register general cmake commands
-include(cmake/Custom.cmake)
-
 # Set policies
 set_policy(CMP0054 NEW) # ENABLE CMP0054: Only interpret if() arguments as variables or keywords when unquoted.
 set_policy(CMP0042 NEW) # ENABLE CMP0042: MACOSX_RPATH is enabled by default.

@@ -301,7 +301,7 @@ elseif(UNIX AND NOT APPLE)
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/flatpak.yml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak.xml @ONLY)
 
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/snapcraft.yaml.in ${CMAKE_CURRENT_BINARY_DIR}/snapcraft.yaml @ONLY)
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} PATTERN snapcraft.* ${PROJECT_SOURCE_DIR}/snap)
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}  ${PROJECT_SOURCE_DIR}/snap PATTERN snapcraft.*)
 
   # man page
   find_program(GZIP gzip)

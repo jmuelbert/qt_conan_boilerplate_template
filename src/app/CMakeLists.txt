@@ -298,11 +298,10 @@ elseif(UNIX AND NOT APPLE)
 
   install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/flatpak.yml ${CMAKE_CURRENT_BINARY_DIR}/flatpak.xml @ONLY)
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/flatpak.yml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak.xml @ONLY)
 
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/snapcraft.yml.in ${CMAKE_CURRENT_BINARY_DIR}/snapcraft.xml @ONLY)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/snapcraft.xml ${PROJECT_SOURCE_DIR}/snap)
-
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/snapcraft.yml ${CMAKE_CURRENT_BINARY_DIR}/snapcraft.xml @ONLY)
 
   # man page
   find_program(GZIP gzip)

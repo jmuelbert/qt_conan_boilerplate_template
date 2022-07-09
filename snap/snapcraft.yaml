@@ -1,6 +1,6 @@
 ---
-name: qtcanonboilerplate
-adopt-info: qtcanonboilerplate
+name: qtwidgettest
+adopt-info: qtwidgettest
 icon: assets/icons/icons8-app-symbol-80.png
 
 base: core20
@@ -18,7 +18,7 @@ description: qt_canon_boilerplate is a test app.
 version: "0.6.0"
 
 apps:
-  qtcanonboilerplate:
+  qtwidgettest:
     command: usr/bin/qt_canon_boilerplate
     common-id: com.github.jmuelbert.qt_canon_boilerplate
     extensions:
@@ -30,7 +30,7 @@ apps:
       - wayland
       - x11
 parts:
-  qtcanonboilerplate:
+  qtwidgettest:
     plugin: cmake
     source: .
     cmake-parameters:
@@ -48,6 +48,8 @@ parts:
     build-packages:
       - python
       - libmpfr-dev
+      - libfmt-dev
+      - libspdlog-dev
       - libgmp-dev
       - kdoctools-dev
     stage-packages:

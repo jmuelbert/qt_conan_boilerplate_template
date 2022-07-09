@@ -8,25 +8,25 @@
 # App name and options
 #
 
-# Target name
-set(target qtwidgettest)
+# TARGET name
+set(TARGETqtwidgettest)
 
 # Exit here if required dependencies are not met
-message(STATUS "App ${target}")
+message(STATUS "App ${TARGE}")
 
 # Set API export file and macro
-string(MAKE_C_IDENTIFIER ${target} target_id)
-string(TOUPPER ${target_id} target_id)
-set(feature_file "include/${target}/${target}_features.h")
-set(export_file "include/${target}/${target}_export.h")
-set(template_export_file "include/${target}/${target}_api.h")
-set(export_macro "${target_id}_API")
+string(MAKE_C_IDENTIFIER ${TARGET} TARGET_ID)
+string(TOUPPER ${TARGET_ID} TARGET_ID)
+set(feature_file "include/${TARGET}/${TARGET}_features.h")
+set(export_file "include/${TARGET}/${TARGET}_export.h")
+set(template_export_file "include/${TARGET}/${TARGET}_api.h")
+set(export_macro "${TARGET_ID}_API")
 
 #
 # Sources
 #
 
-set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${target}")
+set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${TARGET}")
 set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 set(headers ${include_path}/mainwindow.h)
@@ -73,20 +73,20 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_standard_project_setup()
   qt_add_executable(
-    ${target}
+    ${TARGET}
     WIN32
     MACOSX_BUNDLE
     MANUAL_FINALIZATION
     ${sources}
     ${headers})
-  # Define target properties for Android with Qt 6 as:
-  #    set_property(TARGET ${target} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+  # Define TARGET properties for Android with Qt 6 as:
+  #    set_property(TARGET ${TARGET} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
   #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-  # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+  # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#TARGET-creation
 
-  qt_add_translations(${target} TS_FILES ${TS_FILES})
+  qt_add_translations(${TARGET} TS_FILES ${TS_FILES})
   qt_add_resources(
-    ${target}
+    ${TARGET}
     "translations"
     PREFIX
     "/i18n"
@@ -96,11 +96,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     "${qm_files}")
 else()
   if(ANDROID)
-    add_library(${target} SHARED ${sources} ${headers})
+    add_library(${TARGET} SHARED ${sources} ${headers})
     # Define properties for Android with Qt 5 after find_package() calls as:
     #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
   else()
-    add_executable(${target} WIN32 MACOSX_BUNDLE ${sources} ${headers})
+    add_executable(${TARGET} WIN32 MACOSX_BUNDLE ${sources} ${headers})
   endif()
 
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
@@ -116,7 +116,7 @@ if(WriterCompilerDetectionHeaderFound)
     FILE
     ${feature_file}
     PREFIX
-    ${target_id}
+    ${TARGET_ID}
     COMPILERS AppleClang
               Clang
               GNU
@@ -132,8 +132,8 @@ if(WriterCompilerDetectionHeaderFound)
     VERSION 3.2)
 else()
   file(
-    COPY ${PROJECT_SOURCE_DIR}/src/codegeneration/${target}_features.h
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
+    COPY ${PROJECT_SOURCE_DIR}/src/codegeneration/${TARGET}_features.h
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/${TARGET}
     USE_SOURCE_PERMISSIONS)
 endif()
 
@@ -141,8 +141,8 @@ endif()
 # Project options
 #
 
-set_target_properties(
-  ${target}
+set_TARGET_properties(
+  ${TARGET}
   PROPERTIES ${DEFAULT_PROJECT_OPTIONS} INSTALL_RPATH
              "${LIBRARY_INSTALL_RPATH}" FOLDER
              "${IDE_FOLDER}")
@@ -151,8 +151,8 @@ set_target_properties(
 # Include directories
 #
 
-target_include_directories(
-  ${target}
+TARGET_include_directories(
+  ${TARGET}
   PRIVATE ${PROJECT_BINARY_DIR}/src/include ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/include
   PUBLIC ${DEFAULT_INCLUDE_DIRECTORIES}
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -162,8 +162,8 @@ target_include_directories(
 # Libraries
 #
 
-target_link_libraries(
-  ${target}
+TARGET_link_libraries(
+  ${TARGET}
   PRIVATE
   PUBLIC ${DEFAULT_LIBRARIES}
   INTERFACE)
@@ -172,18 +172,18 @@ target_link_libraries(
 # Compile definitions
 #
 
-target_compile_definitions(
-  ${target}
+TARGET_compile_definitions(
+  ${TARGET}
   PRIVATE
-  PUBLIC $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_id}_STATIC_DEFINE> ${DEFAULT_COMPILE_DEFINITIONS}
+  PUBLIC $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${TARGET_ID}_STATIC_DEFINE> ${DEFAULT_COMPILE_DEFINITIONS}
   INTERFACE)
 
 #
 # Compile options
 #
 
-target_compile_options(
-  ${target}
+TARGET_compile_options(
+  ${TARGET}
   PRIVATE
   PUBLIC ${DEFAULT_COMPILE_OPTIONS}
   INTERFACE)
@@ -192,21 +192,21 @@ target_compile_options(
 # Linker options
 #
 
-target_link_libraries(
-  ${target}
+TARGET_link_libraries(
+  ${TARGET}
   PRIVATE fmt::fmt spdlog::spdlog Qt${QT_VERSION_MAJOR}::Widgets
   PUBLIC ${DEFAULT_LINKER_OPTIONS}
   INTERFACE)
 
 if(QT_VERSION_MAJOR EQUAL 6)
-  qt_finalize_executable(${target})
+  qt_finalize_executable(${TARGET})
 endif()
 
 #
-# Target Health
+# TARGET Health
 #
 
-perform_health_checks(${target} ${sources} ${headers})
+perform_health_checks(${TARGET} ${sources} ${headers})
 
 #
 # Deployment
@@ -216,28 +216,28 @@ if(APPLE OR WIN32)
 
   if(APPLE)
 
-    set(executable_path "$<TARGET_FILE_NAME:${target}>.app")
+    set(executable_path "$<TARGET_FILE_NAME:${TARGET}>.app")
 
-    set_property(TARGET ${target} PROPERTY MACOSX_BUNDLE_INFO_PLIST
+    set_property(TARGET ${TARGET} PROPERTY MACOSX_BUNDLE_INFO_PLIST
                                            ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
 
     # the MacOSX bundle display name property (CFBundleDisplayName) is not
-    # currently supported by cmake, so has to be set for all targets in this cmake
+    # currently supported by cmake, so has to be set for all TARGETs in this cmake
     # file
-    set(MACOSX_BUNDLE_DISPLAY_NAME ${target})
-    set_target_properties(
-      ${target}
+    set(MACOSX_BUNDLE_DISPLAY_NAME ${TARGET})
+    set_TARGET_properties(
+      ${TARGET}
       PROPERTIES BUNDLE True
-                 MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${target}"
-                 MACOSX_BUNDLE_BUNDLE_NAME "${target}"
-      PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${target}"
-                 MACOSX_BUNDLE_INFO_STRING "${target} - A Test program"
-                 MACOSX_BUNDLE_LONG_VERSION_STRING "${target} ${META_VERSION}"
+                 MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${TARGET}"
+                 MACOSX_BUNDLE_BUNDLE_NAME "${TARGET}"
+      PROPERTIES MACOSX_BUNDLE_DISPLAY_NAME "${TARGET}"
+                 MACOSX_BUNDLE_INFO_STRING "${TARGET} - A Test program"
+                 MACOSX_BUNDLE_LONG_VERSION_STRING "${TARGET} ${META_VERSION}"
                  MACOSX_BUNDLE_SHORT_VERSION_STRING "${META_VERSION}"
                  MACOSX_BUNDLE_BUNDLE_VERSION "${META_VERSION}"
       PROPERTIES MACOSX_BUNDLE_ICON_FILE "${ICONS_SOURCES}" MACOSX_BUNDLE_COPYRIGHT "2022 ${META_AUTHOR_ORGANIZATION}")
 
-    install(TARGETS ${target} BUNDLE DESTINATION . COMPONENT Runtime)
+    install(TARGETS ${TARGET} BUNDLE DESTINATION . COMPONENT Runtime)
 
     install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION ${RESOURCES_INSTALL_DIR})
 
@@ -247,17 +247,17 @@ if(APPLE OR WIN32)
                    @ONLY)
 
   elseif(WIN32)
-    set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${target}>")
+    set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${TARGET}>")
     configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
 
-    install(TARGETS ${target} ${INSTALL_TARGETS_DEFAULT_ARGS})
+    install(TARGETS ${TARGET} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
     install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${ICON_INSTALL_DIR}")
 
     install(FILES ${qm_files} DESTINATION${TRANSLATION_INSTALL_DIR})
   endif()
   # The following script must only be executed at install time
-  set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${target}.cmake")
+  set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${TARGET}.cmake")
 
   file(
     GENERATE
@@ -278,15 +278,15 @@ elseif(UNIX AND NOT APPLE)
   # appdata
   # GNUInstallDirs is called from qt_standard_settings()
 
-  install(TARGETS ${target} ${INSTALL_TARGETS_DEFAULT_ARGS})
+  install(TARGETS ${TARGET} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${target}.appdata.xml
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.appdata.xml
                  @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target}.appdata.xml DESTINATION "${APPDATA_INSTALL_DIR}")
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.appdata.xml DESTINATION "${APPDATA_INSTALL_DIR}")
 
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
-                 ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${target}.desktop @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${target}.desktop DESTINATION "${XDG_APPS_INSTALL_DIR}")
+                 ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${TARGET}.desktop @ONLY)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${TARGET}.desktop DESTINATION "${XDG_APPS_INSTALL_DIR}")
 
   install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${ICON_INSTALL_DIR}")
 
@@ -295,17 +295,17 @@ elseif(UNIX AND NOT APPLE)
   # man page
   find_program(GZIP gzip)
   if(GZIP)
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${target}.1 @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1 @ONLY)
     add_custom_command(
-      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz
-      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${target}.1 > ${target}.1.gz
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1.gz
+      COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1 > ${TARGET}.1.gz
       COMMENT "Create the bin gz archive"
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${target}.1)
-    add_custom_target(
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1)
+    add_custom_TARGET(
       man ALL
       COMMENT "Create man-file"
-      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${target}.1.gz DESTINATION "${MAN_INSTALL_DIR}")
+      DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1.gz)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1.gz DESTINATION "${MAN_INSTALL_DIR}")
   endif()
 endif()
 

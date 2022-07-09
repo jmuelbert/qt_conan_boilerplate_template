@@ -47,6 +47,7 @@ parts:
       - kde-frameworks-5-qt-5-15-core20
     build-packages:
       - python
+      - catch
       - libmpfr-dev
       - libfmt-dev
       - libspdlog-dev

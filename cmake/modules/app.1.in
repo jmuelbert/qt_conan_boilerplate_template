@@ -27,14 +27,14 @@ documentation for complete list:
 <http://doc.qt.io/qt-5/qguiapplication.html#QGuiApplication>
 .SH FILES
 .TP
-.I ~/.config/jmbde
+.I ~/.config/@META_PROJECT_DESCRIPTION@
 Default directory for configuration data.
 .SH BUGS
 Bug tracker:
 .IP
-https://github.com/jmuelbert/jmbde-QT/issues
+https://github.com/jmuelbert/@META_PROJECT_NAME@/issues
 .PP
 Be sure to do your search within open and closed issues before submitting reports.
 .SH AUTHORS
-Jürgen Mülbert \- <https://github.com/jmuelbert/jmbde-QT/blob/master/AUTHORS>
+Jürgen Mülbert \- <https://github.com/jmuelbert/@META_PROJECT_NAME@/blob/master/AUTHORS>
 .br

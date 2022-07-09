@@ -482,25 +482,27 @@ jobs:
       - name: Setup Flathub
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y --noninteractive flathub org.kde.Sdk//5.15 org.kde.Platform//5.15
+          flatpak install flathub org.kde.Platform//5.15-21.08
+          flatpak install flathub org.kde.Sdk//5.15-21.08
+          # flatpak install -y --noninteractive flathub org.kde.Sdk//5.15 org.kde.Platform//5.15
 
       - name: "📦 Create flatpak"
         run: |
-          BUNDLE="org.jmuelbert.qt_conan_boilerplate.flatpak"
-          MANIFEST_PATH=$GITHUB_WORKSPACE/packaging/flatpak/org.jmuelbert.qt_conan_boilerplate.yml
+          BUNDLE="org.jmuelbert.${target}.flatpak"
+          MANIFEST_PATH=$GITHUB_WORKSPACE/packaging/flatpak/org.jmuelbert.${target}.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
-          APP_ID="org.jmuelbert.qt_conan_boilerplate"
+          APP_ID="org.jmuelbert.${target}"
           BRANCH="master"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
-          mv $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate.flatpak $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+          mv $GITHUB_WORKSPACE/org.jmuelbert.${target}.flatpak $GITHUB_WORKSPACE/org.jmuelbert.${target}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
       - name: "📤 Upload artifact: FlatPak"
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.TARGET_NAME }}-QT${{ matrix.qt_version}}-${{matrix.build-type}}.flatpak
           path: |
-            $GITHUB_WORKSPACE/org.jmuelbert.qt_conan_boilerplate_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+            $GITHUB_WORKSPACE/org.jmuelbert.${target}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
   snap-build:
     name: "🐧 Build snap on ubuntu-20.04"

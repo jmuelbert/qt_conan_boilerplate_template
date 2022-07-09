@@ -304,7 +304,7 @@ elseif(UNIX AND NOT APPLE)
       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1 > ${TARGET}.1.gz
       COMMENT "Create the bin gz archive"
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1)
-    add_custom_TARGET(
+    add_custom_target(
       man ALL
       COMMENT "Create man-file"
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1.gz)

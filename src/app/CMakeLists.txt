@@ -260,7 +260,7 @@ if(APPLE OR WIN32)
 
     install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${ICON_INSTALL_DIR}")
 
-    install(FILES ${qm_files} DESTINATION${TRANSLATION_INSTALL_DIR})
+    install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
   endif()
   # The following script must only be executed at install time
   set(deploy_script "${CMAKE_CURRENT_BINARY_DIR}/deploy_${TARGET}.cmake")

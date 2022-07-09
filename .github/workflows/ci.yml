@@ -221,7 +221,7 @@ jobs:
               qt_arch: win64_msvc2019_64,
               arch: x64,
               pak_arch: win64,
-              generator: "Ninja",
+              generator: "Visual Studio 16 2019",
               package_generator: ZIP,
             }
 
@@ -319,7 +319,7 @@ jobs:
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cmake $env:GITHUB_WORKSPACE `
-            -G "${{matrix.config.generator}}" `
+            -G "${{matrix.config.generator}}" -A "${{matrix.pak_arch}}" `
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} `
             -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" `
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} `
@@ -349,6 +349,7 @@ jobs:
         working-directory: build
         if: runner.os == 'macOS'
         run: |
+          cmake --build . --config ${{matrix.build_type}} --target install
           cmake --build . --config ${{matrix.build_type}} --target pack
 
           # APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
@@ -407,7 +408,7 @@ jobs:
         with:
           name: ${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}-qt${{matrix.qt_version}}-Linux.AppImage
           path: |
-            $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}}.x86_64.AppImage
+            $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
 
       - name: Make kac zparchiv
         if: runner.os == 'macOS'

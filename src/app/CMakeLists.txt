@@ -141,7 +141,7 @@ endif()
 # Project options
 #
 
-set_TARGET_properties(
+set_target_properties(
   ${TARGET}
   PROPERTIES ${DEFAULT_PROJECT_OPTIONS} INSTALL_RPATH
              "${LIBRARY_INSTALL_RPATH}" FOLDER
@@ -151,7 +151,7 @@ set_TARGET_properties(
 # Include directories
 #
 
-TARGET_include_directories(
+target_include_directories(
   ${TARGET}
   PRIVATE ${PROJECT_BINARY_DIR}/src/include ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/include
   PUBLIC ${DEFAULT_INCLUDE_DIRECTORIES}
@@ -162,7 +162,7 @@ TARGET_include_directories(
 # Libraries
 #
 
-TARGET_link_libraries(
+target_link_libraries(
   ${TARGET}
   PRIVATE
   PUBLIC ${DEFAULT_LIBRARIES}
@@ -172,7 +172,7 @@ TARGET_link_libraries(
 # Compile definitions
 #
 
-TARGET_compile_definitions(
+target_compile_definitions(
   ${TARGET}
   PRIVATE
   PUBLIC $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${TARGET_ID}_STATIC_DEFINE> ${DEFAULT_COMPILE_DEFINITIONS}
@@ -182,7 +182,7 @@ TARGET_compile_definitions(
 # Compile options
 #
 
-TARGET_compile_options(
+target_compile_options(
   ${TARGET}
   PRIVATE
   PUBLIC ${DEFAULT_COMPILE_OPTIONS}
@@ -192,7 +192,7 @@ TARGET_compile_options(
 # Linker options
 #
 
-TARGET_link_libraries(
+target_link_libraries(
   ${TARGET}
   PRIVATE fmt::fmt spdlog::spdlog Qt${QT_VERSION_MAJOR}::Widgets
   PUBLIC ${DEFAULT_LINKER_OPTIONS}
@@ -225,7 +225,7 @@ if(APPLE OR WIN32)
     # currently supported by cmake, so has to be set for all TARGETs in this cmake
     # file
     set(MACOSX_BUNDLE_DISPLAY_NAME ${TARGET})
-    set_TARGET_properties(
+    set_target_properties(
       ${TARGET}
       PROPERTIES BUNDLE True
                  MACOSX_BUNDLE_GUI_IDENTIFIER "io.github.jmuelbert.${TARGET}"
@@ -301,7 +301,7 @@ elseif(UNIX AND NOT APPLE)
       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1 > ${TARGET}.1.gz
       COMMENT "Create the bin gz archive"
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1)
-    add_custom_TARGET(
+    add_custom_target(
       man ALL
       COMMENT "Create man-file"
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1.gz)

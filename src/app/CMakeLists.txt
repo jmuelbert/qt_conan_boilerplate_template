@@ -102,9 +102,12 @@ else()
   else()
     add_executable(${TARGET} WIN32 MACOSX_BUNDLE ${sources} ${headers})
   endif()
-  set(TS_FILES 
-    translations/QtWidgetTest_de_DE.ts)
-  set_source_files_properties(${TS_FILES} ROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/translations")
+  set(TS_FILES translations/QtWidgetTest_de_DE.ts)
+  set_source_files_properties(
+    ${TS_FILES}
+    ROPERTIES
+    OUTPUT_LOCATION
+    "${CMAKE_CURRENT_BINARY_DIR}/translations")
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 endif()

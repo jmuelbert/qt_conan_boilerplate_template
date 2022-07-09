@@ -24,22 +24,35 @@ else()
   list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 endif()
 
-find_package(
-  Qt6
-  COMPONENTS Test
-  REQUIRED)
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+find_package(
+  QT
+  NAMES
+  Qt6
+  Qt5
+  REQUIRED
+  COMPONENTS Core)
+
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Test)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 
+qt_standard_project_setup()
 qt_add_executable(
   testMain
   MANUAL_FINALIZATION
   testmain.cpp
   testmain.h)
+else()
+  add_executable( testMain
+  testmain.cpp
+  testmain.h)
+endif()
 
 set_target_properties(testMain PROPERTIES WIN32_EXECUTABLE TRUE)
 
@@ -47,8 +60,14 @@ if(WIN32)
   target_link_options(testMain PRIVATE "/entry:mainCRTStartup")
 endif()
 
-target_link_libraries(testMain PRIVATE Qt6::Test ${META_PROJECT_NAME}::myclass)
+target_link_libraries(testMain 
+  PRIVATE 
+  Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Test 
+  ${META_PROJECT_NAME}::myclass)
 
+if(QT_VERSION_MAJOR EQUAL 6)
 qt_finalize_executable(testMain)
+endif()
 
 add_test(NAME testMain COMMAND testMain)

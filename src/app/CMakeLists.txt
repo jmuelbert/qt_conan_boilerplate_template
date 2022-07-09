@@ -198,12 +198,6 @@ target_link_libraries(
   PUBLIC ${DEFAULT_LINKER_OPTIONS}
   INTERFACE)
 
-target_link_libraries(
-  ${target}
-  PRIVATE fmt::fmt spdlog::spdlog Qt${QT_VERSION_MAJOR}::Widgets
-  PUBLIC ${DEFAULT_LINKER_OPTIONS}
-  INTERFACE)
-
 if(QT_VERSION_MAJOR EQUAL 6)
   qt_finalize_executable(${target})
 endif()

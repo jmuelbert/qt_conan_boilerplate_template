@@ -302,7 +302,6 @@ elseif(UNIX AND NOT APPLE)
 
   configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/snapcraft.yaml.in ${PROJECT_SOURCE_DIR}/snapcraft.yaml @ONLY)
 
-
   # man page
   find_program(GZIP gzip)
   if(GZIP)

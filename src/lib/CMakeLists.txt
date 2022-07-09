@@ -224,16 +224,16 @@ install(
   COMPONENT dev)
 
 # Generated header files
-# install(
-#   DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
-#   DESTINATION ${INCLUDE_INSTALL_DIR}
-#   COMPONENT dev)
+install(
+  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
+  DESTINATION ${INCLUDE_INSTALL_DIR}
+  COMPONENT dev)
 
 # CMake config
 install(
   EXPORT ${target}-export
   NAMESPACE ${META_PROJECT_NAME}::
-  DESTINATION ${INSTALL_CMAKE}/${target}
+  DESTINATION ${CMAKECONFIG_INSTALL_DIR}/${target}
   COMPONENT dev)
 
 # Tests

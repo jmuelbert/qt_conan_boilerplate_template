@@ -161,7 +161,7 @@ target_include_directories(
 target_link_libraries(
   ${target}
   PRIVATE
-  PUBLIC ${DEFAULT_LIBRARIES}  Qt${QT_VERSION_MAJOR}::Core
+  PUBLIC ${DEFAULT_LIBRARIES} Qt${QT_VERSION_MAJOR}::Core
   INTERFACE)
 
 #

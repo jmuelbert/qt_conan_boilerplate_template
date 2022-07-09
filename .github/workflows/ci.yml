@@ -319,7 +319,7 @@ jobs:
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cmake $env:GITHUB_WORKSPACE `
-            -G "${{matrix.config.generator}}" -A "${{matrix.pak_arch}}" `
+            -G "${{matrix.config.generator}}" -A "${{ matrix.config.arch }}" `
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} `
             -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" `
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} `
@@ -501,7 +501,7 @@ jobs:
       - name: "📦 Create flatpak"
         run: |
           BUNDLE="org.jmuelbert.${target}.flatpak"
-          MANIFEST_PATH=$GITHUB_WORKSPACE/packaging/flatpak/org.jmuelbert.${target}.yml
+          MANIFEST_PATH=$GITHUB_WORKSPACE/flatpak.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="org.jmuelbert.${target}"
           BRANCH="master"

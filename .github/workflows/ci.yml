@@ -336,7 +336,7 @@ jobs:
         run: |
           APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
           mkdir -p ${APPIMAGE_DST_PATH}
-           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
           cmake -S .. -B . -G "${{matrix.config.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
@@ -400,7 +400,7 @@ jobs:
           fi
           chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
           $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
-          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}}.x86_64.AppImage
+          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
 
       - name: "📤 Upload artifact: AppImage"
         if: runner.os == 'Linux'
@@ -410,7 +410,7 @@ jobs:
           path: |
             $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
 
-      - name: Make kac zparchiv
+      - name: Make mac ziparchiv
         if: runner.os == 'macOS'
         run: |
           ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip

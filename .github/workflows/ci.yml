@@ -401,6 +401,7 @@ jobs:
           chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
           $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
           mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
+          ls -alFR
 
       - name: "📤 Upload artifact: AppImage"
         if: runner.os == 'Linux'

@@ -39,6 +39,14 @@ include(cmake/HealthCheck.cmake)
 # Project description and (meta) information
 #
 
+# Note: by default ENABLE_DEVELOPER_MODE is True
+# This means that all analysis (sanitizers, static analysis)
+# is enabled and all warnings are treated as errors
+# if you want to switch this behavior, change TRUE to FALSE
+set(ENABLE_DEVELOPER_MODE
+    TRUE
+    CACHE BOOL "Enable 'developer mode'")
+
 # Get git revision
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 string(
@@ -94,6 +102,28 @@ project(${META_PROJECT_NAME} C CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+
+get_property(BUILDING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(BUILDING_MULTI_CONFIG)
+  if(NOT CMAKE_BUILD_TYPE)
+    # Make sure that all supported configuration types have their
+    # associated conan packages available. You can reduce this
+    # list to only the configuration types you use, but only if one
+    # is not forced-set on the command line for VS
+    message(TRACE "Setting up multi-config build types")
+    set(CMAKE_CONFIGURATION_TYPES
+        Debug
+        Release
+        RelWithDebInfo
+        MinSizeRel
+        CACHE STRING "Enabled build types" FORCE)
+  else()
+    message(TRACE "User chose a specific build type, so we are using that")
+    set(CMAKE_CONFIGURATION_TYPES
+        ${CMAKE_BUILD_TYPE}
+        CACHE STRING "Enabled build types" FORCE)
+  endif()
+endif()
 
 # Create version file
 file(WRITE "${PROJECT_BINARY_DIR}/VERSION" "${META_NAME_VERSION}")

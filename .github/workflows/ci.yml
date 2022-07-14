@@ -333,17 +333,7 @@ jobs:
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
           cmake --build . --config ${{matrix.build_type}} --target pack
-          ls 
-
-          # APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
-          # cd $GITHUB_WORKSPACE
-          # macdeployqt ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app \
-          #     -qmldir=. \
-          #     -appstore-compliant \
-          #     -libpath=${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.app/Contents/Frameworks \
-          #     -verbose=1 -dmg
-          # cp ${APPIMAGE_DST_PATH}/usr/${{env.TARGET_NAME}}.dmg ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
-          # # ZIP application "%AppName%-%Version%-macOS.zip"
+          ls
 
       - name: "⚙️ Build"
         if: runner.os ==  'Windows'
@@ -359,7 +349,7 @@ jobs:
         run: |
           cmake --build ./build --config ${{matrix.build_type}} --target install
           ls
-          
+
       - name: "⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'
         # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
@@ -395,7 +385,7 @@ jobs:
         with:
           name: ${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}-qt${{matrix.qt_version}}-Linux.AppImage
           path: |
-            $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
+            $GITHUB_WORKSPACE/${{env.TARGET_NAME}}*.AppImage
 
       - name: Make mac ziparchiv
         if: runner.os == 'macOS'
@@ -421,15 +411,15 @@ jobs:
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.TARGET_NAME}}-win-${{ steps.get_version.outputs.VERSION }}.exe
-          path: ${{ env.archiveName}}.exe
+          name: windows.exe
+          path: ${{ env.TARGET_NAME }}*.exe
 
       - name: Upload zip artifact for Windows - ${{ matrix.qt_version }}-${env.BUILD_TYPE}}
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}-macos.zip
-          path: build/${{ env.TARGET_NAME }}*.zip
+          name: windows.zip
+          path: ${{ env.TARGET_NAME }}*.zip
 
   flatpak-build:
     name: "🐧 Build flatpak on ubuntu-20.04"
@@ -440,7 +430,7 @@ jobs:
       - name: "⚙️ Get the version"
         id: get_version
         shell: bash
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+        run: echo ::set-output name=VERSION::"$(echo $GITHUB_REF | cut -d / -f 3)"
 
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.5.0
@@ -462,12 +452,13 @@ jobs:
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak install -y --noninteractive flathub org.freedesktop.Sdk//20.08
-          flatpak install -y --noninteractive flathub org.freedesktop.Platform.GL.default//20.08
+          flatpak install -y --noninteractive flathub org.freedesktop.Platform.GL.default//21.08
           flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
           flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
 
       - name: "📦 Create flatpak"
         run: |
+          ls 
           BUNDLE="org.jmuelbert.${target}.flatpak"
           MANIFEST_PATH=$GITHUB_WORKSPACE/cmake/modules/flatpak.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"

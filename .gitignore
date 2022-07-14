@@ -184,3 +184,5 @@ compile_commands.json
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+megalinter-reports/

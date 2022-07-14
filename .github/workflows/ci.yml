@@ -366,6 +366,7 @@ jobs:
         if: runner.os ==  'Windows'
         working-directory: build
         run: |
+          cmake --build . --config ${{matrix.build_type}} --target install
           cmake --build . --config ${{matrix.build_type}} --target  pack
 
       - name: "⚙️ Build"

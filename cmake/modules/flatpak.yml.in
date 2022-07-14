@@ -1,5 +1,5 @@
 ---
-app-id: org.jmuelbert.@TARGET@
+app-id: org.jmuelbert.qtwidgettest
 runtime: org.kde.Platform
 runtime-version: "5.15"
 sdk: org.kde.Sdk
@@ -22,7 +22,7 @@ finish-args:
   # System Tray Icon
 
 modules:
-  - name: @TARGET@
+  - name: qtwidgettest
     buildsystem: cmake-ninja
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release

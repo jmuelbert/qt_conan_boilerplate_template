@@ -333,6 +333,7 @@ jobs:
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
           cmake --build . --config ${{matrix.build_type}} --target pack
+          ls 
 
           # APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
           # cd $GITHUB_WORKSPACE
@@ -350,13 +351,15 @@ jobs:
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
           cmake --build . --config ${{matrix.build_type}} --target  pack
+          ls
 
       - name: "⚙️ Build"
         if: runner.os == 'Linux'
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cmake --build ./build --config ${{matrix.build_type}} --target install
-
+          cmake --build . --config ${{matrix.build_type}} --target  pack
+          ls
       - name: "⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'
         # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
@@ -417,8 +420,6 @@ jobs:
       - name: "📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
-        env:
-          archiveName: ${{ env.TARGET_NAME}}.${{ steps.get_version.outputs.VERSION }}.Windows-${{ matrix.arch }}
         with:
           name: ${{ env.TARGET_NAME}}-win-${{ steps.get_version.outputs.VERSION }}.exe
           path: ${{ env.archiveName}}.exe
@@ -468,7 +469,7 @@ jobs:
       - name: "📦 Create flatpak"
         run: |
           BUNDLE="org.jmuelbert.${target}.flatpak"
-          MANIFEST_PATH=$GITHUB_WORKSPACE/flatpak.yml
+          MANIFEST_PATH=$GITHUB_WORKSPACE/cmake/modules/flatpak.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="org.jmuelbert.${target}"
           BRANCH="master"

@@ -414,31 +414,7 @@ jobs:
           name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}-macos.zip
           path: build/${{ env.TARGET_NAME }}*.bz2
 
-      - name: Compress Zip Archive
-        if: runner.os ==  'Windows'
-        env:
-          archiveName: ${{ env.TARGET_NAME}}.${{ steps.get_version.outputs.VERSION }}.Windows-${{ matrix.arch }}
-        shell: pwsh
-        run: |
-          Compress-Archive -Path $ENV:GITHUB_WORKSPACE/build/${{ env.archiveName}}/bin -DestinationPath ${{ env.archiveName}}'.zip'
-
-      - name: Upload Zip archive
-        if: runner.os ==  'Windows'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.TARGET_NAME}}-win.zip
-          path: ${{ env.archiveName}}.zip
-
-      - name: "📦 Make ISS-Installer for ${{ matrix.qt_version }}"
-        if: runner.os ==  'Windows'
-        working-directory: build
-        env:
-          archiveName: ${{ env.TARGET_NAME}}.${{ steps.get_version.outputs.VERSION }}.Windows-${{ matrix.arch }}
-        shell: bash
-        run: |
-          iscc $GITHUB_WORKSPACE/packaging/win/installer_Qt6_x64.iss -DMyAppVersion=${{ steps.get_version.outputs.VERSION }} -DMyProjectRoot=$(pwd) -DMyOutRoot=$GITHUB_WORKSPACE/build//${archiveName}/bin
-
-      - name: "📤 Upload artifact: ISS Installer"
+      - name: "📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         env:
@@ -446,6 +422,13 @@ jobs:
         with:
           name: ${{ env.TARGET_NAME}}-win-${{ steps.get_version.outputs.VERSION }}.exe
           path: ${{ env.archiveName}}.exe
+
+      - name: Upload zip artifact for Windows - ${{ matrix.qt_version }}-${env.BUILD_TYPE}}
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}-macos.zip
+          path: build/${{ env.TARGET_NAME }}*.zip
 
   flatpak-build:
     name: "🐧 Build flatpak on ubuntu-20.04"
@@ -478,7 +461,7 @@ jobs:
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak install -y --noninteractive flathub org.freedesktop.Sdk//20.08
-          flatpak install -y --noninteractive flathub org.freedesktop.Platform.GL//20.08
+          flatpak install -y --noninteractive flathub org.freedesktop.Platform.GL.default//20.08
           flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
           flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
 

@@ -1,5 +1,4 @@
 import os
-import re
 
 from conan import ConanFile
 from conan.tools.files import save, load, copy, rmdir

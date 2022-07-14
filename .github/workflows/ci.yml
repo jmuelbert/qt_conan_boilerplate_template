@@ -116,7 +116,6 @@ jobs:
           version: ${{ env.QT_VERSION }}
           # host: ${{ runner.os }}
           target: ${{ env.QT_TARGET }}
-          arch: ${{ matrix.qt_arch }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
@@ -159,19 +158,6 @@ jobs:
         run: |
           ctest -C ${{matrix.build_type}}
           gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml
-
-      - name: CPack
-        if: matrix.package_generator != ''
-        working-directory: ./build
-        run: |
-          cpack -C ${{matrix.build_type}} -G ${{matrix.package_generator}}
-
-      - name: Publish Tagged Release
-        uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.package_generator != '' }}
-        with:
-          files: |
-            build/*-*${{ matrix.build_type }}*-*.*
 
       - name: Publish to codecov
         uses: codecov/codecov-action@v2
@@ -229,12 +215,8 @@ jobs:
       - name: "⚙️ Get the version"
         id: get_version
         shell: bash
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
-
-      # - name: Cancel Previous Runs
-      #   uses: styfle/cancel-workflow-action@0.5.0
-      #   with:
-      #     access_token: ${{ github.token }}
+        run: |
+          echo ::set-output name=VERSION::"$(echo $GITHUB_REF | cut -d / -f 3)"
 
       - name: "🧰 Checkout"
         uses: actions/checkout@v3
@@ -293,7 +275,7 @@ jobs:
         with:
           # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
           toolset: 14.2
-          arch: ${{ matrix.pak_arch }}
+          arch: ${{ matrix.confg.pak_arch }}
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v2
@@ -321,7 +303,7 @@ jobs:
           cmake $env:GITHUB_WORKSPACE `
             -G "${{matrix.config.generator}}" -A "${{ matrix.config.arch }}" `
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} `
-            -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" `
+            -DCMAKE_INSTALL_PREFIX:PATH="./program" `
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} `
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} `
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" `

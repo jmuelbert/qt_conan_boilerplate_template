@@ -10,6 +10,8 @@
   ],
   "language": "en",
   "noConfigSearch": true,
-  "words": [],
+  "words": [
+    "APPIMAGE"
+  ],
   "version": "0.2"
 }

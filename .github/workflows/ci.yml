@@ -14,6 +14,8 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/ci.yml"
+      - "deploy/flatpak.yml"
+      - "snap/snapcraft.yml"
   pull_request:
     # The branches below must be a subset of the branches above
     types: [opened, synchronize, reopened]

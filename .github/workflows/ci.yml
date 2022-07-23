@@ -378,18 +378,19 @@ jobs:
           chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
           $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
           mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
+          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
           pwd
           ls -al
 
-      - name: "📤 Upload artifact: AppImage"
+      - name: "📤 Upload Linux artifacts"
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v3
         with:
           name: appimage-artifact
           path: |
-            ${env.{GITHUB_WORKSPACE}}/${{env.TARGET_NAME}}*.AppImage
+            ${{env.GITHUB_WORKSPACE}}/${{env.TARGET_NAME}}*.AppImage
 
-      - name: Upload macOS artifacfs
+      - name: Upload macOS artifacts
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v3
         with:
@@ -400,8 +401,8 @@ jobs:
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:
-          name: windows-artifacs
-          path: build/${{ env.TARGET_NAME }}*.*
+          name: windows-artifacts
+          path: build/${{ env.PROJECT_NAME }}*.*
 
   flatpak-build:
     name: "🐧 Build flatpak on ubuntu-20.04"

@@ -31,6 +31,7 @@ on:
 env:
   # Target
   TARGET_NAME: qtwidgettest
+  PROJECT_NAME: qtconanboilerplate
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
@@ -383,29 +384,23 @@ jobs:
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
+          name: appimage-artifact
           path: |
             $GITHUB_WORKSPACE/${{env.TARGET_NAME}}*.AppImage
-
-      - name: Make mac ziparchiv
-        if: runner.os == 'macOS'
-        run: |
-          ditto -c -k --sequesterRsrc --keepParent "bin/${{env.TARGET_NAME}}.app" ${{env.TARGET_NAME}}.zip
-          cp ./${{env.TARGET_NAME}}.zip ${{runner.workspace}}/${{env.TARGET_NAME}}.zip
 
       - name: Upload dmg artifact for macOS - ${{ matrix.qt_version }}
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v3
         with:
-          name: ${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.dmg
-          path: build/${{ env.TARGET_NAME }}*.dmg
+          name: ${PROJECT_NAME}-${{ steps.get_version.outputs.VERSION }}.dmg
+          path: build/${{ env.PROJECT_NAME }}*.dmg
 
       - name: Upload zip artifact for macOS - ${{ matrix.qt_version }}-${env.BUILD_TYPE}}
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}-macos.zip
-          path: build/${{ env.TARGET_NAME }}*.bz2
+          name: macos-artifacts
+          path: build/${{ env.PROJECT_NAME }}-*.*
 
       - name: "📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'

@@ -460,7 +460,7 @@ jobs:
         run: |
           ls 
           BUNDLE="org.jmuelbert.${target}.flatpak"
-          MANIFEST_PATH=$GITHUB_WORKSPACE/cmake/modules/flatpak.yml
+          MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="org.jmuelbert.${target}"
           BRANCH="master"

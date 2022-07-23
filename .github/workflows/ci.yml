@@ -363,7 +363,7 @@ jobs:
         env:
           APPIMAGETOOL_ARCH: x86_64
 
-      - name: "📦 Create AppImage"
+      - name: "🐧 📦 Create AppImage"
         if: runner.os == 'Linux'
         shell: bash
         run: |
@@ -382,22 +382,22 @@ jobs:
           pwd
           ls -al
 
-      - name: "📤 Upload Linux artifacts"
+      - name: "🐧 📤 Upload Linux artifacts"
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v3
         with:
           name: appimage-artifact
           path: |
-            ${{env.GITHUB_WORKSPACE}}/${{env.TARGET_NAME}}*.AppImage
+            $GITHUB_WORKSPACE/${{env.TARGET_NAME}}*.AppIm*
 
-      - name: Upload macOS artifacts
+      - name: "🍎 📤 Upload macOS artifacts"
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v3
         with:
           name: macos-artifacts
           path: build/${{ env.PROJECT_NAME }}-*.*
 
-      - name: "📤 Upload artifact: Windows Installer"
+      - name: "🧊 📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:

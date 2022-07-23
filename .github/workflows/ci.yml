@@ -377,13 +377,13 @@ jobs:
           chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
           $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
           mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
-          ls -alFR
+          ls -al
 
       - name: "📤 Upload artifact: AppImage"
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}-qt${{matrix.qt_version}}-Linux.AppImage
+          name: ${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
           path: |
             $GITHUB_WORKSPACE/${{env.TARGET_NAME}}*.AppImage
 
@@ -411,14 +411,14 @@ jobs:
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:
-          name: windows.exe
+          name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}.exe
           path: ${{ env.TARGET_NAME }}*.exe
 
       - name: Upload zip artifact for Windows - ${{ matrix.qt_version }}-${env.BUILD_TYPE}}
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v3
         with:
-          name: windows.zip
+          name: ${{ env.TARGET_NAME }}-${{ steps.get_version.outputs.VERSION }}.zip
           path: ${{ env.TARGET_NAME }}*.zip
 
   flatpak-build:

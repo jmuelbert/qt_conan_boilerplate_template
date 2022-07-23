@@ -344,14 +344,14 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target  pack
           ls
 
-      - name: "⚙️ Build"
+      - name: "🐧 ⚙️ Build"
         if: runner.os == 'Linux'
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cmake --build ./build --config ${{matrix.build_type}} --target install
           ls
 
-      - name: "⚙️ Install go-appimage tool"
+      - name: "🐧 ⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'
         # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
         # which is glibc 2.23. For more information, please see https://github.com/probonopd/linuxdeployqt/issues/340.
@@ -377,8 +377,8 @@ jobs:
           fi
           chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
           $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
-          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
-          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
+          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
+          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
           pwd
           ls -al
 
@@ -388,7 +388,7 @@ jobs:
         with:
           name: appimage-artifact
           path: |
-            $GITHUB_WORKSPACE/${{env.TARGET_NAME}}*.AppIm*
+            build/${{env.TARGET_NAME}}-*.AppIm*
 
       - name: "🍎 📤 Upload macOS artifacts"
         if: runner.os == 'macOS'

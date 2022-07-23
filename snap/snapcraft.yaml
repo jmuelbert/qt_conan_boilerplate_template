@@ -19,7 +19,7 @@ version: "0.6.0"
 
 apps:
   qtwidgettest:
-    command: usr/bin/qt_canon_boilerplate
+    command: usr/bin/qtwidgettest
     common-id: com.github.jmuelbert.qt_canon_boilerplate
     extensions:
       - kde-neon
@@ -42,7 +42,7 @@ parts:
       - "-DBUILD_TESTING=OFF"
     source-type: git
     parse-info:
-      - usr/share/appdata/qt_canon_boilserplate.appdata.xml
+      - /usr/share/metainfo/qtwidgettest.appdata.xml
     build-snaps:
       - kde-frameworks-5-qt-5-15-core20
     build-packages:

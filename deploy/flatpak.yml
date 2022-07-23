@@ -1,7 +1,7 @@
 ---
 app-id: org.jmuelbert.qtwidgettest
 runtime: org.kde.Platform
-runtime-version: "5.15"
+runtime-version: "5.15-21.08"
 sdk: org.kde.Sdk
 command: qtwidgettest
 finish-args:
@@ -26,7 +26,6 @@ modules:
     buildsystem: cmake-ninja
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-      - -DLGTM=ON
     sources:
       - type: dir
-        path: ../..
+        path: ../

@@ -33,4 +33,4 @@ modules:
     buildsystem: cmake-ninja
     sources:
       - type: archive
-      - url: "https://codeload.github.com/fmtlib/fmt/tar.gz/refs/tags/9.0.0"
+        url: "https://codeload.github.com/fmtlib/fmt/tar.gz/refs/tags/9.0.0"

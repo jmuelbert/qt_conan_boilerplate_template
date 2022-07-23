@@ -494,12 +494,13 @@ jobs:
           ls
           mkdir -p $GITHUB_WORKSPACE/build
           cp ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/build/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap
-      - name: "📤 Upload artifact: SnapPack"
+
+      - name: "🐧 📤 Upload artifact: SnapPack"
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.TARGET_NAME }}-$GITHUB_WORKSPACE/build/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap.amd64.snap
+          name: snapcraft-artifact
           path: |
-            $GITHUB_WORKSPACE/build/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap
+            $GITHUB_WORKSPACE/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap
 
   diagram:
     name: Build diagram

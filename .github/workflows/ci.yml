@@ -501,15 +501,15 @@ jobs:
       - name: Rename snap name
         shell: bash
         run: |
-          ls
           mv ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
+          ls
 
       - name: "🐧 📤 Upload artifact: SnapPack"
         uses: actions/upload-artifact@v3
         with:
           name: snapcraft-artifact
           path: |
-            $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
+            $GITHUB_WORKSPACE/${TARGET_NAME}*.snap
 
   diagram:
     name: Build diagram

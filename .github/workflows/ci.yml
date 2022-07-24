@@ -45,6 +45,16 @@ env:
   QT_TARGET: "desktop"
 
 jobs:
+  ci_test_clang:
+    runs-on: ubuntu-latest
+    container: ghcr.io/jmuelbert/qt_conan_boilerplate_template:main
+    steps:
+      - uses: actions/checkout@v3
+      - name: cmake
+        run: cmake -S . -B build
+      - name: build
+        run: cmake  --build build --target ci_test_clang
+
   tests:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -492,15 +502,14 @@ jobs:
         shell: bash
         run: |
           ls
-          mkdir -p $GITHUB_WORKSPACE/build
-          cp ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/build/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap
+          mv ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
 
       - name: "🐧 📤 Upload artifact: SnapPack"
         uses: actions/upload-artifact@v3
         with:
           name: snapcraft-artifact
           path: |
-            $GITHUB_WORKSPACE/${TARGET_NAME}-${{ steps.get_version.outputs.VERSION }}.amd64.snap
+            $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
 
   diagram:
     name: Build diagram

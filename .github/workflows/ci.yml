@@ -183,7 +183,7 @@ jobs:
     name: "Build for ${{ matrix.config.os }}"
 
     runs-on: ${{ matrix.config.os }}
-    # needs: tests
+    needs: tests
 
     strategy:
       fail-fast: false
@@ -419,7 +419,7 @@ jobs:
   flatpak-build:
     name: "🐧 Build flatpak on ubuntu-20.04"
     runs-on: ubuntu-20.04
-    # needs: tests
+    needs: tests
 
     steps:
       - name: "⚙️ Get the version"
@@ -473,7 +473,7 @@ jobs:
   snap-build:
     name: "🐧 Build snap on ubuntu-20.04"
     runs-on: ubuntu-20.04
-    # needs: tests
+    needs: tests
 
     steps:
       - name: "⚙️ Get the version"
@@ -580,7 +580,7 @@ jobs:
       - name: Upload documentation
         uses: actions/upload-artifact@v3
         with:
-          name: docs
+          name: gh-docs
           path: docs/_build
 
   deployGHPages:
@@ -590,7 +590,7 @@ jobs:
       - name: Download Artifact with Pages
         uses: actions/download-artifact@v3
         with:
-          name: docs
+          name: gh-docs
           path: docs/_build
 
       - name: Deploy to GitHub Pages

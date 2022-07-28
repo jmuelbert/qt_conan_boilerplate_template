@@ -32,15 +32,19 @@ cleanup:
   - /lib/*.la
 
 modules:
-  - name: fmt
+  - name: fmt_9.0.0
     buildsystem: cmake-ninja
-    sources:
+    config-opts:
+      -DFMT_TEST=OFF
+          sources:
       - type: archive
         url: "https://github.com/fmtlib/fmt/archive/refs/tags/9.0.0.tar.gz"
         sha256: 9a1e0e9e843a356d65c7604e2c8bf9402b50fe294c355de0095ebd42fb9bd2c5
 
-  - name: spdlog
+  - name: spdlog_1.10.0
     buildsystem: cmake-ninja
+    config-opts:
+      -D
     sources:
       - type: archive
         url: "https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.tar.gz"
@@ -50,6 +54,10 @@ modules:
     buildsystem: cmake-ninja
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_SHARED_LIBS:BOOL="TRUE"
+      - -DOPTION_BUILD_TESTS:BOOL="FALSE"
+      - -DOPTION_BUILD_DOCS:BOOL)"TRUE"
+      - 
     sources:
       - type: dir
         path: ../

@@ -20,14 +20,30 @@ finish-args:
   # Notification access
   - --talk-name=org.freedesktop.Notifications
   # System Tray Icon
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /share/doc
+  - /share/gtk-doc
+  - /share/info
+  - /share/man
+  - /lib/*.a
+  - /lib/*.la
 
 modules:
   - name: fmt
     buildsystem: cmake-ninja
     sources:
-      - type: git
-        url: "https://github.com/fmtlib/fmt.git"
-        branch: master
+      - type: archive
+        url: "https://github.com/fmtlib/fmt/archive/refs/tags/9.0.0.tar.gz"
+
+  - name: spdlog
+    buildsystem: cmake-ninja
+    sources:
+      - type: archive
+        url: "https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.tar.gz"
+
   - name: qtwidgettest
     buildsystem: cmake-ninja
     config-opts:

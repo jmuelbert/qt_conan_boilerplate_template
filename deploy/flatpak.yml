@@ -27,8 +27,7 @@ modules:
     sources:
       - type: git
         url: "https://github.com/fmtlib/fmt.git"
-    config-opts:
-      - --enable-shared
+        branch: master
   - name: qtwidgettest
     buildsystem: cmake-ninja
     config-opts:

@@ -22,6 +22,13 @@ finish-args:
   # System Tray Icon
 
 modules:
+  - name: fmt
+    buildsystem: cmake-ninja
+    sources:
+      - type: git
+        url: "https://github.com/fmtlib/fmt.git"
+    config-opts:
+      - --enable-shared
   - name: qtwidgettest
     buildsystem: cmake-ninja
     config-opts:
@@ -29,8 +36,3 @@ modules:
     sources:
       - type: dir
         path: ../
-  - name: fmt
-    buildsystem: cmake-ninja
-    sources:
-      - type: archive
-        url: "https://codeload.github.com/fmtlib/fmt/tar.gz/refs/tags/9.0.0"

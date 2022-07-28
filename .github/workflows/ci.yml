@@ -45,15 +45,15 @@ env:
   QT_TARGET: "desktop"
 
 jobs:
-  ci_test_clang:
-    runs-on: ubuntu-latest
-    container: ghcr.io/jmuelbert/qt_conan_boilerplate_template:main
-    steps:
-      - uses: actions/checkout@v3
-      - name: cmake
-        run: cmake -S . -B build
-      - name: build
-        run: cmake  --build build --target ci_test_clang
+  # ci_test_clang:
+  #   runs-on: ubuntu-latest
+  #   container: ghcr.io/jmuelbert/qt_conan_boilerplate_template:main
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: cmake
+  #       run: cmake -S . -B build
+  #     - name: build
+  #       run: cmake  --build build --target ci_test_clang
 
   tests:
     runs-on: ${{ matrix.os }}
@@ -460,14 +460,14 @@ jobs:
           BRANCH="master"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
-          mv $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}.flatpak $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+          mv $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}.flatpak build/org.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
       - name: "📤 Upload artifact: FlatPak"
         uses: actions/upload-artifact@v3
         with:
           name: flatpak-artifact
           path: |
-            $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+            build/org.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
   snap-build:
     name: "🐧 Build snap on ubuntu-20.04"
@@ -500,7 +500,7 @@ jobs:
       - name: Rename snap name
         shell: bash
         run: |
-          mv ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
+          mv ${{ steps.snapcraft.outputs.snap }} build/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
           ls
 
       - name: "🐧 📤 Upload artifact: SnapPack"
@@ -508,7 +508,7 @@ jobs:
         with:
           name: snapcraft-artifact
           path: |
-            $GITHUB_WORKSPACE/${TARGET_NAME}_*_amd64.snap
+            build/${TARGET_NAME}_*_amd64.snap
 
   diagram:
     name: Build diagram

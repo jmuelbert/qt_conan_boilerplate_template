@@ -54,7 +54,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
       - -DBUILD_SHARED_LIBS:BOOL="TRUE"
       - -DOPTION_BUILD_TESTS:BOOL="FALSE"
-      - -DOPTION_BUILD_DOCS:BOOL)"TRUE"
+      - -DOPTION_BUILD_DOCS:BOOL="TRUE"
     sources:
       - type: dir
         path: ../

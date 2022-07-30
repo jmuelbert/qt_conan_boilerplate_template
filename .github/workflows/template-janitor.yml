@@ -79,7 +79,7 @@ jobs:
       - name: Insert new org and project
         run: |
           # rename the CMake project to match the github project
-          sed -i "s/myproject/${{ env.NEW_SAFE_PROJECT }}/gi" CMakeLists.txt configured_files/config.hpp.in src/app/main.cpp test/CMakeLists.txt fuzz_test/CMakeLists.txt
+          sed -i "s/myproject/${{ env.NEW_SAFE_PROJECT }}/gi" CMakeLists.txt configured_files/config.hpp.in src/app/source/main.cpp test/CMakeLists.txt fuzz_test/CMakeLists.txt
 
           # Update URL placeholders for project
           sed -i "s|%%myurl%%|${{ fromJson(steps.get_repo_meta.outputs.data).html_url }}|gi" CMakeLists.txt
@@ -208,7 +208,7 @@ jobs:
       # Rename all cpp_starter_project occurrences to current repository and remove this workflow
       - name: Update repository to match new template information
         run: |
-          # Update the README and template files to match the new org / repository names 
+          # Update the README and template files to match the new org / repository names
           sed -i "s|${{ env.TEMPLATE_REPOSITORY }}|${{ env.NEW_REPOSITORY }}|g" README.md ${{ env.TEMPLATES_PATH }}/template_repository
           sed -i "s|${{ env.TEMPLATE_NAME }}|${{ env.NEW_PROJECT }}|g" README.md ${{ env.TEMPLATES_PATH }}/template_name
 

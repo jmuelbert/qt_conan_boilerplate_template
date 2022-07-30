@@ -1,20 +1,20 @@
 # Welcome!
 
-You are here to help jmbde-QT? Awesome, feel free and read the following sections in
+You are here to help qt_conan_boilerplate_template? Awesome, feel free and read the following sections in
 order to know how to work on something and where to get help from. Your contribution
-matters a lot, jmbde-QT is getting better and better because of people like you. :smile:
+matters a lot, qt_conan_boilerplate_template is getting better and better because of people like you. :smile:
 
 ## What kinds of contributions are we looking for?
 
--   If you like jmbde-QT, star this project and share it with your friends.
+-   If you like qt_conan_boilerplate_template, star this project and share it with your friends.
 -   Report bugs or request new features by
-    [opening issues](https://github.com/jmuelbert/jmbde-QT/issues/new/choose). Please
+    [opening issues](https://github.com/jmuelbert/qt_conan_boilerplate_template/issues/new/choose). Please
     follow the issue templates and provide detailed information, this will help the
     developers to find the reason of the bug and understand what feature you are
     requesting for exactly.
 -   Help other people in issues/pull requests/other platforms if you are able to help
     them.
--   Write tutorials and blogs on how to use jmbde-QT.
+-   Write tutorials and blogs on how to use qt_conan_boilerplate_template.
 -   Improve documentation, including the Markdown files and the comments in the codes.
 -   Write codes for new features or bug fixes.
 
@@ -31,7 +31,7 @@ competitive programming, but it's not hard. The first thing you should know is
 Object-Oriented Programming. Basically, you need to know how classes work in C++, and
 you should know it's a rule to put the class definitions in the `.h`/`.hpp` files, and
 put the implementation of the functions in the `.cpp` files. The source code of the
-jmbde-QT is a good example. Google for what you want to implement is usually helpful.
+qt_conan_boilerplate_template is a good example. Google for what you want to implement is usually helpful.
 Copy and modify the source codes if you want to implement something similar to an
 existing feature. If you are looking for an IDE for developing,
 [VS Code](https://code.visualstudio.com/) is probably a good choice.
@@ -41,7 +41,7 @@ install Qt>=5.15 and CMake>=3.5 first. Linux users may install them using the pa
 manager on your system. Windows users may download Qt [here](https://www.qt.io/download)
 and it's recommended to use [Visual Studio](https://visualstudio.microsoft.com/) and
 install the CMake plugin. Read the
-[build from source](https://github.com/jmuelbert/jmbde-QT) section to learn how to
+[build from source](https://github.com/jmuelbert/qt_conan_boilerplate_template) section to learn how to
 build. Read the [Qt docs](https://doc.qt.io/) on how to use Qt built-in widgets, how to
 design the UI and how to use the
 [signals and slots](https://doc.qt.io/qt-5/signalsandslots.html). Usually, you don't
@@ -49,9 +49,9 @@ need anything from the std namespace, for example, use `QString` instead of
 `std::string`.
 
 **Don't know where to start?** You can start by looking through the
-[issues](https://github.com/jmuelbert/jmbde-QT/issues) and find one you are interested
+[issues](https://github.com/jmuelbert/qt_conan_boilerplate_template/issues) and find one you are interested
 in. The
-[good first issues](https://github.com/jmuelbert/jmbde-QT/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+[good first issues](https://github.com/jmuelbert/qt_conan_boilerplate_template/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 may be suitable for you.
 
 ## Before Writing Codes
@@ -67,7 +67,7 @@ writing codes for a pull request, for these reasons:
 
 ## Contributing rules
 
--   Remember that the goal is to build an jmbde-QT for user, not for developers.
+-   Remember that the goal is to build an qt_conan_boilerplate_template for user, not for developers.
 -   Do one thing in a pull request. If you want to add multiple features/fix multiple
     bugs and they are not relevant, open multiple pull requests. You may need to create
     multiple branches to open multiple pull requests, you can learn git branching
@@ -100,7 +100,7 @@ writing codes for a pull request, for these reasons:
         everything will be better and better.
 -   Do I need to learn about CMake?
     -   No, you only need to know how to
-        [build from source](https://github.com/jmuelbert/jmbde-QT).
+        [build from source](https://github.com/jmuelbert/qt_conan_boilerplate_template).
 -   Some files are missing when compiling.
 
     -   If the CI tests are passed, it's probably because the submodules are updated.

@@ -1,0 +1,27 @@
+{
+    "background": "/Users/runner/work/qt_conan_boilerplate_template/packaging/macos/CMakeDMGBackground.png",
+    "contents": [
+        {
+            "path": "/Users/runner/work/qt_conan_boilerplate_template/qt_conan_boilerplate_template/build/Applications/qtwidgettest.app",
+            "type": "file",
+            "x": 130,
+            "y": 205
+        },
+        {
+            "path": "/Applications",
+            "type": "link",
+            "x": 375,
+            "y": 205
+        }
+    ],
+    "icon": "/Users/juergen/Projects/GitHub/qt_conan_boilerplate_template/packaging/macos/CMakeDMGBackground.png",
+    "icon-size": 128,
+    "title": "qtwidgettest ",
+    "window":
+    {
+        "size":
+        {
+            "height" : 365, "width" : 500
+        }
+    }
+}

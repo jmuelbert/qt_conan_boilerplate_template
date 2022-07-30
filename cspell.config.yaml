@@ -1,154 +1,155 @@
 version: "0.2"
 files:
   - "**/*"
+dictionaryDefinitions:
+  - name: cmake-refined
+    path: ./config/cmake-refined-words.txt
+    addWords: false
+  - name: qt
+    path: ./config/qt-words.txt
+    addWords: false
+  - name: linux-package
+    path: ./config/linux-package-words.txt
+    addWords: false
+  - name: taskfile
+    path: ./config/taskfile-words.txt
+    addWords: false
+dictionaries:
+  - qt
+  - taskfile
+  - bash
+  - cmake-refined
+  - cpp-refined
+  - docker
+  - linux-package
+  - python-common
 ignorePaths:
+  - s**/node_modules/**
+  - "**/vscode-extension/**"
+  - "**/.git/**"
+  - ".github/actions/**"
+  - ".github/workflows/**"
+  - "cmake/modules/**"
+  - "docs/api-docs/**"
+  - "cspell.config.yaml"
+  - "*.gz"
+  - "*.lock"
+  - "*.svg"
+  - .gitignore
+  - .devcontainer/.dockerignore
+  - .vscode
+  - megalinter
+  - package-lock.json
+  - report
   - pnpm-lock.yaml
-  - .git/
-  - dist/
+  - dist/**
+  - build/**
+  - /project-words.txt
+  - ./qt-words.txt
+  - ./taskfile-words.txt
+  - ./cmake-refined-words.txt
+  - ./linux-package-words.txt
 useGitignore: true
 language: en, en-GB, de, de-DE
 allowCompoundWords: true
 enableGlobDot: true
 words:
-  - aarch
-  - ahmadnassri
-  - aminya
-  - Amnet
-  - anotherproj
-  - applellvm
+  - aqtinstall
+  - APPL
   - ARGN
-  - asan
-  - buildtools
+  - cbproj
   - ccache
   - ccmake
-  - cflags
-  - choco
-  - cmake
+  - clangd
   - cmakelang
-  - cmakelint
-  - cmds
-  - cobertura
-  - codacy
   - Codacy
   - codecov
-  - codeql
-  - cond
-  - cpack
-  - CPATH
   - cppcheck
-  - Cppcheck
-  - cppcoreguidelines
-  - CPPFLAGS
-  - cpprc
   - cppstd
-  - cpptestproject
   - cpptools
-  - ctest
-  - Cuda
-  - cxxflags
-  - DCMAKE
-  - deps
-  - DGIT
-  - Dont
-  - DOPT
-  - dyld
-  - dylib
+  - cschlosser.doxdocgen
+  - Devel
+  - DCOMPONENT
+  - DOPTION*
+  - DPROJECT
   - eamodio
-  - Eigen
-  - fargs
-  - fcolor
-  - fdiagnostics
-  - frameworkdirs
-  - ftime
-  - gcov
-  - gcovr
-  - gmock
-  - Graphviz
+  - fasterer
+  - FILEOS
+  - fips
+  - ftest
+  - fprofile
+  - furo
+  - Fuzzer
+  - Gcov
+  - giticket
+  - groupproj
   - gtest
   - hmarr
   - hwrap
-  - inplace
+  - icns
+  - IHELP
+  - IOPTIONS
+  - IQUIT
+  - IWYU
+  - jamf
+  - jinja
   - jmuelbert
-  - kcov
+  - juergen
+  - kwarg
   - kwargs
-  - LDFLAGS
-  - libc
-  - libcuda
+  - LCOV
   - libcxx
-  - libdirs
   - libfmt
-  - libstdc
-  - LPSTR
-  - LPWSTR
-  - mdfile
-  - mkdir
-  - msbuild
-  - msvc
-  - msys
-  - multilib
-  - mylib
-  - myprogram
-  - myproj
-  - myproject
-  - nothrow
-  - nproc
-  - nvcc
-  - opencppcoverage
-  - Opencppcoverage
-  - ossar
-  - OSSAR
+  - libgmp
+  - libmpfr
+  - libspdlog
+  - lstrip
+  - muelbert
+  - Mülbert
+  - munki
+  - munkiadmin
+  - munkipkg
+  - myclass
+  - noqa
+  - oclint
+  - parg
   - pargs
-  - pnpm
+  - Pavlik
+  - Pboard
+  - plists
+  - pipenv
+  - pkgsinfo
   - PTRACE
-  - pwsh
+  - pthread
+  - pthreads
   - pylance
-  - qtbase
-  - qtdeclarative
-  - qtimageformats
-  - qtsvg
-  - qttools
-  - qttranslation
-  - qttranslations
-  - resdirs
-  - rmrf
-  - rpath
-  - sarif
-  - sccache
-  - setx
-  - shlib
-  - sobolevn
+  - pyyaml
+  - qtconanboilerplate
+  - qtwidgettest
+  - REDIST
+  - SAST
+  - sectnums
+  - socat
+  - sonarqube
   - spdlog
-  - Struct
-  - suppr
+  - svgz
   - SYSREQUIRES
-  - TOLOWER
-  - TOUPPER
+  - rubocop
   - twxs
-  - ubsan
-  - vcpkg
-  - vcvarsall
-  - visualc
-  - visualcpp
-  - VSCMD
-  - VSINSTALLDIR
-  - vsversion
-  - Wcast
-  - Wconversion
-  - Wdouble
-  - Wduplicated
-  - Werror
-  - Weverything
+  - uncrustify
+  - venv
+  - VRAC
+  - webp
   - Wextra
-  - Wformat
-  - Wlogical
-  - Wmisleading
-  - Wnon
-  - Wnull
-  - Woverloaded
+  - Wignored
+  - winver
+  - Wmaybe
+  - Wmissing
   - Wpedantic
-  - Wshadow
-  - Wsign
+  - Wreorder
+  - Wreturn
+  - Wuninitialized
   - Wunused
-  - Wuseless
-  - xcrun
-  - Yahyaabadi
+  - xcodeproj
+flagWords:
+  - hte

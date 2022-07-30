@@ -57,13 +57,13 @@ tasks:
 
   lint:
     - |
-      {{if eq OS "windows"}} 
-        powershell -c '$files=(git ls-files --exclude-standard); foreach ($file in $files) { if ((get-item $file).Extension -in ".cpp", ".hpp", ".c", ".cc", ".cxx", ".hxx", ".ixx") { clang-format -i -style=file $file } }' 
-      {{else}} 
-        git ls-files --exclude-standard | grep -E '\.(cpp|hpp|c|cc|cxx|hxx|ixx)$' | xargs clang-format -i -style=file 
+      {{if eq OS "windows"}}
+        powershell -c '$files=(git ls-files --exclude-standard); foreach ($file in $files) { if ((get-item $file).Extension -in ".cpp", ".hpp", ".c", ".cc", ".cxx", ".hxx", ".ixx") { clang-format -i -style=file $file } }'
+      {{else}}
+        git ls-files --exclude-standard | grep -E '\.(cpp|hpp|c|cc|cxx|hxx|ixx)$' | xargs clang-format -i -style=file
       {{end}}
     - |
-      {{if eq OS "windows"}} 
+      {{if eq OS "windows"}}
       powershell -c '$files=(git ls-files --exclude-standard); foreach ($file in $files) { $item=(get-item $file); if (($item.Name -eq "CMakeLists.txt") -or ($item.Extension -in ".cmake")) { cmake-format --in-place $file; cmake-lint $file --disabled-codes C0103 C0301 R0912 R0915 R0913 --suppress-decorations } }'
       {{else}}
         git ls-files --exclude-standard | grep -E '(CMakeLists\.txt)|(\.(cmake))$' | xargs cmake-format --in-place | xargs cmake-lint --disabled-codes C0103 C0301 R0912 R0915 R0913 --suppress-decorations
@@ -72,8 +72,8 @@ tasks:
     - npx cspell "**" --show-suggestions --color --no-progress
 
   clean: |
-    {{if eq OS "windows"}} 
+    {{if eq OS "windows"}}
       powershell -c 'function rmrf($path) { if (test-path $path) { rm -r -force $path }}; rmrf ./build; rmrf ./install'
-    {{else}} 
+    {{else}}
       rm -rf ./build ./install
     {{end}}

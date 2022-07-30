@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from cpt.packager import ConanMultiPackager
 

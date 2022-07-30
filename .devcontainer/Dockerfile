@@ -73,7 +73,7 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
     neovim emacs nano
 
-# Install optional dependecies
+# Install optional dependencies
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
     doxygen graphviz ccache cppcheck
@@ -104,7 +104,7 @@ RUN ln -s $(readlink -f /usr/lib/clang/${LLVM_VER}/include) \
 RUN apt-get autoremove -y && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-## Install aqinstall
+## Install aqtinstall
 RUN pip install aqtinstall
 
 ## Install Qt

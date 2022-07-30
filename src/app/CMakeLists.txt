@@ -225,7 +225,7 @@ if(APPLE OR WIN32)
     set(executable_path "$<TARGET_FILE_NAME:${TARGET}>.app")
 
     set_property(TARGET ${TARGET} PROPERTY MACOSX_BUNDLE_INFO_PLIST
-                                           ${CMAKE_SOURCE_DIR}/cmake/modules/MacOSXBundleInfo.plist.in)
+                                           ${CMAKE_SOURCE_DIR}/cmake/config/MacOSXBundleInfo.plist.in)
 
     # the MacOSX bundle display name property (CFBundleDisplayName) is not
     # currently supported by cmake, so has to be set for all TARGETs in this cmake
@@ -249,12 +249,12 @@ if(APPLE OR WIN32)
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/config/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json
                    @ONLY)
 
   elseif(WIN32)
     set(executable_path "\${QT_DEPLOY_BIN_DIR}/$<TARGET_FILE_NAME:${TARGET}>")
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/config/app.rc.in ${PROJECT_BINARY_DIR}/app.rc @ONLY)
 
     install(TARGETS ${TARGET} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
@@ -286,11 +286,11 @@ elseif(UNIX AND NOT APPLE)
 
   install(TARGETS ${TARGET} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.appdata.xml
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/config/appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.appdata.xml
                  @ONLY)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.appdata.xml DESTINATION "${APPDATA_INSTALL_DIR}")
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.desktop.in
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/config/app.desktop.in
                  ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${TARGET}.desktop @ONLY)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${TARGET}.desktop DESTINATION "${XDG_APPS_INSTALL_DIR}")
 
@@ -298,14 +298,14 @@ elseif(UNIX AND NOT APPLE)
 
   install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/flatpak.yml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak.xml @ONLY)
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/config/flatpak.yml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak.xml @ONLY)
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/snapcraft.yaml.in ${PROJECT_SOURCE_DIR}/snapcraft.yaml @ONLY)
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/config/snapcraft.yaml.in ${PROJECT_SOURCE_DIR}/snapcraft.yaml @ONLY)
 
   # man page
   find_program(GZIP gzip)
   if(GZIP)
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/modules/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1 @ONLY)
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/config/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1 @ONLY)
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1.gz
       COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.1 > ${TARGET}.1.gz

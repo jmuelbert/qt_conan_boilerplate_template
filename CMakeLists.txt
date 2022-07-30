@@ -18,7 +18,11 @@ set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all ta
 set_policy(CMP0077 NEW) # ENABLE CMP0077: option() honors normal variables
 
 # Include cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(
+  APPEND
+  CMAKE_MODULE_PATH
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 include(GenerateExportHeader)
 

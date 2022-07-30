@@ -1,0 +1,22 @@
+IDI_ICON1 ICON DISCARDABLE "assets/icons8.ico"
+
+#include <winver.h>
+
+    1 VERSIONINFO FILEVERSION 1,
+    0, 0,
+    0 PRODUCTVERSION @META_VERSION@
+        @FILEFLAGSMASK VS_FFI_FILEFLAGSMASK FILEFLAGS 0 FILEOS VOS_NT_WINDOWS32 FILETYPE VFT_APP FILESUBTYPE VFT2_UNKNOWN BEGIN BLOCK
+    "StringFileInfo" BEGIN BLOCK "040904B0" // US English, Unicode
+    BEGIN
+        VALUE "CompanyName", "@META_AUTHOR_ORGANIZATION@\0"
+        VALUE "FileDescription", "@META_PROJECT_DESCRIPTION@\0"
+        VALUE "FileVersion", "@META_VERSION@\0"
+        VALUE "InternalName", "@META_PROJECT_NAME@\0"
+        VALUE "OriginalFilename", "@TARGET@.exe\0"
+        VALUE "ProductName", "@TARGET@\0" VALUE "
+        ProductVersion", "@META_NAME_VERSION@\0"
+    END
+    END
+    BLOCK "VarFileInfo" BEGIN VALUE "Translation",
+        0x0409, 0x04B0 END
+    END

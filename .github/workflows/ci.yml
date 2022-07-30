@@ -508,7 +508,7 @@ jobs:
         with:
           name: snapcraft-artifact
           path: |
-            $GITHUB_WORKSPACE/${TARGET_NAME}_*_amd64.snap
+            $GITHUB_WORKSPACE/${{ env.TARGET_NAME}}_*_amd64.snap
 
   diagram:
     name: Build diagram

@@ -1,14 +1,14 @@
-.TH jmbde 1 "@APPLICATION_VERSION" "Jürgen Mülbert" ""
+.TH qtwidgettest 1 "@APPLICATION_VERSION" "Jürgen Mülbert" ""
 .SH NAME
-jmbde \- A BDE Tool.
+qtwidgettest \- A BDE Tool.
 .SH SYNOPSIS
-.B jmbde
+.B qtwidgettest
 [\fIOPTIONS\fR] [\fIHELP\fR] [\fIVERSION\f] [\fIQUIT\f]
 .SH DESCRIPTION
-JMBde is a BDE Tool. JMBde is free software and written
+qtwidgettest is a BDE Tool. qtwidgettest is free software and written
 in C++, using the Qt application framework.
 .IP
-<https://github.com/jmuelbert/jmbde-QT/wiki/>
+<https://github.com/jmuelbert/qtwidgettest-QT/wiki/>
 .SH OPTIONS
 .TP
 \fB\-\-help\f
@@ -21,7 +21,7 @@ Shows the program version
 Only check validity of arguments
 ===========================
 .PP
-As a Qt application, JMBde also obey Qt command-line flags, see Qt
+As a Qt application, qtwidgettest also obey Qt command-line flags, see Qt
 documentation for complete list:
 .IP
 <http://doc.qt.io/qt-5/qguiapplication.html#QGuiApplication>

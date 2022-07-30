@@ -16,7 +16,7 @@ It includes
 * examples for fuzz, unit, and constexpr testing
 * large github action testing matrix
 
-Itt requires
+It requires
 
 * cmake
 * conan

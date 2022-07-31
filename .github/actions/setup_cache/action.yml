@@ -1,3 +1,4 @@
+---
 name: "setup_cache"
 description: "sets up the shared cache"
 inputs:
@@ -33,10 +34,3 @@ runs:
         key: ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{ hashFiles('./conanfile.txt')}}-${{ inputs.generator }}-${{ inputs.developer_mode }}-${{ hashFiles('**/CMakeLists.txt') }}-${{ hashFiles('./vcpkg.json')}}
         restore-keys: |
           ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{ hashFiles('./conanfile.txt') }}
-
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v1
-      with:
-        path: "${{ github.workspace }}/Qt"
-        key: ${{ runner.os }}-QtCache

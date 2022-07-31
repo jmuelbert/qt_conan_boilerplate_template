@@ -1,3 +1,4 @@
+---
 # for full syntax documentation see:  https://lgtm.com/help/lgtm/lgtm.yml-configuration-file
 path_classifiers:
   test:

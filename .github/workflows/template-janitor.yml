@@ -146,10 +146,17 @@ jobs:
           target: ${{ env.QT_TARGET }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: "${{ github.workspace }}/Qt"
+          key: ${{ runner.os }}-QtCache
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -161,7 +168,7 @@ jobs:
           cd ./build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cd ..
-          cmake -S . -B ./build -G "${{matrix.config.generator}}" \
+          cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
@@ -284,10 +291,17 @@ jobs:
           dir: "${{ github.workspace }}/build/"
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: "${{ github.workspace }}/Qt"
+          key: ${{ runner.os }}-QtCache
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -298,10 +312,9 @@ jobs:
           mkdir -p build
           cd build
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
-          cmake -S .. -B . -G "${{matrix.config.generator}}" \
+          cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
-           -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
            -DGIT_SHA:STRING=${{ github.sha }}

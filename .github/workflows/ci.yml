@@ -70,15 +70,10 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-
         generator:
           - "Ninja"
         build_type:
-          - Release
           - Debug
-        developer_mode:
-          - ON
-          - OFF
 
     steps:
       - name: Cancel Previous Runs
@@ -131,10 +126,17 @@ jobs:
           target: ${{ env.QT_TARGET }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: "${{ github.workspace }}/Qt"
+          key: ${{ runner.os }}-QtCache
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -300,13 +302,20 @@ jobs:
           dir: "${{ github.workspace }}/build/"
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
 
-        # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
-        # has meaningful results
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: "${{ github.workspace }}/Qt"
+          key: ${{ runner.os }}-QtCache
+
+      # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
+      # has meaningful results
       - name: Configure CMake
         if: runner.os ==  'Windows'
         working-directory: build

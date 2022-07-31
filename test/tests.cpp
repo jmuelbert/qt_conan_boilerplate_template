@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Project qt_conan_boilerplate_template, Jürgen Mülbert
+ *
+ * SPDX-License-Identifier: EUPL-1.2
+ *
+ */
+
 #include <catch2/catch.hpp>
 
 unsigned int Factorial(unsigned int number)// NOLINT(misc-no-recursion)

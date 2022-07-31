@@ -1,4 +1,4 @@
-# Welcome!
+# Welcome
 
 You are here to help qt_conan_boilerplate_template? Awesome, feel free and read the following sections in
 order to know how to work on something and where to get help from. Your contribution
@@ -6,17 +6,17 @@ matters a lot, qt_conan_boilerplate_template is getting better and better becaus
 
 ## What kinds of contributions are we looking for?
 
--   If you like qt_conan_boilerplate_template, star this project and share it with your friends.
--   Report bugs or request new features by
+- If you like qt_conan_boilerplate_template, star this project and share it with your friends.
+- Report bugs or request new features by
     [opening issues](https://github.com/jmuelbert/qt_conan_boilerplate_template/issues/new/choose). Please
     follow the issue templates and provide detailed information, this will help the
     developers to find the reason of the bug and understand what feature you are
     requesting for exactly.
--   Help other people in issues/pull requests/other platforms if you are able to help
+- Help other people in issues/pull requests/other platforms if you are able to help
     them.
--   Write tutorials and blogs on how to use qt_conan_boilerplate_template.
--   Improve documentation, including the Markdown files and the comments in the codes.
--   Write codes for new features or bug fixes.
+- Write tutorials and blogs on how to use qt_conan_boilerplate_template.
+- Improve documentation, including the Markdown files and the comments in the codes.
+- Write codes for new features or bug fixes.
 
 ## Your First Contribution
 
@@ -67,30 +67,30 @@ writing codes for a pull request, for these reasons:
 
 ## Contributing rules
 
--   Remember that the goal is to build an qt_conan_boilerplate_template for user, not for developers.
--   Do one thing in a pull request. If you want to add multiple features/fix multiple
-    bugs and they are not relevant, open multiple pull requests. You may need to create
-    multiple branches to open multiple pull requests, you can learn git branching
-    [here](https://learngitbranching.js.org/).
--   Add new features on the master branch, and fix bug on the latest active (master,
-    beta and stable) branch which has the bug.
--   Please write [clear commit messages](https://chris.beams.io/posts/git-commit/). It's
-    also recommended to write
-    [Conventional Commits](https://www.conventionalcommits.org/). You can use
-    [commitizen/cz-cli](https://github.com/commitizen/cz-cli) to write commit messages.
-    However, the rules are optional, the key is that, others and yourself in the future
-    should understand what has been changed and why these changes are made.
--   Use Clang Format 9 (use `clang-format --version` to check your version, you may need
-    to set the clang-format binary path for your IDE, for example, the default version
-    of clang-format in VS Code may be clang-format-6) and `.clang-format` in the root
-    directory to format your codes.
--   Don't remove features unless it's necessary. Add an option to disable some feature
-    instead.
--   Keep the settings file backward compatible all the time.
--   Windows, Linux and Mac OS should be supported.
--   Both light/dark system themes should be supported.
--   Everyone should obey the [Code of Conduct](CODE_OF_CONDUCT.md) in order to build a
-    harassment-free community.
+- Remember that the goal is to build an qt_conan_boilerplate_template for user, not for developers.
+- Do one thing in a pull request. If you want to add multiple features/fix multiple
+  bugs and they are not relevant, open multiple pull requests. You may need to create
+  multiple branches to open multiple pull requests, you can learn git branching
+  [here](https://learngitbranching.js.org/).
+- Add new features on the master branch, and fix bug on the latest active (master,
+  beta and stable) branch which has the bug.
+- Please write [clear commit messages](https://chris.beams.io/posts/git-commit/). It's
+  also recommended to write
+  [Conventional Commits](https://www.conventionalcommits.org/). You can use
+  [commitizen/cz-cli](https://github.com/commitizen/cz-cli) to write commit messages.
+  However, the rules are optional, the key is that, others and yourself in the future
+  should understand what has been changed and why these changes are made.
+- Use Clang Format 9 (use `clang-format --version` to check your version, you may need
+  to set the clang-format binary path for your IDE, for example, the default version
+  of clang-format in VS Code may be clang-format-6) and `.clang-format` in the root
+  directory to format your codes.
+- Don't remove features unless it's necessary. Add an option to disable some feature
+  instead.
+- Keep the settings file backward compatible all the time.
+- Windows, Linux and Mac OS should be supported.
+- Both light/dark system themes should be supported.
+- Everyone should obey the [Code of Conduct](CODE_OF_CONDUCT.md) in order to build a
+  harassment-free community.
 
 ## FAQ
 

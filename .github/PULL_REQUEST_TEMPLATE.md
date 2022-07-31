@@ -1,7 +1,7 @@
 <!--- We squash and merge pull requests, so the title of the PR will be the title of the merge commit -->
 <!--- Please follow https://www.conventionalcommits.org/ in the title --->
 
-## Description
+# Description
 
 <!--- Describe your changes in detail -->
 
@@ -28,14 +28,14 @@
 <!--- You can open a pull request before all these are done, but
      they should be done before getting merged. -->
 
--   [ ] If the key of a setting is changed, the `old` attribute is updated or it is
-        resolved in SettingsUpdater.
--   [ ] If there are changes of the text displayed in the UI, they are wrapped in `tr()`
-        or `QCoreApplication::translate()`.
--   [ ] If needed, I have opened a pull request or an issue to update the
-        [documentation](http://jmuelbert.github.io/jmbde-QT/).
--   [ ] If these changes are notable, they are documented in
-        [CHANGELOG.md](https://github.com/jmuelbert/jmbde-QT/blob/master/CHANGELOG.md).
+- [ ] If the key of a setting is changed, the `old` attribute is updated or it is
+      resolved in SettingsUpdater.
+- [ ] If there are changes of the text displayed in the UI, they are wrapped in `tr()`
+      or `QCoreApplication::translate()`.
+- [ ] If needed, I have opened a pull request or an issue to update the
+      [documentation](http://jmuelbert.github.io/qt_conan_boilerplate_template/).
+- [ ] If these changes are notable, they are documented in
+        [CHANGELOG.md](https://github.com/jmuelbert/qt_conan_boilerplate_template/blob/master/CHANGELOG.md).
 
 ## Additional text
 

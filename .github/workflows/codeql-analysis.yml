@@ -112,14 +112,6 @@ jobs:
         id: python
         uses: actions/setup-python@v3
 
-      - name: "🔧 Setup Cache"
-        uses: ./.github/actions/setup_cache
-        with:
-          compiler: ${{ matrix.compiler }}
-          build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
-          generator: ${{ matrix.generator }}
-
       - name: Install Python dependencies
         shell: bash
         id: python-deps
@@ -128,6 +120,14 @@ jobs:
           if [ -f ./.github/workflows/requirements.txt ]; then
             pip install -r ./.github/workflows/requirements.txt;
           fi
+
+      - name: "🔧 Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          developer_mode: ${{ matrix.developer_mode }}
+          generator: ${{ matrix.generator }}
 
       - name: Install Linux deps
         if: runner.os == 'Linux'
@@ -148,6 +148,13 @@ jobs:
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: "${{ github.workspace }}/Qt"
+          key: ${{ runner.os }}-QtCache
 
       - name: Cleanup Conan system packages (they are not properly cached)
         if: matrix.language == 'cpp'

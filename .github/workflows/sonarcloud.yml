@@ -159,6 +159,13 @@ jobs:
           # tools: "tools_ifw"
           set-env: "true"
 
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: "${{ github.workspace }}/Qt"
+          key: ${{ runner.os }}-QtCache
+
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
           conan remove -f '*/system'

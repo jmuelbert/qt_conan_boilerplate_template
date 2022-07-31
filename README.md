@@ -5,7 +5,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/db5c8cf8529e45d19e38011419f74f96)](https://www.codacy.com/gh/jmuelbert/qt_conan_boilerplate_template/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jmuelbert/qt_conan_boilerplate_template&amp;utm_campaign=Badge_Grade)
 [![CodeQL](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jmuelbert_qt_conan_boilerplate_template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jmuelbert_qt_conan_boilerplate_template)
-[![GitHub Super-Linter](https://github.com/jmuelbert/qt_conan_boilerplate_template/workflows/Lint.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![MegaLinter](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/mega-linter.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/mega-linter.yml)
 
 ## About qt_conan_boilerplate_template
 

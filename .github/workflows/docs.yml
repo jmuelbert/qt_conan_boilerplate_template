@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - "README.md"
-      - "docs/**.md"
+      - "website/**.md"
 
 jobs:
   deploy:

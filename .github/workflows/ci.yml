@@ -45,16 +45,6 @@ env:
   QT_TARGET: "desktop"
 
 jobs:
-  # ci_test_clang:
-  #   runs-on: ubuntu-latest
-  #   container: ghcr.io/jmuelbert/qt_conan_boilerplate_template:main
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: cmake
-  #       run: cmake -S . -B build
-  #     - name: build
-  #       run: cmake  --build build --target ci_test_clang
-
   tests:
     runs-on: ${{ matrix.os }}
     strategy:

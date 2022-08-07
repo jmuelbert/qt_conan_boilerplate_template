@@ -25,7 +25,7 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/codeql-analysis.yml"
-      
+
   pull_request:
     # The branches below must be a subset of the branches above
     types: [opened, synchronize, reopened]
@@ -52,7 +52,7 @@ env:
 
 jobs:
   analyze:
-    name: Analyze
+    name: "Analyze"
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -66,32 +66,20 @@ jobs:
         language: ["cpp", "python"]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
-        compiler:
-          # you can specify the version after `-` like "llvm-13.0.0".
-          - gcc-11
         generator:
           - "Ninja Multi-Config"
         build_type:
           - Debug
-        developer_mode:
-          - OFF
         qt_version:
           - "6.3.0"
         qt_target:
           - "desktop"
 
     steps:
-      - name: Cancel Previous Runs
+      - name: "Cancel Previous Runs"
         uses: styfle/cancel-workflow-action@0.5.0
         with:
           access_token: ${{ github.token }}
-
-      - name: Check for llvm version mismatches
-        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('There is a mismatch between configured llvm compiler and clang-tidy version chosen')
 
       - name: "🧰 Checkout"
         uses: actions/checkout@v3
@@ -100,7 +88,7 @@ jobs:
           fetch-depth: 0
 
       # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
+      - name: "Initialize CodeQL"
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
@@ -109,11 +97,11 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
           # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-      - name: Install Python
+      - name: "Install Python"
         id: python
         uses: actions/setup-python@v3
 
-      - name: Install Python dependencies
+      - name: "Install Python dependencies"
         shell: bash
         id: python-deps
         run: |
@@ -125,17 +113,15 @@ jobs:
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
-          compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
 
-      - name: Install Linux deps
+      - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
           sudo apt install -y libclang-dev ninja-build gcovr ccache
 
-      - name: Install Qt
+      - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}"
         if: matrix.language == 'cpp'
         uses: jurplel/install-qt-action@v2
         with:
@@ -150,21 +136,21 @@ jobs:
           # tools: "tools_ifw"
           set-env: "true"
 
-      - name: Cache Qt
+      - name: "Cache Qt"
         id: cache-qt
         uses: actions/cache@v1
         with:
           path: "${{ github.workspace }}/Qt"
           key: ${{ runner.os }}-QtCache
 
-      - name: Cleanup Conan system packages (they are not properly cached)
+      - name: "Cleanup Conan system packages (they are not properly cached)"
         if: matrix.language == 'cpp'
         run: |
           conan remove -f '*/system'
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
-      - name: Configure CMake
+      - name: "⚙️ 🐧 Configure CMake"
         if: matrix.language == 'cpp'
         shell: bash
         run: |
@@ -179,7 +165,7 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
             -DGIT_SHA:STRING=${{ github.sha }}
 
-      - name: Build
+      - name: "📦 Build"
         if: matrix.language == 'cpp'
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
@@ -187,9 +173,9 @@ jobs:
 
       # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
+      - name: "📦 Autobuild"
         if: matrix.language != 'cpp'
         uses: github/codeql-action/autobuild@v2
 
-      - name: Perform CodeQL Analysis
+      - name: "Perform CodeQL Analysis"
         uses: github/codeql-action/analyze@v2

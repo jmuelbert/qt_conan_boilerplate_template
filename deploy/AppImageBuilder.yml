@@ -19,6 +19,9 @@ AppDir:
       - sourceline: 'deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe multiverse'
       - sourceline: 'deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse'
 
+    include:
+      - qtwidgettest
+
     exclude:
       - libpcre3
 

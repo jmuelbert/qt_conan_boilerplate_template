@@ -6,20 +6,26 @@ on:
       - main
 
     paths:
-      - "README.md"
-      - "website/**.md"
+      - 'README.md'
+      - 'website/**.md'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: "🧰 Checkout"
+      - name: '🧰 Checkout'
         uses: actions/checkout@v3
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: "Build docs and deploy to gh-pages"
+      - name: 'Build site'
+        shell: bash
+        run: |
+          cd website
+          yarn build
+
+      - name: 'Build docs and deploy to gh-pages'
         uses: redkubes/docusaurus-deploy-action@v1
         with:
           source-folder: website

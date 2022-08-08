@@ -326,7 +326,7 @@ jobs:
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
           cmake -S .. -B . -G "${{matrix.config.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DCMAKE_INSTALL_PREFIX:PATH="./AppDir/usr" \
+            -DCMAKE_INSTALL_PREFIX:PATH="../AppDir/usr" \
             -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
@@ -377,7 +377,6 @@ jobs:
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE
-          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $GITHUB_WORKSPACE/build/AppDir/usr/local/share/icons
           appimage-builder --recipe "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
       #     APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
       #     $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop

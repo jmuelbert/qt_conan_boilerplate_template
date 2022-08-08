@@ -19,11 +19,9 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: 'Build site'
-        shell: bash
-        run: |
-          cd website
-          yarn build
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
       - name: 'Build docs and deploy to gh-pages'
         uses: redkubes/docusaurus-deploy-action@v1

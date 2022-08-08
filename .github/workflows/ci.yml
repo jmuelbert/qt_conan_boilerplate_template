@@ -378,10 +378,10 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
+          cd $GITHUB_WORKSPACE
+          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH
           appimage-builder --recipe "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
       #     APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
-      #     cd $GITHUB_WORKSPACE
-      #     cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH
       #     $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
       #     mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
       #     if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then

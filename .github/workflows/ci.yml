@@ -78,11 +78,11 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: "'⚙️ Install Python"
+      - name: '⚙️ Install Python'
         id: python
         uses: actions/setup-python@v3
 
-      - name: "'⚙️ Install Python dependencies"
+      - name: '⚙️ Install Python dependencies'
         shell: bash
         id: python-deps
         run: |

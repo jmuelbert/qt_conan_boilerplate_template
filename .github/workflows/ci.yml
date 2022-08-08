@@ -15,6 +15,7 @@ on:
       - conanfile.py
       - '.github/workflows/ci.yml'
       - 'deploy/flatpak.yml'
+      - 'deploy/AppImageBuilder.yml'
       - 'snap/snapcraft.yml'
 
   pull_request:

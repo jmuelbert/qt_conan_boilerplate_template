@@ -378,7 +378,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          appimage-builder --receipe "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
+          appimage-builder --recipe "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
       #     APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
       #     cd $GITHUB_WORKSPACE
       #     cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH

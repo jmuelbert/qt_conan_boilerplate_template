@@ -379,7 +379,7 @@ jobs:
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE
-          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH
+          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $GITHUB_WORKSPACE/AppDir/usr/local/share/icons
           appimage-builder --recipe "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
       #     APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
       #     $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop

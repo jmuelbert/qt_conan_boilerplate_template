@@ -1,0 +1,55 @@
+baseurl = "/"
+config = "config.toml"
+languageCode = 'en-us'
+layoutDir = "layouts"
+title = "Hugo Starter"
+uglyURLs = false
+verbose = true
+verboseLog = false
+watch = true
+
+[permalinks]
+  # The temp folder is created for one-off pages (eg, marketing and design-heavy pages that run outside other site templates). Keep in mind that all .md pages under temp still require title and date in the YAML/front matter
+  singletons = "/:title/"
+
+theme = ["ananke"]
+
+DefaultContentLanguage = "en"
+SectionPagesMenu = "main"
+Paginate = 3 # this is set low for demonstrating with dummy content. Set to a higher number
+googleAnalytics = ""
+enableRobotsTXT = true
+
+
+[languages]
+  [languages.en]
+    title = "Ananke"
+    weight = 1
+    contentDir = "content/en"
+    # languageDirection = 'rtl' for Right-To-Left languages
+  [languages.de]
+    title = "Ananke De"
+    weight = 2
+    contentDir = "content/de"
+  [languages.it]
+    title = "Ananke It"
+    weight = 2
+    contentDir = "content/it"
+  [languages.es]
+    title = "Ananke Es"
+    weight = 2
+    contentDir = "content/es"
+  [languages.fr]
+    title = "Ananke Fr"
+    weight = 2
+    contentDir = "content/fr"
+
+[sitemap]
+  changefreq = "monthly"
+  priority = 0.5
+  filename = "sitemap.xml"
+
+[[params.ananke_socials]]
+name = "twitter"
+url = "https://twitter.com/GoHugoIO"
+

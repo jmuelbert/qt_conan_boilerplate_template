@@ -40,7 +40,6 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: '${{ github.workspace }}/conan-cache'
   CONAN_USER_HOME_SHORT: '${{ github.workspace }}/conan-cache/short'
-  CLANG_TIDY_VERSION: '13.0.0'
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
   QT_VERSION: '6.3.0'
@@ -147,6 +146,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
+            -DOPTION_BUILD_TESTS:BOOL="TRUE" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
       - name: '🚧 Build'
@@ -179,7 +179,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu-latest-clang++. macos-latest-clang++, windows-latest-cl.exe]
+        name: [ubuntu-latest-clang++, macos-latest-clang++, windows-latest-cl.exe]
         build_type:
           - Release
         generator:

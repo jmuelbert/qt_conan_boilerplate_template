@@ -29,7 +29,7 @@ set(export_macro "${TARGET_ID}_API")
 set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${TARGET}")
 set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
-set(headers ${include_path}/mainwindow.h)
+set(headers ${include_path}/main.h ${include_path}/mainwindow.h)
 
 set(sources ${source_path}/main.cpp ${source_path}/mainwindow.cpp ${source_path}/mainwindow.ui)
 

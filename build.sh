@@ -32,6 +32,18 @@ cmake -S .. -B . -G "$GENERATOR" \
 cmake --build . --config "${BUILD_TYPE}" --target install
 cmake --build . --config "${BUILD_TYPE}" --target pack
 ctest -VV -C "${BUILD_TYPE}"
+
+prettier --check .
+find . -type f -name 'CMakeLists.txt' -exec cmake-format {} \;
+find . -type f -name 'CMakeLists.txt' -exec cmake-lint {} \;
+find -E . -regex 'src/.*\.(cpp|hpp|cc|cxx)' -exec clang-format -style=file -i {} \;
+find -E . -regex 'test/.*\.(cpp|hpp|cc|cxx)' -exec clang-format -style=file -i {} \;
+find -E . -regex 'src/.*\.(cpp|hpp|cc|cxx)' -exec clang-tidy -format-style=file --fix {} \;
+find -E . -regex 'test/.*\.(cpp|hpp|cc|cxx)' -exec clang-tidy -format-style=file --fix {} \;
+find -E . -regex 'src/.*\.(cpp|hpp|cc|cxx)' -exec cpplint {} \;
+find -E . -regex 'test/.*\.(cpp|hpp|cc|cxx)' -exec cpplint {} \;
+find -E . -regex 'src/.*\.(cpp|hpp|cc|cxx)' -exec cppcheck {} \;
+find -E . -regex 'test/.*\.(cpp|hpp|cc|cxx)' -exec cppcheck {} \;
 # cpack -C ${BUILD_TYPE} -G TBZ2
 # cpack -C ${BUILD_TYPE} -G DragNDrop
 # cpack -C ${BUILD_TYPE} -G IFW

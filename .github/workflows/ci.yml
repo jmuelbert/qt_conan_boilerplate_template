@@ -147,7 +147,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" 
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
       - name: '🚧 Build'
         # Execute the build.  You can specify a specific target with "--target <NAME>"
@@ -179,10 +179,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ macos-latest-clang++, windows-latest-cl.exe]
+        name: [ubuntu-latest-clang++. macos-latest-clang++, windows-latest-cl.exe]
         build_type:
           - Release
-        generator: 
+        generator:
           - 'Ninja'
         include:
           - name: windows-latest-cl.exe
@@ -192,6 +192,7 @@ jobs:
             qt_arch: win64_msvc2019_64
             arch: x64
             pak_arch: win64
+            generator: 'Visual Studio 16 2019'
           - name: ubuntu-latest-clang++
             os: ubuntu-latest
             qt_arch: gcc_64
@@ -308,7 +309,7 @@ jobs:
             -G "${{matrix.generator}}" -A "${{ matrix.arch }}" `
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} `
             -DCMAKE_INSTALL_PREFIX:PATH="./program" `
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" 
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
@@ -321,7 +322,7 @@ jobs:
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="$GITHUB_WORKSPACE/AppDir/usr" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" 
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
       - name: '📦 🍎 Build and package application (macdeployqt and zipfile)'
         working-directory: build

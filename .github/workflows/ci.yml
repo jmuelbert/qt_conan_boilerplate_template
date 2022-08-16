@@ -174,7 +174,7 @@ jobs:
     name: 'Build for ${{ matrix.name }}'
 
     runs-on: ${{ matrix.os }}
-    needs: tests
+    # needs: tests
 
     strategy:
       fail-fast: false

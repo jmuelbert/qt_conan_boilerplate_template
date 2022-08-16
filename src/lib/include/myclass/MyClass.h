@@ -10,11 +10,11 @@
 #include <QString>
 #include <string>
 
-namespace mApp {
-
+namespace mApp
+{
 class MyClass
 {
-  QString _text;
+    QString _text;
 
 public:
     explicit MyClass(QString text);
@@ -23,4 +23,4 @@ public:
     [[nodiscard]] QString text() const;
 };
 
-}// namespace mApp
+} // namespace mApp

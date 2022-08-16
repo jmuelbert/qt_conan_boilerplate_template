@@ -11,7 +11,6 @@
 
 namespace mApp
 {
-
 MyClass::MyClass(QString text)
     : _text(std::move(text))
 {

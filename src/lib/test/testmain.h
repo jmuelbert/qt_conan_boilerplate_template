@@ -14,7 +14,7 @@
 
 class Foo : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 private slots:
     static void test1();

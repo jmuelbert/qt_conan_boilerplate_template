@@ -179,7 +179,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [macos-latest-clang++, windows-latest-cl.exe]
+        name: [ubuntu-latest-clang++, macos-latest-clang++, windows-latest-cl.exe]
         build_type:
           - Release
         generator:
@@ -192,7 +192,7 @@ jobs:
             qt_arch: win64_msvc2019_64
             arch: x64
             pak_arch: win64
-            generator: 'Visual Studio 16 2019'
+            # generator: 'Visual Studio 16 2019'
           - name: ubuntu-latest-clang++
             os: ubuntu-latest
             qt_arch: gcc_64

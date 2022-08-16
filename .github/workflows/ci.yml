@@ -174,12 +174,12 @@ jobs:
     name: 'Build for ${{ matrix.name }}'
 
     runs-on: ${{ matrix.os }}
-    # needs: tests
+    needs: tests
 
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu-latest-clang++, macos-latest-clang++, windows-latest-cl.exe]
+        name: [macos-latest-clang++, windows-latest-cl.exe]
         build_type:
           - Release
         generator:

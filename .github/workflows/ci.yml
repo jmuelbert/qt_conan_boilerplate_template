@@ -146,10 +146,8 @@ jobs:
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
-            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
-            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
-            -DGIT_SHA:STRING=${{ github.sha }}
+            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" 
 
       - name: '🚧 Build'
         # Execute the build.  You can specify a specific target with "--target <NAME>"
@@ -175,7 +173,7 @@ jobs:
   build:
     name: 'Build for ${{ matrix.name }}'
 
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.os }}
     needs: tests
 
     strategy:
@@ -307,13 +305,10 @@ jobs:
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cmake $env:GITHUB_WORKSPACE `
-            -G "${{matrix.config.generator}}" -A "${{ matrix.config.arch }}" `
+            -G "${{matrix.generator}}" -A "${{ matrix.arch }}" `
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} `
             -DCMAKE_INSTALL_PREFIX:PATH="./program" `
-            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} `
-            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} `
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" `
-            -DGIT_SHA:STRING=${{ github.sha }}
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" 
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
@@ -323,13 +318,10 @@ jobs:
         if: runner.os !=  'Windows'
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
-          cmake -S .. -B . -G "${{matrix.config.generator}}" \
+          cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="$GITHUB_WORKSPACE/AppDir/usr" \
-            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
-            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
-            -DGIT_SHA:STRING=${{ github.sha }}
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" 
 
       - name: '📦 🍎 Build and package application (macdeployqt and zipfile)'
         working-directory: build

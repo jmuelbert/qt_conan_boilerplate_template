@@ -20,6 +20,8 @@ on:
       - 'README.md'
       - '.github/**'
       - '!.github/workflows/windows-build.yml'
+  release:
+    types: [created]
 
 env:
   BUILD_TYPE: Debug
@@ -37,8 +39,8 @@ jobs:
       matrix:
         arch: [x64]
     steps:
-      - name: "Change to Release if tag"
-        if: startsWith(github.ref, "refs/tags/")
+      - name: 'Change to Release if tag'
+        if: github.event_name == 'release' && github.event.action == 'created'
         run: echo "BUILD_TYPE=Release" >> $GITHUB_ENV
 
       - name: 'Clone'

@@ -110,7 +110,7 @@ jobs:
           cmake $env:GITHUB_WORKSPACE `
           -S .. -B ${{ github.workspace }}/build `
             -G "Visual Studio 16 2019" -A "${{ matrix.arch }}" `
-            -DCMAKE_BUILD_TYPE:STRING==${{ env.BUILD_TYPE }} `
+            -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
       - name: 'Build'

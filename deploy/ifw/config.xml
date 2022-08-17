@@ -1,6 +1,6 @@
 <Installer>
 <Name>qt_conan_boilerplate_template</Name>
-<Version0.0.1</Version>
+<Version>0.0.1</Version>
 <Title>Qt_Widget_test</Title>
 <Publisher>Jürgen Mülbert</Publisher>
 <ProductUrl>https://github.com/jmuelbert/qt_conan_boilerplate_template</ProductUrl>

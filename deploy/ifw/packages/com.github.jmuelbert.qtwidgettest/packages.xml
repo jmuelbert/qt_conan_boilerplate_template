@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>QTWidgetTest</DisplayName>
+    <Description>A QtTest App</Description>
+    <ReleaseDate></ReleaseDate>
+    <Version>0.0.1</Version>
+    <Licenses>
+        <License name="EUPL-1.2" file="LICENSE.txt" />
+    </Licenses>
+    <ForcedInstallation>true</ForcedInstallation>
+</Package>

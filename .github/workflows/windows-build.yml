@@ -108,6 +108,7 @@ jobs:
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
           cmake $env:GITHUB_WORKSPACE `
+          -S .. -B -B ${{ github.workspace }}/build `
             -G "Visual Studio 16 2019" -A "${{ matrix.arch }}" `
             -DCMAKE_BUILD_TYPE:STRING==${{ env.BUILD_TYPE }} `
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"

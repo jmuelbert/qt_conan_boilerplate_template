@@ -99,6 +99,9 @@ jobs:
         run: |
           conan remove -f '*/system'
 
+      - name: 'Create Working directory'
+        run: mkdir -p build
+
       - name: 'Configure CMake'
         working-directory: build
         shell: pwsh

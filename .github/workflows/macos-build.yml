@@ -1,0 +1,100 @@
+---
+name: 'macOS Build'
+
+on:
+  push:
+    tags:
+      - '*'
+    branches-ignore:
+      - 'dependabot/**'
+    paths-ignore:
+      - '*.mde'
+      - 'LICENSE.txt'
+      - 'README.md'
+      - '.github/**'
+      - '!.github/workflows/macos-build.yml'
+  pull_request:
+    paths-ignore:
+      - '*.mde'
+      - 'LICENSE.txt'
+      - 'README.md'
+      - '.github/**'
+      - '!.github/workflows/macos-build.yml'
+
+env:
+  BUILD_TYPE: Debug
+  QT_VERSION: '6.3.0'
+  QT_DIR: ${{ github.workspace }}
+  QT_ARCH: 'linux-gcc'
+  QT_TOOLS: "tools_ifw"
+
+jobs:
+  macOS:
+    name: macOS
+    runs-on: macos-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        arch: [x64]
+    steps:
+      - name: "Change to Release if tag"
+        if: startsWith(github.ref, "refs/tags/")
+        run: echo "BUILD_TYPE=Release" >> $GITHUB_ENV
+
+      - name: 'Clone'
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: 'Install Qt'
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ env.QT_VERSION }}
+          dir: ${{ env.QT_DIR }}
+          host: 'mac'
+          arch: ${{ env.QT_ARCH }}
+          target: 'desktop'
+          setup-python: false
+          tools: ${{ env.QT_TOOLS }}
+          cache: 'True'
+
+      - name: 'Configure CMake'
+        run: |
+          cmake -B ${{ github.workspace }}/build \
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }
+
+      - name: 'Build'
+        run: |
+          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }}
+
+      - name: "Upload bundle"
+        uses: actions/upload-artifact@v3
+        with:
+          name: MacOS
+          path: ${{ github.workspace }}/build/bin/CRM.dmg
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: macOS
+    name: Create\Update release
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Download artifact"
+        uses: actions/download-artifact@v3
+        with:
+          name: MacOS
+          path: ${{ github.workspace }}/MacOS
+
+      - name: "Get branch name"
+        uses: EthanSK/git-branch-name-action@v1
+
+      - name: "Create Release"
+        id: create_release
+        uses: ncipollo/release-action@v1.10.0
+        with:
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          artifacts: '${{ github.workspace }}/MacOS/CRM.dmg"
+          name: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: ${{ env.GIT_BRANCH_NAME != 'main' }}

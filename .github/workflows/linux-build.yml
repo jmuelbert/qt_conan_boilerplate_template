@@ -1,0 +1,113 @@
+---
+name: 'Linux Build'
+
+on:
+  push:
+    tags:
+      - '*'
+    branches-ignore:
+      - 'dependabot/**'
+    paths-ignore:
+      - '*.mde'
+      - 'LICENSE.txt'
+      - 'README.md'
+      - '.github/**'
+      - '!.github/workflows/linux-build.yml'
+  pull_request:
+    paths-ignore:
+      - '*.mde'
+      - 'LICENSE.txt'
+      - 'README.md'
+      - '.github/**'
+      - '!.github/workflows/linux-build.yml'
+
+env:
+  BUILD_TYPE: Debug
+  QT_VERSION: '6.3.0'
+  QT_DIR: ${{ github.workspace }}
+  QT_ARCH: 'linux-gcc'
+  QT_TOOLS: 'tools_ifw'
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        arch: [x64]
+    steps:
+      - name: 'Change to Release if tag'
+        if: startsWith(github.ref, "refs/tags/")
+        run: echo "BUILD_TYPE=Release" >> $GITHUB_ENV
+
+      - name: 'Clone'
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: 'Install Qt'
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ env.QT_VERSION }}
+          dir: ${{ env.QT_DIR }}
+          host: 'linux'
+          arch: ${{ env.QT_ARCH }}
+          target: 'desktop'
+          setup-python: false
+          tools: ${{ env.QT_TOOLS }}
+          cache: 'True'
+
+      - name: 'Configure CMake'
+        run: |
+          cmake -B ${{ github.workspace }}/build \
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }
+
+      - name: 'Build'
+        run: |
+          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }}
+
+      - name: 'Download linuxdeploy'
+        run: |
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -O ${{ github.workspace }}/linuxdeploy.AppImage -q
+          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage -O ${{ github.workspace }}/linuxdeploy-plugin-qt.AppImage -q
+          chmod +x ${{ github.workspace }}/linuxdeploy.AppImage
+          chmod +x ${{ github.workspace }}/linuxdeploy-plugin-qt.AppImage
+
+      - name: 'Create app folder'
+        run: |
+          mkdir -p ${{ github.workspace }}/app
+          ${{ github.workspace }}/linuxdeploy.AppImage --appdir ${{ github.workspace }}/build/bin/app
+
+      - name: 'Create installer'
+        run: ${{ env.IQTA_TOOLS }}/QtInstallerFramework/4.4/bin/binarycreator -c ${{ github.workspace }}/config/config.xml -p ${{ github.workspace }}/packages ${{ github.workspace }}/Linux-Setup -v
+
+      - name: 'Upload builded app'
+        uses: actions/upload-artifact@v3
+        with:
+          name: Linux
+          path: ${{ github.workspace }}/Linux-Setup
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: linux
+    name: Create\Update release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Linux
+          path: ${{ github.workspace }}/Linux
+      - name: Get branch name
+        uses: EthanSK/git-branch-name-action@v1
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1.10.0
+        with:
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          artifacts: '${{ github.workspace }}/Linux/Linux-Setup'
+          name: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: ${{ env.GIT_BRANCH_NAME != 'main' }}

@@ -24,11 +24,20 @@ on:
     types: [created]
 
 env:
+  # Target
+  TARGET_NAME: qtwidgettest
+  PROJECT_NAME: qtconanboilerplate
+  # Conan cache environment variables
+  CONAN_SYSREQUIRES_MODE: enabled
+  CONAN_USER_HOME: '${{ github.workspace }}/conan-cache'
+  CONAN_USER_HOME_SHORT: '${{ github.workspace }}/conan-cache/short'
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
   QT_VERSION: '6.3.0'
   QT_DIR: ${{ github.workspace }}
   QT_ARCH: 'gcc_64'
   QT_TOOLS: 'tools_ifw'
+  QT_TARGET: 'desktop'
 
 jobs:
   linux:
@@ -43,27 +52,69 @@ jobs:
         if: github.event_name == 'release' && github.event.action == 'created'
         run: echo "BUILD_TYPE=Release" >> $GITHUB_ENV
 
-      - name: 'Clone'
+      - name: '🧰 Checkout'
         uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: 'Install Qt'
+      - name: 'Install Python'
+        id: python
+        uses: actions/setup-python@v3
+
+      - name: 'Install Python dependencies'
+        shell: bash
+        id: python-deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f ./.github/workflows/requirements.txt ]; then
+            pip install -r ./.github/workflows/requirements.txt;
+          fi
+
+      - name: '🔧 Setup Cache'
+        uses: ./.github/actions/setup_cache
+        with:
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.config.generator }}
+
+      - name: '🐧 ⚙️ Install Linux dependencies'
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get -y -qq update
+          sudo apt-get -y --no-install-recommends install \
+            libclang-dev \
+            ninja-build \
+            ccache \
+            cppcheck
+
+      - name: '⚙️ Install Qt Version ${{ env.QT_VERSION }}'
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
           dir: ${{ env.QT_DIR }}
-          host: 'linux'
+          host: ${{ runner.os }}
           arch: ${{ env.QT_ARCH }}
-          target: 'desktop'
-          setup-python: false
+          target: ${{ env.QT_TARGET }}
+          setup-python: 'true'
           tools: ${{ env.QT_TOOLS }}
-          cache: 'True'
+          cache: 'true'
+          set-env: 'true'
+          install-deps: 'true'
+
+      - name: 'Cleanup Conan system packages (they are not properly cached)'
+        run: |
+          conan remove -f '*/system'
 
       - name: 'Configure CMake'
+        working-directory: build
         run: |
-          cmake -B ${{ github.workspace }}/build \
-          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+          mkdir -p ./build/usr
+          cd ./build
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
+          cd ..
+          cmake -G "Ninja" \
+          -S . -B ${{ github.workspace }}/build \
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+          -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
       - name: 'Build'
         run: |

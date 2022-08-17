@@ -91,7 +91,7 @@ jobs:
         with:
           version: ${{ env.QT_VERSION }}
           dir: ${{ env.QT_DIR }}
-          host: ${{ runner.os }}
+          host: 'linux' # ${{ runner.os }}
           arch: ${{ env.QT_ARCH }}
           target: ${{ env.QT_TARGET }}
           setup-python: 'true'

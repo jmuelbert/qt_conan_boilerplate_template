@@ -1,5 +1,5 @@
 ---
-name: 'macOS Build'
+name: 'MacOS Build'
 
 on:
   push:
@@ -73,6 +73,15 @@ jobs:
         with:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
+
+      - name: '⚙️ 🍎 Install macos dependencies'
+        if: runner.os == 'macOS'
+        run: |
+          brew upgrade cmake
+          brew install ninja ccache pkg-config
+          ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
+          ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
+          ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
 
       - name: '⚙️ Install Qt Version ${{ env.QT_VERSION }}'
         uses: jurplel/install-qt-action@v3

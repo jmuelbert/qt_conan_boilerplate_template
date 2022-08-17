@@ -133,7 +133,7 @@ jobs:
           ${{ github.workspace }}/linuxdeploy.AppImage --appdir ${{ github.workspace }}/build/bin/app
 
       - name: 'Create installer'
-        run: ${{ env.IQTA_TOOLS }}/QtInstallerFramework/4.4/bin/binarycreator -c ${{ github.workspace }}/config/config.xml -p ${{ github.workspace }}/packages ${{ github.workspace }}/Linux-Setup -v
+        run: ${{ env.IQTA_TOOLS }}/QtInstallerFramework/4.4/bin/binarycreator -c ${{ github.workspace }}/deploy/ifw/config.xml -p ${{ github.workspace }}/packages ${{ github.workspace }}/Linux-Setup -v
 
       - name: 'Upload builded app'
         uses: actions/upload-artifact@v3

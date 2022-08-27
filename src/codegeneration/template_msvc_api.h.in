@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: EUPL-1.2
  *
  */
- 
+
 #ifndef @target_id @_TEMPLATE_API_H
 #define @target_id @_TEMPLATE_API_H
 

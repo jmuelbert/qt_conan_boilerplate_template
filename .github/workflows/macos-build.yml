@@ -46,7 +46,7 @@ jobs:
       fail-fast: true
       matrix:
         arch: [x64]
-        generator: "Ninja"
+        generator: ["Ninja"]
     steps:
       - name: "Change to Release if tag"
         if: github.event_name == 'release' && github.event.action == 'created'

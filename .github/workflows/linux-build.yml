@@ -122,7 +122,7 @@ jobs:
           -S .. -B ${{ github.workspace }}/build \
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
-          -DCMAKE_INSTALL_PREFIX:PATH="./usr"
+          -DCMAKE_INSTALL_PREFIX:PATH="${{ github.workspace }}/build/usr"
 
       - name: "Build"
         run: |

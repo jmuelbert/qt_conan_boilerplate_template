@@ -5,7 +5,7 @@
     <ReleaseDate></ReleaseDate>
     <Version>0.0.1</Version>
     <Licenses>
-        <License name="EUPL-1.2" file="../../../../../LICENSE.txt" />
+        <License name="EUPL-1.2" file="../../../../LICENSE.txt" />
     </Licenses>
     <ForcedInstallation>true</ForcedInstallation>
 </Package>

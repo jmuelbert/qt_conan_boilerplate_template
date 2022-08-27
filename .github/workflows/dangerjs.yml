@@ -2,19 +2,6 @@
 name: DangerJS
 
 on:
-  push:
-    branches: [main, develop]
-    paths:
-      - "**.cpp"
-      - "**.h"
-      - "**.hpp"
-      - "**.py"
-      - cmake/**
-      - src/**
-      - CMakeLists.txt
-      - conanfile.py
-      - ".github/workflows/danger.yml"
-
   pull_request_target:
 
 jobs:

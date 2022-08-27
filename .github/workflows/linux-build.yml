@@ -95,13 +95,13 @@ jobs:
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3
         with:
-          version: ${{ env.QT_VERSION }}
-          dir: ${{ env.QT_DIR }}
+          version: "${{ env.QT_VERSION }}"
+          dir: "${{ env.QT_DIR }}"
           host: "linux" # ${{ runner.os }}
-          arch: ${{ env.QT_ARCH }}
-          target: ${{ env.QT_TARGET }}
+          arch: "${{ env.QT_ARCH }}"
+          target: "${{ env.QT_TARGET }}"
           setup-python: "true"
-          tools: ${{ env.QT_TOOLS }}
+          tools: "${{ env.QT_TOOLS }}"
           cache: "true"
           set-env: "true"
           install-deps: "true"
@@ -116,6 +116,7 @@ jobs:
       - name: "Configure CMake"
         working-directory: build
         run: |
+          mkdir -p usr
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
            cmake -G "Ninja" \
           -S .. -B ${{ github.workspace }}/build \
@@ -135,9 +136,9 @@ jobs:
           chmod +x ${{ github.workspace }}/linuxdeploy-plugin-qt.AppImage
 
       - name: "Create app folder"
+        working-directory: build
         run: |
-          mkdir -p ${{ github.workspace }}/app
-          ${{ github.workspace }}/linuxdeploy.AppImage --appdir ${{ github.workspace }}/build/bin/app
+          ${{ github.workspace }}/linuxdeploy.AppImage --appdir ./usr
 
       - name: "Create installer"
         run: ${{ env.IQTA_TOOLS }}/QtInstallerFramework/4.4/bin/binarycreator -c ${{ github.workspace }}/deploy/ifw/config.xml -p ${{ github.workspace }}/deploy/ifw/packages ${{ github.workspace }}/Linux-Setup -v

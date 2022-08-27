@@ -19,7 +19,7 @@ env:
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   BUILD_TYPE: Release
-  QT_VERSION: "6.3.0"
+  QT_VERSION: "6.3.1"
   QT_TARGET: "desktop"
 
 jobs:
@@ -122,9 +122,7 @@ jobs:
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
-          compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
 
       - name: Install Linux deps
@@ -141,22 +139,15 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: ${{ env.QT_VERSION }}
+          version: "${{ env.QT_VERSION }}"
           # host: ${{ runner.os }}
-          target: ${{ env.QT_TARGET }}
+          target: "${{ env.QT_TARGET }}"
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
+          cache: "true"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
-
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: "${{ github.workspace }}/Qt"
-          key: ${{ runner.os }}-QtCache
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -195,8 +186,6 @@ jobs:
           - "Unix Makefiles"
         build_type:
           - Debug
-        developer_mode:
-          - OFF
 
     steps:
       - uses: actions/checkout@v2
@@ -204,19 +193,17 @@ jobs:
       - name: Setup Cache
         uses: ./.github/actions/setup_cache
         with:
-          compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
 
       - name: Get organization and project name
         run: |
-          echo "TEST_RUN=false" >> $GITHUB_ENV
-          echo "NEW_ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
-          echo "NEW_PROJECT=${{ github.event.repository.name }}" >> $GITHUB_ENV
-          echo "NEW_REPOSITORY=${{ github.repository }}" >> $GITHUB_ENV
-          echo "TEMPLATE_NAME=`cat ${{ env.TEMPLATES_PATH }}/template_name`" >> $GITHUB_ENV
-          echo "TEMPLATE_REPOSITORY=`cat ${{ env.TEMPLATES_PATH }}/template_repository`" >> $GITHUB_ENV
+          echo "TEST_RUN=false" >> "$GITHUB_ENV"
+          echo "NEW_ORG=${{ github.repository_owner }}" >> "$GITHUB_ENV"
+          echo "NEW_PROJECT=${{ github.event.repository.name }}" >> "$GITHUB_ENV"
+          echo "NEW_REPOSITORY=${{ github.repository }}" >> "$GITHUB_ENV"
+          echo "TEMPLATE_NAME=`cat ${{ env.TEMPLATES_PATH }}/template_name`" >> "$GITHUB_ENV"
+          echo "TEMPLATE_REPOSITORY=`cat ${{ env.TEMPLATES_PATH }}/template_repository`" >> "$GITHUB_ENV"
 
       - uses: octokit/request-action@v2.x
         id: get_repo_meta
@@ -230,10 +217,10 @@ jobs:
       - name: Setup fake test org/project names if project didn't change
         if: env.TEMPLATE_NAME == env.NEW_PROJECT
         run: |
-          echo "TEST_RUN=true" >> $GITHUB_ENV
-          echo "NEW_ORG=${{ github.repository_owner }}" >> $GITHUB_ENV
-          echo "NEW_PROJECT=TEST_PROJECT" >> $GITHUB_ENV
-          echo "NEW_REPOSITORY=TEST_REPOSITORY" >> $GITHUB_ENV
+          echo "TEST_RUN=true" >> "$GITHUB_ENV"
+          echo "NEW_ORG=${{ github.repository_owner }}" >> "$GITHUB_ENV"
+          echo "NEW_PROJECT=TEST_PROJECT" >> "$GITHUB_ENV"
+          echo "NEW_REPOSITORY=TEST_REPOSITORY" >> "$GITHUB_ENV"
 
       # Rename all cpp_starter_project occurrences to current repository and remove this workflow
       - name: Update repository to match new template information
@@ -253,9 +240,7 @@ jobs:
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
-          compiler: ${{ matrix.config.compiler }}
           build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.config.generator }}
 
       - name: Install Python dependencies
@@ -287,17 +272,10 @@ jobs:
           dir: "${{ github.workspace }}/build/"
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
+          cache: "true"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
-
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: "${{ github.workspace }}/Qt"
-          key: ${{ runner.os }}-QtCache
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -311,7 +289,6 @@ jobs:
           cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
-           -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' && matrix.developer_mode == 'OFF' }} \
            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
            -DGIT_SHA:STRING=${{ github.sha }}
 

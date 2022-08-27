@@ -131,17 +131,10 @@ jobs:
           # arch: ${{ matrix.qt_arch }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          cache: "true"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
-
-      - name: "Cache Qt"
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: "${{ github.workspace }}/Qt"
-          key: ${{ runner.os }}-QtCache
 
       - name: "Cleanup Conan system packages (they are not properly cached)"
         if: matrix.language == 'cpp'
@@ -160,7 +153,6 @@ jobs:
           cd ..
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
             -DOPT_ENABLE_COVERAGE:BOOL='OFF' \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
             -DGIT_SHA:STRING=${{ github.sha }}

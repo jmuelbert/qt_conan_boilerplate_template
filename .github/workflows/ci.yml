@@ -43,7 +43,7 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  QT_VERSION: "6.3.0"
+  QT_VERSION: "6.3.1‚"
   QT_TARGET: "desktop"
 
 jobs:
@@ -82,8 +82,6 @@ jobs:
       - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v3
-        with:
-          python-version: "3.9"
 
       - name: "⚙️ Install Python dependencies"
         shell: bash
@@ -119,7 +117,7 @@ jobs:
           target: ${{ env.QT_TARGET }}
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
+          cache: "true"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"
@@ -224,8 +222,6 @@ jobs:
       - name: "Install Python"
         id: python
         uses: actions/setup-python@v3
-        with:
-          python-version: "3.9"
 
       - name: "Install Python dependencies"
         shell: bash
@@ -240,7 +236,7 @@ jobs:
         uses: ./.github/actions/setup_cache
         with:
           build_type: ${{ matrix.build_type }}
-          generator: ${{ matrix.config.generator }}
+          generator: ${{ matrix.generator }}
 
       - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
@@ -272,7 +268,7 @@ jobs:
         with:
           # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
           toolset: 14.2
-          arch: ${{ matrix.confg.pak_arch }}
+          arch: ${{ matrix.pak_arch }}
 
       - name: Set Compiler Environment
         uses: lukka/set-shell-env@v1
@@ -286,11 +282,11 @@ jobs:
           version: ${{ env.QT_VERSION }}
           # host: ${{ runner.os }}
           target: ${{ env.QT_TARGET }}
-          arch: ${{ matrix.config.qt_arch }}
+          arch: ${{ matrix.qt_arch }}
           dir: "${{ github.workspace }}/build/"
           install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
+          cache: "true"
           setup-python: "true"
           # tools: "tools_ifw"
           set-env: "true"

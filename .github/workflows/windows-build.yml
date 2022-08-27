@@ -1,25 +1,25 @@
 ---
-name: 'Windows Build'
+name: "Windows Build"
 
 on:
   push:
     tags:
-      - '*'
+      - "*"
     branches-ignore:
-      - 'dependabot/**'
+      - "dependabot/**"
     paths-ignore:
-      - '*.mde'
-      - 'LICENSE.txt'
-      - 'README.md'
-      - '.github/**'
-      - '!.github/workflows/windows-build.yml'
+      - "*.mde"
+      - "LICENSE.txt"
+      - "README.md"
+      - ".github/**"
+      - "!.github/workflows/windows-build.yml"
   pull_request:
     paths-ignore:
-      - '*.mde'
-      - 'LICENSE.txt'
-      - 'README.md'
-      - '.github/**'
-      - '!.github/workflows/windows-build.yml'
+      - "*.mde"
+      - "LICENSE.txt"
+      - "README.md"
+      - ".github/**"
+      - "!.github/workflows/windows-build.yml"
   release:
     types: [created]
 
@@ -29,15 +29,15 @@ env:
   PROJECT_NAME: qtconanboilerplate
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
-  CONAN_USER_HOME: '${{ github.workspace }}/conan-cache'
-  CONAN_USER_HOME_SHORT: '${{ github.workspace }}/conan-cache/short'
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
-  QT_VERSION: '6.3.0'
+  QT_VERSION: "6.3.1"
   QT_DIR: ${{ github.workspace }}
-  QT_ARCH: 'win64_msvc2019_64'
-  QT_TARGET: 'desktop'
-  QT_TOOLS: 'tools_ifw'
+  QT_ARCH: "win64_msvc2019_64"
+  QT_TARGET: "desktop"
+  QT_TOOLS: "tools_ifw"
 
 jobs:
   windows:
@@ -47,21 +47,22 @@ jobs:
       fail-fast: true
       matrix:
         arch: [x64]
+        generator: "Visual Studio 16 2019"
     steps:
-      - name: 'Change to Release if tag'
+      - name: "Change to Release if tag"
         if: github.event_name == 'release' && github.event.action == 'created'
         run: echo "BUILD_TYPE=Release" >> $GITHUB_ENV
 
-      - name: '🧰 Checkout'
+      - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: 'Install Python'
+      - name: "Install Python"
         id: python
         uses: actions/setup-python@v3
 
-      - name: 'Install Python dependencies'
+      - name: "Install Python dependencies"
         shell: bash
         id: python-deps
         run: |
@@ -70,54 +71,54 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: '🔧 Setup Cache'
+      - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
           build_type: ${{ matrix.build_type }}
-          generator: ${{ matrix.config.generator }}
+          generator: ${{ matrix.generator }}
 
-      - name: '🧊 ⚙️ Install Windows dependencies'
+      - name: "🧊 ⚙️ Install Windows dependencies"
         if: runner.os ==  'Windows'
         run: |
           cinst ninja ccache
 
-      - name: '⚙️ Install Qt Version ${{ env.QT_VERSION }}'
+      - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3
         with:
-          version: ${{ env.QT_VERSION }}
-          dir: ${{ env.QT_DIR }}
-          host: 'windows' #${{ runner.os }}
-          arch: ${{ env.QT_ARCH }}
-          target: ${{ env.QT_TARGET }}
-          setup-python: 'true'
-          tools: ${{ env.QT_TOOLS }}
-          cache: 'true'
-          set-env: 'true'
-          install-deps: 'true'
+          version: "${{ env.QT_VERSION }}"
+          dir: "${{ env.QT_DIR }}"
+          host: "windows" #${{ runner.os }}
+          arch: "${{ env.QT_ARCH }}"
+          target: "${{ env.QT_TARGET }}"
+          setup-python: "true"
+          tools: "${{ env.QT_TOOLS }}"
+          cache: "true"
+          set-env: "true"
+          install-deps: "true"
 
-      - name: 'Cleanup Conan system packages (they are not properly cached)'
+      - name: "Cleanup Conan system packages (they are not properly cached)"
         run: |
           conan remove -f '*/system'
 
-      - name: 'Create Working directory'
+      - name: "Create Working directory"
         run: mkdir -p build
 
-      - name: 'Configure CMake'
+      - name: "Configure CMake"
         working-directory: build
         shell: pwsh
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
           cmake $env:GITHUB_WORKSPACE `
           -S .. -B ${{ github.workspace }}/build `
-            -G "Visual Studio 16 2019" -A "${{ matrix.arch }}" `
+            -G "${{ matrix.generator }}" -A "${{ matrix.arch }}" `
             -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
-      - name: 'Build'
+      - name: "Build"
         run: |
-          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }}
+          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }} --target install
 
-      - name: 'Create Setup'
+      - name: "Create Setup"
         run: ${{ env.IQTA_TOOLS }}\QtInstallerFramework\4.4\bin\binarycreator.exe -c ${{ github.workspace }}/deploy/ifw/config.xml -p ${{ github.workspace }}/deploy/ifw/packages  Windows-Setup.exe -v
       - uses: actions/upload-artifact@v3
         name: Upload builded app
@@ -131,22 +132,22 @@ jobs:
     name: Create\Update release
     runs-on: ubuntu-latest
     steps:
-      - name: 'Download artifact'
+      - name: "Download artifact"
         uses: actions/download-artifact@v3
         with:
           name: Windows
           path: ${{ github.workspace }}/Windows
 
-      - name: 'Get branch name'
+      - name: "Get branch name"
         uses: EthanSK/git-branch-name-action@v1
 
-      - name: 'Create Release'
+      - name: "Create Release"
         id: create_release
         uses: ncipollo/release-action@v1.10.0
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
-          artifacts: '${{ github.workspace }}/Windows/Windows-Setup.exe'
+          artifacts: "${{ github.workspace }}/Windows/Windows-Setup.exe"
           name: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: ${{ env.GIT_BRANCH_NAME != 'main' }}

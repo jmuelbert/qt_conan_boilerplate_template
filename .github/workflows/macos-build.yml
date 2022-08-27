@@ -46,10 +46,11 @@ jobs:
       fail-fast: true
       matrix:
         arch: [x64]
+        generator: "Ninja"
     steps:
       - name: "Change to Release if tag"
         if: github.event_name == 'release' && github.event.action == 'created'
-        run: echo "BUILD_TYPE=Release" >> $GITHUB_ENV
+        run: echo "BUILD_TYPE=Release" >> "$GITHUB_ENV"
 
       - name: "🧰 Checkout"
         uses: actions/checkout@v3
@@ -86,13 +87,13 @@ jobs:
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3
         with:
-          version: ${{ env.QT_VERSION }}
-          dir: ${{ env.QT_DIR }}
+          version: "${{ env.QT_VERSION }}"
+          dir: "${{ env.QT_DIR }}"
           host: "mac" # ${{ runner.os }}
-          arch: ${{ env.QT_ARCH }}
-          target: ${{ env.QT_TARGET }}
+          arch: "${{ env.QT_ARCH }}"
+          target: "${{ env.QT_TARGET }}"
           setup-python: "true"
-          tools: ${{ env.QT_TOOLS }}
+          tools: "${{ env.QT_TOOLS }}"
           cache: "true"
           set-env: "true"
           install-deps: "true"

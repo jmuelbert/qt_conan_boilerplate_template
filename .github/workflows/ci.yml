@@ -1,36 +1,36 @@
 ---
-name: 'C/C++ CI'
+name: "C/C++ CI"
 
 on:
   push:
     branches: [main, develop]
     paths:
-      - '**.cpp'
-      - '**.h'
-      - '**.hpp'
-      - '**.py'
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
       - cmake/**
       - src/**
       - CMakeLists.txt
       - conanfile.py
-      - '.github/workflows/ci.yml'
-      - 'deploy/flatpak.yml'
-      - 'deploy/AppImageBuilder.yml'
-      - 'snap/snapcraft.yml'
+      - ".github/workflows/ci.yml"
+      - "deploy/flatpak.yml"
+      - "deploy/AppImageBuilder.yml"
+      - "snap/snapcraft.yml"
 
   pull_request:
     # The branches below must be a subset of the branches above
     types: [opened, synchronize, reopened]
     paths:
-      - '**.cpp'
-      - '**.h'
-      - '**.hpp'
-      - '**.py'
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
       - cmake/**
       - src/**
       - CMakeLists.txt
       - conanfile.py
-      - '.github/workflows/ci.yml'
+      - ".github/workflows/ci.yml"
   workflow_dispatch:
 
 env:
@@ -39,12 +39,12 @@ env:
   PROJECT_NAME: qtconanboilerplate
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
-  CONAN_USER_HOME: '${{ github.workspace }}/conan-cache'
-  CONAN_USER_HOME_SHORT: '${{ github.workspace }}/conan-cache/short'
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  QT_VERSION: '6.3.0'
-  QT_TARGET: 'desktop'
+  QT_VERSION: "6.3.0"
+  QT_TARGET: "desktop"
 
 jobs:
   tests:
@@ -63,27 +63,29 @@ jobs:
         os:
           - ubuntu-20.04
         generator:
-          - 'Ninja'
+          - "Ninja"
         build_type:
           - Debug
 
     steps:
-      - name: 'Cancel Previous Runs'
+      - name: "Cancel Previous Runs"
         uses: styfle/cancel-workflow-action@0.5.0
         with:
           access_token: ${{ github.token }}
 
-      - name: '🧰 Checkout'
+      - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: '⚙️ Install Python'
+      - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
 
-      - name: '⚙️ Install Python dependencies'
+      - name: "⚙️ Install Python dependencies"
         shell: bash
         id: python-deps
         run: |
@@ -92,13 +94,13 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: '🔧 Setup Cache'
+      - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
 
-      - name: '🐧 ⚙️ Install Linux dependencies'
+      - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
           sudo apt-get -y -qq update
@@ -109,33 +111,33 @@ jobs:
             ccache \
             cppcheck
 
-      - name: '⚙️ Install Qt Version ${{ env.QT_VERSION }}'
+      - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v2
         with:
           version: ${{ env.QT_VERSION }}
           # host: ${{ runner.os }}
           target: ${{ env.QT_TARGET }}
-          install-deps: 'true'
+          install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: '${{ steps.cache-qt.outputs.cache-hit }}'
-          setup-python: 'true'
+          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
+          setup-python: "true"
           # tools: "tools_ifw"
-          set-env: 'true'
+          set-env: "true"
 
-      - name: 'Cache Qt'
+      - name: "Cache Qt"
         id: cache-qt
         uses: actions/cache@v1
         with:
-          path: '${{ github.workspace }}/Qt'
+          path: "${{ github.workspace }}/Qt"
           key: ${{ runner.os }}-QtCache
 
-      - name: 'Cleanup Conan system packages (they are not properly cached)'
+      - name: "Cleanup Conan system packages (they are not properly cached)"
         run: |
           conan remove -f '*/system'
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
-      - name: 'Configure CMake'
+      - name: "Configure CMake"
         shell: bash
         run: |
           mkdir -p ./build
@@ -150,12 +152,12 @@ jobs:
             -DOPTION_BUILD_TESTS:BOOL="TRUE" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
-      - name: '🚧 Build'
+      - name: "🚧 Build"
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
           cmake --build ./build --config ${{matrix.build_type}}
 
-      - name: '🐧 🧪 Test and coverage'
+      - name: "🐧 🧪 Test and coverage"
         if: runner.os == 'Linux'
         working-directory: ./build
         # Execute tests defined by the CMake configuration.
@@ -164,7 +166,7 @@ jobs:
           ctest -C ${{matrix.build_type}}
           gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml
 
-      - name: 'Publish to codecov'
+      - name: "Publish to codecov"
         uses: codecov/codecov-action@v2
         with:
           flags: ${{ runner.os }}
@@ -172,7 +174,7 @@ jobs:
           files: ./build/coverage.xml
 
   build:
-    name: 'Build for ${{ matrix.name }}'
+    name: "Build for ${{ matrix.name }}"
 
     runs-on: ${{ matrix.os }}
     needs: tests
@@ -184,7 +186,7 @@ jobs:
         build_type:
           - Release
         generator:
-          - 'Ninja'
+          - "Ninja"
         include:
           - name: windows-latest-cl.exe
             os: windows-latest
@@ -207,23 +209,25 @@ jobs:
             cc: clang
 
     steps:
-      - name: '⚙️ Get the version'
+      - name: "⚙️ Get the version"
         id: get_version
         shell: bash
         run: |
           echo ::set-output name=VERSION::"$(echo $GITHUB_REF | cut -d / -f 3)"
 
-      - name: '🧰 Checkout'
+      - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: 'Install Python'
+      - name: "Install Python"
         id: python
         uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
 
-      - name: 'Install Python dependencies'
+      - name: "Install Python dependencies"
         shell: bash
         id: python-deps
         run: |
@@ -232,13 +236,13 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: '🔧 Setup Cache'
+      - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.config.generator }}
 
-      - name: '🐧 ⚙️ Install Linux dependencies'
+      - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
           sudo apt-get -y -qq update
@@ -248,7 +252,7 @@ jobs:
             ccache \
             cppcheck
 
-      - name: '⚙️ 🍎 Install macos dependencies'
+      - name: "⚙️ 🍎 Install macos dependencies"
         if: runner.os == 'macOS'
         run: |
           brew upgrade cmake
@@ -257,12 +261,12 @@ jobs:
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
           ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
 
-      - name: '🧊 ⚙️ Install Windows dependencies'
+      - name: "🧊 ⚙️ Install Windows dependencies"
         if: runner.os ==  'Windows'
         run: |
           cinst ninja ccache
 
-      - name: '🧊 ⚙️ Configure MSVC'
+      - name: "🧊 ⚙️ Configure MSVC"
         if: runner.os ==  'Windows'
         uses: ilammy/msvc-dev-cmd@v1.10.0
         with:
@@ -276,31 +280,31 @@ jobs:
           CXX: ${{ matrix.cxx }}
           CC: ${{ matrix.cc }}
 
-      - name: '⚙️ Install Qt Version ${{ env.QT_VERSION }}'
+      - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v2
         with:
           version: ${{ env.QT_VERSION }}
           # host: ${{ runner.os }}
           target: ${{ env.QT_TARGET }}
           arch: ${{ matrix.config.qt_arch }}
-          dir: '${{ github.workspace }}/build/'
-          install-deps: 'true'
+          dir: "${{ github.workspace }}/build/"
+          install-deps: "true"
           # modules: 'qtcharts qtwebengine'
-          cached: '${{ steps.cache-qt.outputs.cache-hit }}'
-          setup-python: 'true'
+          cached: "${{ steps.cache-qt.outputs.cache-hit }}"
+          setup-python: "true"
           # tools: "tools_ifw"
-          set-env: 'true'
+          set-env: "true"
 
-      - name: 'Cache Qt'
+      - name: "Cache Qt"
         id: cache-qt
         uses: actions/cache@v1
         with:
-          path: '${{ github.workspace }}/Qt'
+          path: "${{ github.workspace }}/Qt"
           key: ${{ runner.os }}-QtCache
 
       # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
       # has meaningful results
-      - name: '⚙️ 🧊 Configure CMake'
+      - name: "⚙️ 🧊 Configure CMake"
         if: runner.os ==  'Windows'
         working-directory: build
         shell: pwsh
@@ -314,7 +318,7 @@ jobs:
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
-      - name: '⚙️ 🐧 🍎 Configure CMake'
+      - name: "⚙️ 🐧 🍎 Configure CMake"
         working-directory: build
         shell: bash
         if: runner.os !=  'Windows'
@@ -325,7 +329,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX:PATH="$GITHUB_WORKSPACE/AppDir/usr" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
-      - name: '📦 🍎 Build and package application (macdeployqt and zipfile)'
+      - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build
         if: runner.os == 'macOS'
         run: |
@@ -333,7 +337,7 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target pack
           ls
 
-      - name: '⚙️ 🧊 Build'
+      - name: "⚙️ 🧊 Build"
         if: runner.os ==  'Windows'
         working-directory: build
         run: |
@@ -341,7 +345,7 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target  pack
           ls
 
-      - name: '⚙️ 🐧 Build'
+      - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
@@ -359,13 +363,13 @@ jobs:
       #   env:
       #     APPIMAGETOOL_ARCH: x86_64
 
-      - name: 'Get AppImage Builder'
+      - name: "Get AppImage Builder"
         if: runner.os == 'Linux'
         shell: bash
         run: |
           sudo pip3 install appimage-builder
 
-      - name: '📦 🐧  Create AppImage'
+      - name: "📦 🐧  Create AppImage"
         if: runner.os == 'Linux'
         shell: bash
         run: |
@@ -382,7 +386,7 @@ jobs:
       #     mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
       #     mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
 
-      - name: '🐧 📤 Upload Linux artifacts'
+      - name: "🐧 📤 Upload Linux artifacts"
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v3
         with:
@@ -390,14 +394,14 @@ jobs:
           path: |
             build/${{env.TARGET_NAME}}-*.AppIm*
 
-      - name: '🍎 📤 Upload macOS artifacts'
+      - name: "🍎 📤 Upload macOS artifacts"
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v3
         with:
           name: macos-artifacts
           path: build/${{ env.PROJECT_NAME }}-*.*
 
-      - name: '🧊 📤 Upload artifact: Windows Installer'
+      - name: "🧊 📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:
@@ -405,33 +409,33 @@ jobs:
           path: build/${{ env.PROJECT_NAME }}*.*
 
   flatpak-build:
-    name: '🐧 Build flatpak on ubuntu-20.04'
+    name: "🐧 Build flatpak on ubuntu-20.04"
     runs-on: ubuntu-20.04
     needs: tests
 
     steps:
-      - name: '⚙️ Get the version'
+      - name: "⚙️ Get the version"
         id: get_version
         shell: bash
         run: echo ::set-output name=VERSION::"$(echo $GITHUB_REF | cut -d / -f 3)"
 
-      - name: 'Cancel Previous Runs'
+      - name: "Cancel Previous Runs"
         uses: styfle/cancel-workflow-action@0.5.0
         with:
           access_token: ${{ github.token }}
 
-      - name: '🧰 Checkout'
+      - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: 'Setup Flatpak'
+      - name: "Setup Flatpak"
         run: |
           sudo apt-get -y -qq update
           sudo apt-get install -y flatpak flatpak-builder
 
-      - name: 'Setup Flathub'
+      - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak install -y --noninteractive flathub org.freedesktop.Sdk//20.08
@@ -439,7 +443,7 @@ jobs:
           flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
           flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
 
-      - name: '📦 Create flatpak'
+      - name: "📦 Create flatpak"
         run: |
           BUNDLE="org.jmuelbert.${{env.TARGET_NAME}}.flatpak"
           MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.yml
@@ -450,7 +454,7 @@ jobs:
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}.flatpak $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
-      - name: '📤 Upload artifact: FlatPak'
+      - name: "📤 Upload artifact: FlatPak"
         uses: actions/upload-artifact@v3
         with:
           name: flatpak-artifact
@@ -458,40 +462,40 @@ jobs:
             $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
   snap-build:
-    name: '🐧 Build snap on ubuntu-20.04'
+    name: "🐧 Build snap on ubuntu-20.04"
     runs-on: ubuntu-20.04
     needs: tests
 
     steps:
-      - name: '⚙️ Get the version'
+      - name: "⚙️ Get the version"
         id: get_version
         shell: bash
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
-      - name: 'Cancel Previous Runs'
+      - name: "Cancel Previous Runs"
         uses: styfle/cancel-workflow-action@0.5.0
         with:
           access_token: ${{ github.token }}
 
-      - name: '🧰 Checkout'
+      - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: '📦 Create snap'
+      - name: "📦 Create snap"
         uses: snapcore/action-build@v1
         id: snapcraft
         with:
           snapcraft-args: --enable-experimental-extensions
 
-      - name: 'Rename snap name'
+      - name: "Rename snap name"
         shell: bash
         run: |
           mv ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
           ls
 
-      - name: '🐧 📤 Upload artifact: SnapPack'
+      - name: "🐧 📤 Upload artifact: SnapPack"
         uses: actions/upload-artifact@v3
         with:
           name: snapcraft-artifact
@@ -499,46 +503,46 @@ jobs:
             $GITHUB_WORKSPACE/${{ env.TARGET_NAME}}_*_amd64.snap
 
   diagram:
-    name: 'Build diagram'
+    name: "Build diagram"
     needs: tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: '🧰 Checkout'
+      - name: "🧰 Checkout"
         uses: actions/checkout@master
 
-      - name: 'Update diagram'
+      - name: "Update diagram"
         uses: githubocto/repo-visualizer@0.7.1
         with:
-          output_file: 'images/diagram.svg'
-          excluded_paths: 'dist,node_modules'
+          output_file: "images/diagram.svg"
+          excluded_paths: "dist,node_modules"
 
   releaseNotes:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     needs: upload
     steps:
-      - name: 'Build Releasenotes'
+      - name: "Build Releasenotes"
         id: github_releasenotes
         uses: release-drafter/release-drafter@v5.20.0
         with:
           publish: "${{ steps.check-version.outputs.tag != '' }}"
-          tag: '${{ steps.check-version.outputs.tag }}'
+          tag: "${{ steps.check-version.outputs.tag }}"
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   changeLog:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     needs: upload
     steps:
-      - name: 'Build/Update ChangeLog'
+      - name: "Build/Update ChangeLog"
         id: github_changelog
         uses: mikepenz/release-changelog-builder-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 'Create Release'
+      - name: "Create Release"
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref }}
@@ -548,7 +552,7 @@ jobs:
           GITHUB_TOKEN: $${{ secrets.GITHUB_TOKEN }}
 
   build_GH_Pages:
-    name: 'Build GH Pages'
+    name: "Build GH Pages"
     runs-on: ubuntu-latest
     needs: upload
     steps:
@@ -558,15 +562,15 @@ jobs:
       - name: Fetch all history for all tags and branches
         run: git fetch --prune --unshallow
 
-      - name: 'Install sphinx'
+      - name: "Install sphinx"
         run: |
           pip3 install -r docs/requirements.txt
 
-      - name: 'Running the Sphinx to gh-pages Action'
+      - name: "Running the Sphinx to gh-pages Action"
         run: |
           sphinx-build docs docs/_build
 
-      - name: 'Upload documentation'
+      - name: "Upload documentation"
         uses: actions/upload-artifact@v3
         with:
           name: gh-docs
@@ -574,15 +578,15 @@ jobs:
 
   deployGHPages:
     runs-on: ubuntu-latest
-    needs: 'build_GH_Pages'
+    needs: "build_GH_Pages"
     steps:
-      - name: 'Download Artifact with Pages'
+      - name: "Download Artifact with Pages"
         uses: actions/download-artifact@v3
         with:
           name: gh-docs
           path: docs/_build
 
-      - name: 'Deploy to GitHub Pages'
+      - name: "Deploy to GitHub Pages"
         uses: Cecilapp/GitHub-Pages-deploy@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -592,7 +596,7 @@ jobs:
 
   # Upload continous build
   upload:
-    name: '🗂 Create release and upload artifacts'
+    name: "🗂 Create release and upload artifacts"
     needs:
       - build
       - flatpak-build
@@ -600,12 +604,12 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: '📥 Download artifacts'
+      - name: "📥 Download artifacts"
         uses: actions/download-artifact@v3
-      - name: '🗂 Inspect directory after downloading artifacts'
+      - name: "🗂 Inspect directory after downloading artifacts"
         run: ls -alFR
 
-      - name: '📤 Upload Release: AppImage'
+      - name: "📤 Upload Release: AppImage"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -615,7 +619,7 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: FlatPak'
+      - name: "📤 Upload Release: FlatPak"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -625,7 +629,7 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: snap'
+      - name: "📤 Upload Release: snap"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -635,7 +639,7 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: macOS'
+      - name: "📤 Upload Release: macOS"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
@@ -645,7 +649,7 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: windows'
+      - name: "📤 Upload Release: windows"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v1-release
         with:
@@ -655,7 +659,7 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
-      - name: '📤 Upload Release: zip for windows'
+      - name: "📤 Upload Release: zip for windows"
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v1-release
         with:

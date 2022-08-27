@@ -11,7 +11,7 @@ from conan.tools.scm import Version
 # TODO replace with new tools for Conan 2.0
 from conans.tools import check_min_cppstd, get_env
 
-required_conan_version = ">=1.48.0"
+required_conan_version = ">=1.49.0"
 
 class QtTestConan(ConanFile):
     name = "qt_test"

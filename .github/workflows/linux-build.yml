@@ -116,13 +116,13 @@ jobs:
       - name: "Configure CMake"
         working-directory: build
         run: |
-          mkdir -p usr
+          mkdir -p "${{ github.workspace }}/build/usr"
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
            cmake -G "Ninja" \
           -S .. -B ${{ github.workspace }}/build \
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
-          -DCMAKE_INSTALL_PREFIX:PATH="${{ github.workspace }}/build/usr"
+          -DCMAKE_INSTALL_PREFIX:PATH="${{ github.workspace }}/build/usr/"
 
       - name: "Build"
         run: |

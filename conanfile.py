@@ -9,9 +9,9 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
 from conan.tools.scm import Version
 
 # TODO replace with new tools for Conan 2.0
-from conans.tools import check_min_cppstd, get_env
+from conans.tools import get_env
 
-required_conan_version = ">=1.49.0"
+required_conan_version = ">=1.50.0"
 
 class QtTestConan(ConanFile):
     name = "qt_test"

@@ -4,9 +4,9 @@
 <Title>Qt_Widget_test</Title>
 <Publisher>Jürgen Mülbert</Publisher>
 <ProductUrl>https://github.com/jmuelbert/qt_conan_boilerplate_template</ProductUrl>
-<TargetDir>@HomeDir@/CRM</TargetDir>
-<InstallerApplicationIcon>../resources/main</InstallerApplicationIcon>
-<InstallerWindowIcon>../resources/images/main</InstallerWindowIcon>
+<TargetDir>@HomeDir@/QTWigettest</TargetDir>
+<InstallerApplicationIcon>../../assets/icons/icons8-app-symbol-80.png</InstallerApplicationIcon>
+<InstallerWindowIcon>../../assets/icons/icons8-app-symbol-80.png</InstallerWindowIcon>
 <WizardStyle>modern</WizardStyle>
 <MaintenanceToolName>uninstall</MaintenanceToolName>
 </Installer>

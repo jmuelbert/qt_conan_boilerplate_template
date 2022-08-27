@@ -124,7 +124,7 @@ jobs:
 
       - name: "Build"
         run: |
-          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }}
+          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }} --target install
 
       - name: "Download linuxdeploy"
         run: |

@@ -1,27 +1,27 @@
 ---
-name: 'Linux Build'
+name: "Linux Build"
 
 on:
   push:
     tags:
-      - '*'
+      - "*"
     branches-ignore:
-      - 'dependabot/**'
+      - "dependabot/**"
     paths-ignore:
-      - '*.mde'
-      - 'LICENSE.txt'
-      - 'README.md'
-      - '.github/**'
-      - '!.github/workflows/linux-build.yml'
+      - "*.mde"
+      - "LICENSE.txt"
+      - "README.md"
+      - ".github/**"
+      - "!.github/workflows/linux-build.yml"
   pull_request:
     paths-ignore:
-      - '*.mde'
-      - 'LICENSE.txt'
-      - 'README.md'
-      - '.github/**'
-      - '!.github/workflows/linux-build.yml'
+      - "*.mde"
+      - "LICENSE.txt"
+      - "README.md"
+      - ".github/**"
+      - "!.github/workflows/linux-build.yml"
   release:
-    types: [created]
+    types: [published]
 
 env:
   # Target
@@ -29,15 +29,15 @@ env:
   PROJECT_NAME: qtconanboilerplate
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
-  CONAN_USER_HOME: '${{ github.workspace }}/conan-cache'
-  CONAN_USER_HOME_SHORT: '${{ github.workspace }}/conan-cache/short'
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Debug
-  QT_VERSION: '6.3.0'
+  QT_VERSION: "6.3.1"
   QT_DIR: ${{ github.workspace }}
-  QT_ARCH: 'gcc_64'
-  QT_TOOLS: 'tools_ifw'
-  QT_TARGET: 'desktop'
+  QT_ARCH: "gcc_64"
+  QT_TOOLS: "tools_ifw"
+  QT_TARGET: "desktop"
 
 jobs:
   linux:
@@ -47,21 +47,27 @@ jobs:
       fail-fast: true
       matrix:
         arch: [x64]
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
     steps:
-      - name: 'Change to Release if tag'
+      - name: "Change to Release if tag"
         if: github.event_name == 'release' && github.event.action == 'created'
         run: echo "BUILD_TYPE=Release" >> $GITHUB_ENV
 
-      - name: '🧰 Checkout'
+      - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: 'Install Python'
+      - name: "Install Python"
         id: python
         uses: actions/setup-python@v3
 
-      - name: 'Install Python dependencies'
+      - name: "Install Python dependencies"
         shell: bash
         id: python-deps
         run: |
@@ -70,13 +76,13 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: '🔧 Setup Cache'
+      - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.config.generator }}
 
-      - name: '🐧 ⚙️ Install Linux dependencies'
+      - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
           sudo apt-get -y -qq update
@@ -86,28 +92,28 @@ jobs:
             ccache \
             cppcheck
 
-      - name: '⚙️ Install Qt Version ${{ env.QT_VERSION }}'
+      - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
           dir: ${{ env.QT_DIR }}
-          host: 'linux' # ${{ runner.os }}
+          host: "linux" # ${{ runner.os }}
           arch: ${{ env.QT_ARCH }}
           target: ${{ env.QT_TARGET }}
-          setup-python: 'true'
+          setup-python: "true"
           tools: ${{ env.QT_TOOLS }}
-          cache: 'true'
-          set-env: 'true'
-          install-deps: 'true'
+          cache: "true"
+          set-env: "true"
+          install-deps: "true"
 
-      - name: 'Cleanup Conan system packages (they are not properly cached)'
+      - name: "Cleanup Conan system packages (they are not properly cached)"
         run: |
           conan remove -f '*/system'
 
-      - name: 'Create Working directory'
+      - name: "Create Working directory"
         run: mkdir -p build
 
-      - name: 'Configure CMake'
+      - name: "Configure CMake"
         working-directory: build
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
@@ -116,26 +122,26 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
-      - name: 'Build'
+      - name: "Build"
         run: |
           cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }}
 
-      - name: 'Download linuxdeploy'
+      - name: "Download linuxdeploy"
         run: |
           wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -O ${{ github.workspace }}/linuxdeploy.AppImage -q
           wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage -O ${{ github.workspace }}/linuxdeploy-plugin-qt.AppImage -q
           chmod +x ${{ github.workspace }}/linuxdeploy.AppImage
           chmod +x ${{ github.workspace }}/linuxdeploy-plugin-qt.AppImage
 
-      - name: 'Create app folder'
+      - name: "Create app folder"
         run: |
           mkdir -p ${{ github.workspace }}/app
           ${{ github.workspace }}/linuxdeploy.AppImage --appdir ${{ github.workspace }}/build/bin/app
 
-      - name: 'Create installer'
+      - name: "Create installer"
         run: ${{ env.IQTA_TOOLS }}/QtInstallerFramework/4.4/bin/binarycreator -c ${{ github.workspace }}/deploy/ifw/config.xml -p ${{ github.workspace }}/deploy/ifw/packages ${{ github.workspace }}/Linux-Setup -v
 
-      - name: 'Upload builded app'
+      - name: "Upload builded app"
         uses: actions/upload-artifact@v3
         with:
           name: Linux
@@ -160,7 +166,7 @@ jobs:
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
-          artifacts: '${{ github.workspace }}/Linux/Linux-Setup'
+          artifacts: "${{ github.workspace }}/Linux/Linux-Setup"
           name: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: ${{ env.GIT_BRANCH_NAME != 'main' }}

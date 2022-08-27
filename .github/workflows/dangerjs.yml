@@ -1,7 +1,21 @@
 ---
 name: DangerJS
 
-on: pull_request_target
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/danger.yml"
+
+  pull_request_target:
 
 jobs:
   danger:
@@ -16,11 +30,11 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install yarn dependencies
         run: |
           yarn add danger --dev
           yarn danger ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DANGER_DISABLE_TRANSPILATION: 'true'
+          DANGER_DISABLE_TRANSPILATION: "true"

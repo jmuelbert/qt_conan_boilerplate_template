@@ -357,18 +357,17 @@ jobs:
 
       - name: "📦 🐧  Create AppImage"
         if: runner.os == 'Linux'
-        shell: bash
-        run: |
-          cd $GITHUB_WORKSPACE
-          appimage-builder --recipe "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
+        uses: AppImageCrafters/build-appimage-action@master
+        env:
+          UPDATE_INFO: gh-releases-zsync|AppImageCrafters|qtwidgettest|latest|*x86_64.AppImage.zsync
+        with:
+          recipe: "./deploy/AppImageBuilder.yml"
 
       - name: "🐧 📤 Upload Linux artifacts"
-        if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
-          name: appimage-artifact
-          path: |
-            build/${{env.TARGET_NAME}}-*.AppIm*
+          name: AppImage
+          path: "./*.AppImage*"
 
       - name: "🍎 📤 Upload macOS artifacts"
         if: runner.os == 'macOS'

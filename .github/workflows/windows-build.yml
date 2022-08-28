@@ -124,6 +124,13 @@ jobs:
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target pack
 
+      - name: "🧊 📤 Upload artifact: Windows Installer"
+        if: runner.os ==  'Windows'
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-artifacts
+          path: build/qtconanboilerplate*.*
+
   release:
     if: startsWith(github.ref, 'refs/tags/')
     needs: windows
@@ -133,7 +140,7 @@ jobs:
       - name: "Download artifact"
         uses: actions/download-artifact@v3
         with:
-          name: Windows
+          name: windows-artifacts
           path: ${{ github.workspace }}/Windows
 
       - name: "Get branch name"
@@ -145,7 +152,7 @@ jobs:
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
-          artifacts: "${{ github.workspace }}/Windows/Windows-Setup.exe"
+          artifacts: windows-artifacts
           name: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: ${{ env.GIT_BRANCH_NAME != 'main' }}

@@ -111,6 +111,10 @@ jobs:
       - name: "Cleanup Conan system packages (they are not properly cached)"
         run: |
           conan remove -f '*/system'
+      - name: Create Build Environment
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: cmake -E make_directory build
 
       - name: "Configure CMake"
         working-directory: build
@@ -120,11 +124,12 @@ jobs:
           -S .. -B ${{ github.workspace }}/build \
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
-          -DCMAKE_INSTALL_PREFIX:PATH="./usr"
+          -DCMAKE_INSTALL_PREFIX=./AppDir/usr
 
       - name: "🚧 Build"
+        working-directory: build
         run: |
-          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }} --target install
+          cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install
 
       - name: "Download linuxdeploy"
         run: |

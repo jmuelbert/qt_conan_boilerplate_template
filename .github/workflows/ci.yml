@@ -136,17 +136,18 @@ jobs:
         run: |
           conan remove -f '*/system'
 
+      - name: "Create Working directory"
+        run: mkdir -p build
+
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
       - name: "Configure CMake"
+        working-directory: build
         shell: bash
         run: |
-          mkdir -p ./build
-          mkdir -p ./build/usr
-          cd ./build
+          mkdir -p usr
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
-          cd ..
-          cmake -S . -B ./build -G "${{matrix.generator}}" \
+          cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
@@ -154,13 +155,14 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
       - name: "🚧 Build"
+        working-directory: build
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}}
+          cmake --build . --config ${{matrix.build_type}}
 
       - name: "🐧 🧪 Test and coverage"
         if: runner.os == 'Linux'
-        working-directory: ./build
+        working-directory: build
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: |
@@ -294,6 +296,11 @@ jobs:
           set-env: "true"
           install-deps: "true"
 
+      - name: Create Build Environment
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: cmake -E make_directory build
+
       # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
       # has meaningful results
       - name: "⚙️ 🧊 Configure CMake"
@@ -306,7 +313,7 @@ jobs:
             -G "Visual Studio 16 2019" -A "${{ matrix.arch }}" `
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} `
             -DCMAKE_INSTALL_PREFIX:PATH="./program" `
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
@@ -319,7 +326,7 @@ jobs:
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="$GITHUB_WORKSPACE/AppDir/usr" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build
@@ -337,21 +344,10 @@ jobs:
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
+        working-directory: build
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
-          cmake --build ./build --config ${{matrix.build_type}} --target install
-
-      # - name: '⚙️ 🐧 Install go-appimage tool'
-      #   if: runner.os == 'Linux'
-      #   # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
-      #   # which is glibc 2.23. For more information, please see https://github.com/probonopd/linuxdeployqt/issues/340.
-      #   # Will try new tool https://github.com/probonopd/go-appimage written in golang by probonopd.
-      #   run: |
-      #     wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - \
-      #     | grep "appimagetool-.*-${APPIMAGETOOL_ARCH}.AppImage" | head -n 1 | cut -d '"' -f 2) -O appimagetool
-      #     chmod +x appimagetool
-      #   env:
-      #     APPIMAGETOOL_ARCH: x86_64
+          cmake --build . --config ${{matrix.build_type}} --target install
 
       - name: "Get AppImage Builder"
         if: runner.os == 'Linux'
@@ -365,16 +361,6 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           appimage-builder --recipe "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
-      #     APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
-      #     $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
-      #     mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
-      #     if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then
-      #       rm ${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0
-      #     fi
-      #     chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
-      #     $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
-      #     mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
-      #     mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
 
       - name: "🐧 📤 Upload Linux artifacts"
         if: runner.os == 'Linux'

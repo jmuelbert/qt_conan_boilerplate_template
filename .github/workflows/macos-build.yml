@@ -102,21 +102,24 @@ jobs:
         run: |
           conan remove -f '*/system'
 
-      - name: "Create Working directory"
-        run: mkdir -p build
+      - name: Create Build Environment
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: cmake -E make_directory build
 
       - name: "Configure CMake"
         working-directory: build
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
-          cmake -G "Ninja" \
-          -S .. -B ${{ github.workspace }}/build \
+          cmake -S .. -B . -G "${{matrix.generator}}" \
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
 
       - name: "Build"
+        working-directory: build
         run: |
-          cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }}
+          cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install 
+          cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target pack
 
       - name: "Upload bundle"
         uses: actions/upload-artifact@v3

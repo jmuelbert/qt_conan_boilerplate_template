@@ -105,7 +105,7 @@ else()
   set(TS_FILES translations/QtWidgetTest_de_DE.ts)
   set_source_files_properties(
     ${TS_FILES}
-    ROPERTIES
+    PROPERTIES
     OUTPUT_LOCATION
     "${CMAKE_CURRENT_BINARY_DIR}/translations")
   qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
@@ -279,6 +279,15 @@ qt_deploy_runtime_dependencies(
     GENERATE_QT_CONF
     VERBOSE
 )")
+
+# Omitting RUNTIME DESTINATION will install a non-bundle target to CMAKE_INSTALL_BINDIR,
+# which coincides with the default value of QT_DEPLOY_BIN_DIR used above, './bin'.
+# Installing macOS bundles always requires an explicit BUNDLE DESTINATION option.
+install(TARGETS ${TARGET}    # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
+                                   #                           and ./binHelperApp.exe
+        BUNDLE  DESTINATION .      # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
+)
+
   install(SCRIPT ${deploy_script}) # Add its runtime dependencies
 elseif(UNIX AND NOT APPLE)
   # appdata

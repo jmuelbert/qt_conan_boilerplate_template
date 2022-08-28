@@ -116,27 +116,13 @@ jobs:
           -G "${{ matrix.generator }}" -A "${{ matrix.arch }}" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" `
-          -DCMAKE_INSTALL_PREFIX:PATH=./program
+          -DCMAKE_INSTALL_PREFIX:PATH=${{github.workspace}}/program
 
       - name: "Build"
         working-directory: build
         run: |
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target pack
-
-      - name: "Prepare IFW"
-        shell: bash
-        run: |
-          mkdir -p "${{ github.workspace }}/deploy/ifw/packages/com.github.jmuelbert.qtwidgettest/data"
-          cp -R "${{ github.workspace }}/build/program/" "${{ github.workspace }}/deploy/ifw/packages/com.github.jmuelbert.qtwidgettest/data"
-
-      - name: "Create Setup"
-        run: ${{ env.IQTA_TOOLS }}\QtInstallerFramework\4.4\bin\binarycreator.exe -c ${{ github.workspace }}/deploy/ifw/config.xml -p ${{ github.workspace }}/deploy/ifw/packages  Windows-Setup.exe -v
-      - uses: actions/upload-artifact@v3
-        name: Upload builded app
-        with:
-          name: Windows
-          path: ${{ github.workspace }}/Windows-Setup.exe
 
   release:
     if: startsWith(github.ref, 'refs/tags/')

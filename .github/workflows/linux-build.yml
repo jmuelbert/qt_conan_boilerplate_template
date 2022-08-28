@@ -130,6 +130,7 @@ jobs:
         working-directory: build
         run: |
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install
+          ls "${{ github.workspace }}/deploy/"
 
       - name: "📦 🐧  Create AppImage"
         if: runner.os == 'Linux'

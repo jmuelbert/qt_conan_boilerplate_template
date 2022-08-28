@@ -121,7 +121,7 @@ jobs:
       - name: "Build"
         working-directory: build
         run: |
-          cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target pack
+          cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target pack
 
       - name: "Prepare IFW"

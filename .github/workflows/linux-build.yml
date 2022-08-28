@@ -47,6 +47,7 @@ jobs:
       fail-fast: true
       matrix:
         arch: [x64]
+        generator: ["Ninja"]
 
     permissions:
       actions: read
@@ -63,11 +64,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: "Install Python"
+      - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v3
 
-      - name: "Install Python dependencies"
+      - name: "⚙️ Install Python dependencies"
         shell: bash
         id: python-deps
         run: |
@@ -98,11 +99,12 @@ jobs:
           version: "${{ env.QT_VERSION }}"
           dir: "${{ env.QT_DIR }}"
           host: "linux" # ${{ runner.os }}
-          arch: "${{ env.QT_ARCH }}"
+          arch: "${{ env.QT_ARCH }}"
           target: "${{ env.QT_TARGET }}"
-          setup-python: "true"
           tools: "${{ env.QT_TOOLS }}"
+          setup-python: "true"
           cache: "true"
+          cache-key-prefix: "${{ runner.os }}-install-qt-action"
           set-env: "true"
           install-deps: "true"
 
@@ -110,21 +112,17 @@ jobs:
         run: |
           conan remove -f '*/system'
 
-      - name: "Create Working directory"
-        run: mkdir -p build
-
       - name: "Configure CMake"
         working-directory: build
         run: |
-          mkdir -p "${{ github.workspace }}/build/usr"
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
            cmake -G "Ninja" \
           -S .. -B ${{ github.workspace }}/build \
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
-          -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
-          -DCMAKE_INSTALL_PREFIX:PATH="${{ github.workspace }}/build/usr/"
+          -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
+          -DCMAKE_INSTALL_PREFIX:PATH="./usr"
 
-      - name: "Build"
+      - name: "🚧 Build"
         run: |
           cmake --build ${{ github.workspace }}/build --parallel --config ${{ env.BUILD_TYPE }} --target install
 

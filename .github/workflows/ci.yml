@@ -43,7 +43,10 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  QT_VERSION: "6.3.1‚"
+  QT_VERSION: "6.3.1"
+  QT_DIR: ${{ github.workspace }}
+  QT_ARCH: "gcc_64"
+  QT_TOOLS: "tools_ifw"
   QT_TARGET: "desktop"
 
 jobs:
@@ -61,11 +64,16 @@ jobs:
       # and your own projects needs
       matrix:
         os:
-          - ubuntu-20.04
+          - ubuntu-latest
         generator:
           - "Ninja"
         build_type:
           - Debug
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
       - name: "Cancel Previous Runs"
@@ -110,24 +118,19 @@ jobs:
             cppcheck
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v3
         with:
-          version: ${{ env.QT_VERSION }}
+          version: "${{ env.QT_VERSION }}"
+          dir: "${{ env.QT_DIR }}"
           # host: ${{ runner.os }}
-          target: ${{ env.QT_TARGET }}
-          install-deps: "true"
-          # modules: 'qtcharts qtwebengine'
-          cache: "true"
+          arch: "${{ env.QT_ARCH }}"
+          target: "${{ env.QT_TARGET }}"
+          tools: "${{ env.QT_TOOLS }}"
           setup-python: "true"
-          # tools: "tools_ifw"
+          cache: "true"
+          cache-key-prefix: "${{ runner.os }}-install-qt-action"
           set-env: "true"
-
-      - name: "Cache Qt"
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: "${{ github.workspace }}/Qt"
-          key: ${{ runner.os }}-QtCache
+          install-deps: "true"
 
       - name: "Cleanup Conan system packages (they are not properly cached)"
         run: |
@@ -219,11 +222,11 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: "Install Python"
+      - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v3
 
-      - name: "Install Python dependencies"
+      - name: "⚙️ Install Python dependencies"
         shell: bash
         id: python-deps
         run: |
@@ -268,35 +271,28 @@ jobs:
         with:
           # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
           toolset: 14.2
-          arch: ${{ matrix.pak_arch }}
+          arch: "${{ matrix.pak_arch }}"
 
-      - name: Set Compiler Environment
+      - name: "Set Compiler Environment"
         uses: lukka/set-shell-env@v1
         with:
-          CXX: ${{ matrix.cxx }}
-          CC: ${{ matrix.cc }}
+          CXX: "${{ matrix.cxx }}"
+          CC: "${{ matrix.cc }}"
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v3
         with:
-          version: ${{ env.QT_VERSION }}
-          # host: ${{ runner.os }}
-          target: ${{ env.QT_TARGET }}
-          arch: ${{ matrix.qt_arch }}
-          dir: "${{ github.workspace }}/build/"
-          install-deps: "true"
-          # modules: 'qtcharts qtwebengine'
-          cache: "true"
+          version: "${{ env.QT_VERSION }}"
+          dir: "${{ env.QT_DIR }}"
+          # host: "linux" # ${{ runner.os }}
+          arch: "${{ env.QT_ARCH }}"
+          target: "${{ env.QT_TARGET }}"
+          tools: "${{ env.QT_TOOLS }}"
           setup-python: "true"
-          # tools: "tools_ifw"
+          cache: "true"
+          cache-key-prefix: "${{ runner.os }}-install-qt-action"
           set-env: "true"
-
-      - name: "Cache Qt"
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: "${{ github.workspace }}/Qt"
-          key: ${{ runner.os }}-QtCache
+          install-deps: "true"
 
       # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
       # has meaningful results
@@ -331,7 +327,6 @@ jobs:
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
           cmake --build . --config ${{matrix.build_type}} --target pack
-          ls
 
       - name: "⚙️ 🧊 Build"
         if: runner.os ==  'Windows'
@@ -339,7 +334,6 @@ jobs:
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
           cmake --build . --config ${{matrix.build_type}} --target  pack
-          ls
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'

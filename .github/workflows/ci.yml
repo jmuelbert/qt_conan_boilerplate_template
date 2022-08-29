@@ -198,7 +198,7 @@ jobs:
         generator:
           - "Ninja"
         include:
-          - name: windows
+          - name: windows-latest-cl.exe
             os: windows-2019
             cxx: clang-cl.exe
             cc: clang-cl.exe
@@ -206,12 +206,12 @@ jobs:
             arch: x64
             pak_arch: win64
             # generator: 'Visual Studio 16 2019'
-          - name: linux
+          - name: ubuntu-latest-clang++
             os: ubuntu-latest
             qt_arch: gcc_64
             cxx: clang++
             cc: clang
-          - name: macos
+          - name: macos-latest-clang++
             os: macos-latest
             qt_arch: clang_64
             arch: clang_64

@@ -58,8 +58,8 @@ jobs:
       matrix:
         arch: [x64]
         generator: ["Visual Studio 16 2019"]
-        cc: clang-cl.exe
-        cxx: clang-cl.exe
+        cc: [clang-cl.exe]
+        cxx: [clang-cl.exe]
 
     steps:
       - name: "Change to Release if tag"

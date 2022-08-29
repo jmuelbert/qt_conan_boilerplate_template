@@ -321,7 +321,7 @@ jobs:
           -DCMAKE_INSTALL_PREFIX:PATH=${{github.workspace}}/program
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
-        # has meaningful results
+        # has meaningful results.
       - name: "⚙️ 🐧 🍎 Configure CMake"
         working-directory: build
         shell: bash
@@ -580,6 +580,7 @@ jobs:
     steps:
       - name: "📥 Download artifacts"
         uses: actions/download-artifact@v3
+
       - name: "🗂 Inspect directory after downloading artifacts"
         run: ls -alFR
 

@@ -172,8 +172,8 @@ endif()
 
 # Package options
 set(CPACK_NSIS_DISPLAY_NAME "${package_name}-${META_VERSION}")
-set(CPACK_NSIS_MUI_ICON      "${PROJECT_SOURCE_DIR}/deploy/images/data_16.ico")
-set(CPACK_NSIS_MUI_UNIICON   "${PROJECT_SOURCE_DIR}/deploy/images/data_16.ico")
+set(CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/deploy/images/data_16.ico")
+set(CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/deploy/images/data_16.ico")
 
 # Optional Preliminaries (i.e., silent Visual Studio Redistributable install)
 if(NOT INSTALL_MSVC_REDIST_FILEPATH)
@@ -245,7 +245,8 @@ set(CPACK_RPM_COMPONENT_INSTALL ${PACK_COMPONENT_INSTALL})
 #
 # DMG (DragNDrop) Package
 #
-set(CPACK_DMG_VOLUME_NAME ${package_name}"))
+set(CPACK_DMG_VOLUME_NAME
+    ${package_name}"))
 set(CPACK_DMG_FORMAT UDIF bzip2-compressed)
 set(CPACK_DMG_BACKGROUND_IMAGE ${PROJECT_SOURCE_DIR}/deploy/images/data_512.png)
 #
@@ -259,7 +260,8 @@ set(CPACK_ARCHIVE_COMPONENT_INSTALL ${PACK_COMPONENT_INSTALL})
 #
 
 set(CPACK_OUTPUT_CONFIG_FILE "${PROJECT_BINARY_DIR}/CPackConfig-${project_name}.cmake")
-set(CPACK_GENERATOR "${OPTION_PACK_GENERATOR}")
+set(CPACK_GENERATOR "${OPTION_PACK_GENERATOR}
+    ")
 set(CPack_CMake_INCLUDED FALSE)
 include(CPack)
 

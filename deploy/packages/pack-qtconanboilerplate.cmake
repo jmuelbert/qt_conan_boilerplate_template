@@ -37,17 +37,17 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
   # At the moment, DMG generator and CPACK_INCLUDE_TOPLEVEL_DIRECTORY=ON do not work together.
   # Therefore, we disable dmg images for MacOS until we've found a solution
   set(OPTION_PACK_GENERATOR
-      "DragNDrop"
+      "DragNDrop;TGZ"
       CACHE STRING "Package targets")
   set(PACK_COMPONENT_INSTALL OFF)
   set(PACK_INCLUDE_TOPDIR ON)
 else()
   # Default (portable package for any platform)
-  set(OPTION_PACK_GENERATOR
-      "ZIP;TGZ"
-      CACHE STRING "Package targets")
-  set(PACK_COMPONENT_INSTALL OFF)
-  set(PACK_INCLUDE_TOPDIR ON)
+  # set(OPTION_PACK_GENERATOR
+  #     "ZIP;TGZ"
+  #     CACHE STRING "Package targets")
+  # set(PACK_COMPONENT_INSTALL OFF)
+  # set(PACK_INCLUDE_TOPDIR ON)
 endif()
 
 #

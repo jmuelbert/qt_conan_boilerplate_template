@@ -7,21 +7,32 @@ on:
       - "*"
     branches-ignore:
       - "dependabot/**"
-    paths-ignore:
-      - "*.mde"
-      - "LICENSE.txt"
-      - "README.md"
-      - ".github/**"
-      - "!.github/workflows/macos-build.yml"
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/macos-build.yml"
   pull_request:
-    paths-ignore:
-      - "*.mde"
-      - "LICENSE.txt"
-      - "README.md"
-      - ".github/**"
-      - "!.github/workflows/macos-build.yml"
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/macos-build.yml"
+
   release:
     types: [created]
+
+  workflow_dispatch:
 
 env:
   TARGET_NAME: qtwidgettest
@@ -32,7 +43,7 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  QT_VERSION: "6.3.0"
+  QT_VERSION: "6.3.1"
   QT_DIR: ${{ github.workspace }}
   QT_ARCH: "clang_64"
   QT_TOOLS: "tools_ifw"

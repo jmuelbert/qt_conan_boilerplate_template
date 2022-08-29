@@ -7,21 +7,34 @@ on:
       - "*"
     branches-ignore:
       - "dependabot/**"
-    paths-ignore:
-      - "*.mde"
-      - "LICENSE.txt"
-      - "README.md"
-      - ".github/**"
-      - "!.github/workflows/linux-build.yml"
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/linux-build.yml"
+      - "deploy/AppImageBuilder.yml"
   pull_request:
-    paths-ignore:
-      - "*.mde"
-      - "LICENSE.txt"
-      - "README.md"
-      - ".github/**"
-      - "!.github/workflows/linux-build.yml"
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/linux-build.yml"
+      - "deploy/AppImageBuilder.yml"
+
   release:
-    types: [published]
+    types: [published, created]
+
+  workflow_dispatch:
 
 env:
   # Target

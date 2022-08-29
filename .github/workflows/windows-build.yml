@@ -7,21 +7,31 @@ on:
       - "*"
     branches-ignore:
       - "dependabot/**"
-    paths-ignore:
-      - "*.mde"
-      - "LICENSE.txt"
-      - "README.md"
-      - ".github/**"
-      - "!.github/workflows/windows-build.yml"
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/windows-build.yml"
   pull_request:
-    paths-ignore:
-      - "*.mde"
-      - "LICENSE.txt"
-      - "README.md"
-      - ".github/**"
-      - "!.github/workflows/windows-build.yml"
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/windows-build.yml"
   release:
     types: [created]
+
+  workflow_dispatch:
 
 env:
   # Target
@@ -48,6 +58,9 @@ jobs:
       matrix:
         arch: [x64]
         generator: ["Visual Studio 16 2019"]
+        cc: clang-cl.exe
+        cxx: clang-cl.exe
+
     steps:
       - name: "Change to Release if tag"
         if: github.event_name == 'release' && github.event.action == 'created'
@@ -81,6 +94,20 @@ jobs:
         if: runner.os ==  'Windows'
         run: |
           cinst ninja ccache
+
+      - name: "🧊 ⚙️ Configure MSVC"
+        if: runner.os ==  'Windows'
+        uses: ilammy/msvc-dev-cmd@v1.10.0
+        with:
+          # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
+          toolset: 14.2
+          arch: "${{ matrix.pak_arch }}"
+
+      - name: "Set Compiler Environment"
+        uses: lukka/set-shell-env@v1
+        with:
+          CXX: "${{ matrix.cxx }}"
+          CC: "${{ matrix.cc }}"
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3

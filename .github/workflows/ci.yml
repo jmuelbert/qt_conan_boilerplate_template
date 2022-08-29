@@ -3,7 +3,10 @@ name: "C/C++ CI"
 
 on:
   push:
-    branches: [main, develop]
+    tags:
+      - "*"
+    branches-ignore:
+      - "dependabot/**"
     paths:
       - "**.cpp"
       - "**.h"
@@ -31,6 +34,10 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/ci.yml"
+      - "deploy/flatpak.yml"
+      - "deploy/AppImageBuilder.yml"
+      - "snap/snapcraft.yml"
+
   workflow_dispatch:
 
 env:

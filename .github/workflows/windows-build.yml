@@ -150,6 +150,7 @@ jobs:
         run: |
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target pack
+          ls -alF
 
       - name: "🧊 📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'

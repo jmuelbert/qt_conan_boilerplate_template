@@ -131,6 +131,7 @@ jobs:
         run: |
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install 
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target pack
+          ls -alF
 
       - name: "Upload bundle"
         uses: actions/upload-artifact@v3

@@ -130,7 +130,6 @@ jobs:
         run: cmake -E make_directory build
 
       - name: "Configure CMake"
-        working-directory: build
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ env.BUILD_TYPE }}"  -g CMakeToolchain
            cmake -G "Ninja" \
@@ -143,7 +142,6 @@ jobs:
         working-directory: build
         run: |
           cmake --build . --parallel --config ${{ env.BUILD_TYPE }} --target install
-          ls "${{ github.workspace }}/deploy/"
 
       - name: "📦 🐧  Create AppImage"
         if: runner.os == 'Linux'

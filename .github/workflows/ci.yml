@@ -339,7 +339,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
-          ls -laF "${{github.workspace}}/AppDir/usr"
+          ls -laF "${{github.workspace}}"
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build

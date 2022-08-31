@@ -247,7 +247,7 @@ set(CPACK_RPM_COMPONENT_INSTALL ${PACK_COMPONENT_INSTALL})
 #
 # set(CPACK_DMG_VOLUME_NAME "${package_name}")
 # set(CPACK_DMG_FORMAT UDIF bzip2-compressed)
-set(CPACK_DMG_BACKGROUND_IMAGE ${PROJECT_SOURCE_DIR}/deploy/images/data_512.png)
+# set(CPACK_DMG_BACKGROUND_IMAGE ${PROJECT_SOURCE_DIR}/deploy/images/data_512.png)
 #
 # Archives (zip, tgz, ...)
 #

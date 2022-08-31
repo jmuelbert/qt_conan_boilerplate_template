@@ -69,7 +69,7 @@ jobs:
       - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
         with:
           bundle: palette.flatpak
-          manifest-path: ${MANIFEST_PATH}
+          manifest-path: ./deploy/flatpak-build.yml
           cache-key: flatpak-builder-${{ github.sha }}
           arch: ${{ matrix.arch }}
       - uses: bilelmoussaoui/flatpak-github-actions/flat-manager@v3

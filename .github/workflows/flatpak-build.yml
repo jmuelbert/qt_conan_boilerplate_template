@@ -39,7 +39,7 @@ env:
   TARGET_NAME: qtwidgettest
   PROJECT_NAME: qtconanboilerplate
   BUNDLE: "org.jmuelbert.qtwidgettest.flatpak"
-  MANIFEST_PATH: $GITHUB_WORKSPACE/deploy/flatpak.yml
+  MANIFEST_PATH: ./deploy/flatpak.yml
   RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
   APP_ID: "org.jmuelbert.qtwidgettest"
 

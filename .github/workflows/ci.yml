@@ -337,8 +337,9 @@ jobs:
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DCMAKE_INSTALL_PREFIX:PATH="$GITHUB_WORKSPACE/AppDir/usr" \
+            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
+          ls -laF "${{github.workspace}}/AppDir/usr"
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build
@@ -367,7 +368,7 @@ jobs:
         env:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|qtwidgettest|latest|*x86_64.AppImage.zsync
         with:
-          recipe: "${{github.workspace}}/deploy/AppImageBuilder.yml"
+          recipe: "./deploy/AppImageBuilder.yml"
 
       - name: "🐧 📤 Upload Linux artifacts"
         uses: actions/upload-artifact@v2

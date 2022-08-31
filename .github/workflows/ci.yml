@@ -324,7 +324,7 @@ jobs:
           -S .. -B  . `
           -G "${{ matrix.generator }}" -A "${{ matrix.arch }}" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
-          -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" `
+          -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake" `
           -DCMAKE_INSTALL_PREFIX:PATH=${{github.workspace}}/program
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
@@ -368,7 +368,7 @@ jobs:
         env:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|qtwidgettest|latest|*x86_64.AppImage.zsync
         with:
-          recipe: "./deploy/AppImageBuilder.yml"
+          recipe: ./deploy/AppImageBuilder.yml
 
       - name: "🐧 📤 Upload Linux artifacts"
         uses: actions/upload-artifact@v2

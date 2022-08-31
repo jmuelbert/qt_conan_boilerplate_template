@@ -72,11 +72,12 @@ jobs:
           manifest-path: ./deploy/flatpak.yml
           cache-key: flatpak-builder-${{ github.sha }}
           arch: ${{ matrix.arch }}
-      - uses: bilelmoussaoui/flatpak-github-actions/flat-manager@v3
-        name: "Deploy"
-        with:
-          repository: elementary
-          flat-manager-url: https://flatpak-api.elementary.io
-          token: some_very_hidden_token
-          end-of-life: "The application has been renamed to..."
-          end-of-life-rebase: "${APP_ID}"
+
+      # - uses: bilelmoussaoui/flatpak-github-actions/flat-manager@v3
+      #   name: "Deploy"
+      #   with:
+      #     repository: elementary
+      #     flat-manager-url: https://flatpak-api.elementary.io
+      #     token: some_very_hidden_token
+      #     end-of-life: "The application has been renamed to..."
+      #     end-of-life-rebase: "${APP_ID}"

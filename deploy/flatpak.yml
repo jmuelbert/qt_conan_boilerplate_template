@@ -1,5 +1,5 @@
 ---
-app-id: io.github.jmuelbert.qtwidgettest.desktop
+app-id: io.github.jmuelbert.qtwidgettest
 runtime: org.kde.Platform
 runtime-version: '5.15-21.08'
 sdk: org.kde.Sdk

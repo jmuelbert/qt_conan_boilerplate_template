@@ -200,8 +200,8 @@ jobs:
         include:
           - name: windows-latest-cl.exe
             os: windows-2019
-            cxx: clang-cl.exe
-            cc: clang-cl.exe
+            cxx: cl.exe
+            cc: cl.exe
             qt_arch: win64_msvc2019_64
             arch: x64
             pak_arch: win64

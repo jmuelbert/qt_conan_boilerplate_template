@@ -4,7 +4,7 @@ AppDir:
   path: ./AppDir
 
   app_info:
-    id: org.jmuelbert.qtwidgettest
+    id: io.github.jmuelbert.qtwidgettest.desktop
     name: qtwidgettest
     icon: icons8-app-symbol-80.png
     version: 0.0.1

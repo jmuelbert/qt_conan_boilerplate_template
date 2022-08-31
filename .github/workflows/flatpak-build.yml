@@ -1,9 +1,39 @@
 ---
-name: Flatpak - Builder
+name: "Flatpak - Builder"
+
 on:
   push:
-    branches: [main]
+    tags:
+      - "*"
+    branches-ignore:
+      - "dependabot/**"
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/flatpak.yml"
+      - "deploy/flatpak.yml"
   pull_request:
+    # The branches below must be a subset of the branches above
+    types: [opened, synchronize, reopened]
+    paths:
+      - "**.cpp"
+      - "**.h"
+      - "**.hpp"
+      - "**.py"
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - conanfile.py
+      - ".github/workflows/flatpak.yml"
+      - "deploy/flatpak.yml"
+
+  workflow_dispatch:
 
 env:
   TARGET_NAME: qtwidgettest

@@ -27,7 +27,7 @@ elseif(UNIX AND SYSTEM_DIR_INSTALL)
     set(PACK_INCLUDE_TOPDIR OFF)
   else()
     set(OPTION_PACK_GENERATOR
-        "TGZ"
+        "TGZ;ZIP"
         CACHE STRING "Package targets")
     set(PACK_COMPONENT_INSTALL OFF)
     set(PACK_INCLUDE_TOPDIR OFF)
@@ -37,7 +37,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
   # At the moment, DMG generator and CPACK_INCLUDE_TOPLEVEL_DIRECTORY=ON do not work together.
   # Therefore, we disable dmg images for MacOS until we've found a solution
   set(OPTION_PACK_GENERATOR
-      "TGZ"
+      "DragNDrop;TGZ"
       CACHE STRING "Package targets")
   set(PACK_COMPONENT_INSTALL OFF)
   set(PACK_INCLUDE_TOPDIR ON)
@@ -245,8 +245,8 @@ set(CPACK_RPM_COMPONENT_INSTALL ${PACK_COMPONENT_INSTALL})
 #
 # DMG (DragNDrop) Package
 #
-set(CPACK_DMG_VOLUME_NAME "${package_name}")
-set(CPACK_DMG_FORMAT UDIF bzip2-compressed)
+# set(CPACK_DMG_VOLUME_NAME "${package_name}")
+# set(CPACK_DMG_FORMAT UDIF bzip2-compressed)
 set(CPACK_DMG_BACKGROUND_IMAGE ${PROJECT_SOURCE_DIR}/deploy/images/data_512.png)
 #
 # Archives (zip, tgz, ...)

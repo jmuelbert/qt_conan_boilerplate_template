@@ -38,10 +38,10 @@ on:
 env:
   TARGET_NAME: qtwidgettest
   PROJECT_NAME: qtconanboilerplate
-  BUNDLE: "org.jmuelbert.qtwidgettest.flatpak"
+  BUNDLE: "io.github.jmuelbert.qtwidgettest.desktop.flatpak"
   MANIFEST_PATH: ./deploy/flatpak.yml
   RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
-  APP_ID: "org.jmuelbert.qtwidgettest"
+  APP_ID: "io.github.jmuelbert.qtwidgettest.desktop"
 
 jobs:
   flatpak:

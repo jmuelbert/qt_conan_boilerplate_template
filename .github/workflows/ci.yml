@@ -428,10 +428,10 @@ jobs:
 
       - name: "📦 Create flatpak"
         run: |
-          BUNDLE="org.jmuelbert.${{env.TARGET_NAME}}.flatpak"
+          BUNDLE="io.github.jmuelbert.${{env.TARGET_NAME}}.flatpak"
           MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.yml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
-          APP_ID="org.jmuelbert.${{env.TARGET_NAME}}"
+          APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
           BRANCH="master"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
@@ -442,7 +442,7 @@ jobs:
         with:
           name: flatpak-artifact
           path: |
-            $GITHUB_WORKSPACE/org.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+            $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
   snap-build:
     name: "🐧 Build snap on ubuntu-20.04"

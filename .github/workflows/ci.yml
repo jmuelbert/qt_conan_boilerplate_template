@@ -339,7 +339,6 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
-          ls -laF "${{github.workspace}}"
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build
@@ -360,7 +359,9 @@ jobs:
         working-directory: build
         # Execute the build.  You can specify a specific target with "--target <NAME>"
         run: |
+          sudo apt-get -y --no-install-recommends install tree
           cmake --build . --config ${{matrix.build_type}} --target install
+          tree -ps "${{github.workspace}}/AppDir"
 
       - name: "📦 🐧  Create AppImage"
         if: runner.os == 'Linux'

@@ -16,7 +16,7 @@ on:
       - src/**
       - CMakeLists.txt
       - conanfile.py
-      - ".github/workflows/flatpak.yml"
+      - ".github/workflows/flatpak-build.yml"
       - "deploy/flatpak.yml"
   pull_request:
     # The branches below must be a subset of the branches above
@@ -31,14 +31,14 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/flatpak.yml"
-      - "deploy/flatpak.yml"
+      - "deploy/flatpak-build.yml"
 
   workflow_dispatch:
 
 env:
   TARGET_NAME: qtwidgettest
   PROJECT_NAME: qtconanboilerplate
-  BUNDLE: "org.jmuelbert.${{env.TARGET_NAME}}.flatpak"
+  BUNDLE: "org.jmuelbert.qtwidgettest.flatpak"
   MANIFEST_PATH: $GITHUB_WORKSPACE/deploy/flatpak.yml
   RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
   APP_ID: "org.jmuelbert.${{env.TARGET_NAME}}"

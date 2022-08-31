@@ -30,7 +30,7 @@ on:
       - src/**
       - CMakeLists.txt
       - conanfile.py
-      - ".github/workflows/flatpak.yml"
+      - ".github/workflows/flatpak-build.yml"
       - "deploy/flatpak-build.yml"
 
   workflow_dispatch:
@@ -41,7 +41,7 @@ env:
   BUNDLE: "org.jmuelbert.qtwidgettest.flatpak"
   MANIFEST_PATH: $GITHUB_WORKSPACE/deploy/flatpak.yml
   RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
-  APP_ID: "org.jmuelbert.${{env.TARGET_NAME}}"
+  APP_ID: "org.jmuelbert.qtwidgettest"
 
 jobs:
   flatpak:

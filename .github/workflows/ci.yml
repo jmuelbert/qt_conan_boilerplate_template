@@ -367,7 +367,7 @@ jobs:
         env:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|qtwidgettest|latest|*x86_64.AppImage.zsync
         with:
-          recipe: "$GITHUB_WORKSPACE/deploy/AppImageBuilder.yml"
+          recipe: "${{github.workspace}}/deploy/AppImageBuilder.yml"
 
       - name: "🐧 📤 Upload Linux artifacts"
         uses: actions/upload-artifact@v2

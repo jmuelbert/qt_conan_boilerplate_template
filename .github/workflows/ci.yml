@@ -39,6 +39,15 @@ on:
       - "snap/snapcraft.yml"
 
   workflow_dispatch:
+    inputs:
+      build_mode:
+        description: "Build mode: devel_build, testing_build, stable_build"
+        required: true
+        default: "devel_build"
+      publish:
+        description: "Publish: on - publish"
+        required: false
+        default: "off"
 
 env:
   # Target
@@ -365,11 +374,11 @@ jobs:
 
       - name: "📦 🐧  Create AppImage"
         if: runner.os == 'Linux'
-        uses: AppImageCrafters/build-appimage-action@master
-        env:
-          UPDATE_INFO: gh-releases-zsync|AppImageCrafters|qtwidgettest|latest|*x86_64.AppImage.zsync
-        with:
-          recipe: ./deploy/AppImageBuilder.yml
+        run: |
+          wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+          chmod a+x *.AppImage
+          ./linuxdeployqt-continuous-x86_64.AppImage ${{github.workspace}}/AppDir/usr/share/applications/io.github.jmuelbert.${TARGET}.desktop -verbose=2
+          ./linuxdeployqt-continuous-x86_64.AppImage ${{github.workspace}}/AppDir/usr/share/applications/io.github.jmuelbert.${TARGET}.desktop -verbose=2 -appimage
 
       - name: "🐧 📤 Upload Linux artifacts"
         uses: actions/upload-artifact@v2

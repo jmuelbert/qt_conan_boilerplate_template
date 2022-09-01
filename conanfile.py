@@ -26,6 +26,7 @@ class QtTestConan(ConanFile):
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
+    generators = "CMakeToolchain", "CMakeDeps"
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
@@ -43,7 +44,6 @@ class QtTestConan(ConanFile):
     exports_sources = "CMakeLists.txt", "src/*", "include/*"
 
     no_copy_source = True
-    # generators = "CMake CMakeDeps"
 
     @property
     def _run_tests(self):
@@ -107,11 +107,11 @@ class QtTestConan(ConanFile):
 
     def generate(self):
         # This generates "conan_toolchain.cmake" in self.generators_folder
-        tc = CMakeToolchain(self)
-        tc.variables["MYVAR"] = "1"
-        tc.variables["ENABLE_BUILD_DOCS"] = bool(self.options.build_docs)
-        tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
-        tc.generate()
+        # tc = CMakeToolchain(self)
+        # tc.variables["MYVAR"] = "1"
+        # tc.variables["ENABLE_BUILD_DOCS"] = bool(self.options.build_docs)
+        # tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
+        # tc.generate()
 
         # This generates "foo-config.cmake" and "bar-config.cmake" in self.generators_folder
         deps = CMakeDeps(self)

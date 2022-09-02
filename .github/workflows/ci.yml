@@ -331,7 +331,7 @@ jobs:
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cmake  `
           -S .. -B  . `
-          -G "${{ matrix.generator }}" -A "${{ matrix.arch }}" `
+          -G "Visual Studio 16 2019" -A "x64" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
           -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake" `
           -DCMAKE_INSTALL_PREFIX:PATH=${{github.workspace}}/program
@@ -341,12 +341,23 @@ jobs:
       - name: "⚙️ 🐧 🍎 Configure CMake"
         working-directory: build
         shell: bash
-        if: runner.os !=  'Windows'
+        if: runner.os !=  'Linux'
         run: |
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
+
+      - name: "⚙️ 🐧 🍎 Configure CMake"
+        working-directory: build
+        shell: bash
+        if: runner.os !=  'macOS'
+        run: |
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
+          cmake -S .. -B . -G "${{matrix.generator}}" \
+            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
+            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
@@ -372,15 +383,39 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           tree -ps "${{github.workspace}}/AppDir"
 
-      - name: "📦 🐧  Create AppImage"
+      - name: "🐧 ⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'
+        # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
+        # which is glibc 2.23. For more information, please see https://github.com/probonopd/linuxdeployqt/issues/340.
+        # Will try new tool https://github.com/probonopd/go-appimage written in golang by probonopd.
         run: |
-          wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-          chmod a+x *.AppImage
-          ./linuxdeployqt-continuous-x86_64.AppImage ${{github.workspace}}/AppDir/usr/share/applications/io.github.jmuelbert.${TARGET}.desktop -verbose=2
-          ./linuxdeployqt-continuous-x86_64.AppImage ${{github.workspace}}/AppDir/usr/share/applications/io.github.jmuelbert.${TARGET}.desktop -verbose=2 -appimage
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - \
+          | grep "appimagetool-.*-${APPIMAGETOOL_ARCH}.AppImage" | head -n 1 | cut -d '"' -f 2) -O appimagetool
+          chmod +x appimagetool
+        env:
+          APPIMAGETOOL_ARCH: x86_64
+
+      - name: "🐧 📦 Create AppImage"
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
+          cd $GITHUB_WORKSPACE
+          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH
+          $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
+          mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
+          if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then
+            rm ${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0
+          fi
+          chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
+          $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
+          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
+          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
+          pwd
+          ls -al
 
       - name: "🐧 📤 Upload Linux artifacts"
+        if: runner.os == 'Linux'
         uses: actions/upload-artifact@v2
         with:
           name: AppImage

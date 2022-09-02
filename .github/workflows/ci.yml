@@ -292,6 +292,7 @@ jobs:
           arch: "${{ matrix.pak_arch }}"
 
       - name: "Set Compiler Environment"
+        if: runner.os != 'Windows'
         uses: lukka/set-shell-env@v1
         with:
           CXX: "${{ matrix.cxx }}"
@@ -338,7 +339,7 @@ jobs:
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results.
-      - name: "⚙️ 🐧 🍎 Configure CMake"
+      - name: "⚙️ 🐧 Configure CMake"
         working-directory: build
         shell: bash
         if: runner.os !=  'Linux'
@@ -349,7 +350,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
-      - name: "⚙️ 🐧 🍎 Configure CMake"
+      - name: "⚙️ 🍎 Configure CMake"
         working-directory: build
         shell: bash
         if: runner.os !=  'macOS'
@@ -399,7 +400,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          APPIMAGE_DST_PATH="$GITHUB_WORKSPACE/${TARGET_NAME}.AppDir"
+          APPIMAGE_DST_PATH="${{github.workspace}}/AppDir"
           cd $GITHUB_WORKSPACE
           cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop

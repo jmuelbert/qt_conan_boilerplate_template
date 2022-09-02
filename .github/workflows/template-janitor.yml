@@ -20,6 +20,9 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   BUILD_TYPE: Release
   QT_VERSION: "6.3.1"
+  QT_DIR: ${{ github.workspace }}
+  QT_ARCH: "gcc_64"
+  QT_TOOLS: ""
   QT_TARGET: "desktop"
 
 jobs:
@@ -34,8 +37,6 @@ jobs:
           - "Unix Makefiles"
         build_type:
           - Debug
-        developer_mode:
-          - OFF
 
     steps:
       - name: "🧰 Checkout"
@@ -136,18 +137,20 @@ jobs:
             ccache \
             cppcheck
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v2
+      - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
+        uses: jurplel/install-qt-action@v3
         with:
           version: "${{ env.QT_VERSION }}"
-          # host: ${{ runner.os }}
+          dir: "${{ env.QT_DIR }}"
+          # host: "linux" # ${{ runner.os }}
+          arch: "${{ env.QT_ARCH }}"
           target: "${{ env.QT_TARGET }}"
-          install-deps: "true"
-          # modules: 'qtcharts qtwebengine'
-          cache: "true"
+          tools: "${{ env.QT_TOOLS }}"
           setup-python: "true"
-          # tools: "tools_ifw"
+          cache: "true"
+          cache-key-prefix: "${{ runner.os }}-install-qt-action"
           set-env: "true"
+          install-deps: "true"
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -157,7 +160,7 @@ jobs:
         run: |
           mkdir -p ./build
           cd ./build
-          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" 
           cd ..
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
@@ -263,19 +266,19 @@ jobs:
             cppcheck
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v3
         with:
-          version: ${{ env.QT_VERSION }}
-          # host: ${{ runner.os }}
-          target: ${{ env.QT_TARGET }}
-          arch: ${{ matrix.config.qt_arch }}
-          dir: "${{ github.workspace }}/build/"
-          install-deps: "true"
-          # modules: 'qtcharts qtwebengine'
-          cache: "true"
+          version: "${{ env.QT_VERSION }}"
+          dir: "${{ env.QT_DIR }}"
+          # host: "linux" # ${{ runner.os }}
+          arch: "${{ env.QT_ARCH }}"
+          target: "${{ env.QT_TARGET }}"
+          tools: "${{ env.QT_TOOLS }}"
           setup-python: "true"
-          # tools: "tools_ifw"
+          cache: "true"
+          cache-key-prefix: "${{ runner.os }}-install-qt-action"
           set-env: "true"
+          install-deps: "true"
 
       - name: Cleanup Conan system packages (they are not properly cached)
         run: |
@@ -285,12 +288,11 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
+          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"
           cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
-           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
-           -DGIT_SHA:STRING=${{ github.sha }}
+           -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" 
 
       - uses: EndBug/add-and-commit@v4
         # only commit and push if we are a template and project name has changed

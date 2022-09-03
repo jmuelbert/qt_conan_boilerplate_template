@@ -193,6 +193,10 @@ jobs:
         run: |
           cmake --build . --config ${{matrix.build_type}}
 
+      - name: (Linux/macOS) check ccache stats prior to build
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: ccache --zero-stats --show-stats
+
       - name: "🐧 🧪 Test and coverage"
         if: runner.os == 'Linux'
         working-directory: build
@@ -421,6 +425,10 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           tree -ps "${{github.workspace}}/AppDir"
 
+      - name: (Linux/macOS) check ccache stats prior to build
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: ccache --zero-stats --show-stats
+
       - name: "🐧 ⚙️ Install go-appimage tool"
         if: runner.os == 'Linux'
         # Will not use linuxdeployqt anymore, because it suopprts currently still-supported mainstream distribution,
@@ -539,7 +547,7 @@ jobs:
           ca-certificates git cmake ninja-build qtbase5-dev \
           libqt5x11extras5-dev qttools5-dev libfmt-dev \
           libkf5widgetsaddons-dev libkf5windowsystem-dev gettext \
-          libspdlog libfmt \
+          libspdlog-dev libfmt-dev \
            ${{ matrix.compiler == 'gcc' && 'g++' || 'clang' }}
 
       - name: "🧰 Checkout"

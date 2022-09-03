@@ -512,7 +512,7 @@ jobs:
         run: echo "::set-output name=rpm-macro::--define 'toolchain ${{matrix.compiler}}'"
 
       - name: "Install build dependencies"
-        run: ${{env.INSTALL_PACKAGES}} $(rpmspec ${{steps.fedora-compiler.outputs.rpm-macro}} -q --srpm --qf '[%{REQUIRES}]' deploy rpm.spec)
+        run: ${{env.INSTALL_PACKAGES}} $(rpmspec ${{steps.fedora-compiler.outputs.rpm-macro}} -q --srpm --qf '[%{REQUIRES}]' deploy/rpm.spec)
 
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master

@@ -17,8 +17,8 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/ci.yml"
-      - "deploy/flatpak.yml"
-      - "deploy/AppImageBuilder.yml"
+      - "deploy/flatpak.json"
+      - "deploy/rpm.spec"
       - "snap/snapcraft.yml"
 
   pull_request:
@@ -34,8 +34,8 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/ci.yml"
-      - "deploy/flatpak.yml"
-      - "deploy/AppImageBuilder.yml"
+      - "deploy/flatpak.json"
+      - "deploy/rpm.spec"
       - "snap/snapcraft.yml"
 
   workflow_dispatch:

@@ -13,7 +13,7 @@ endif()
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
   # Windows installer
   set(OPTION_PACK_GENERATOR
-      ""WIX;NSIS64;ZIP"
+      "WIX;NSIS64;ZIP"
       CACHE STRING "Package targets")
   set(PACK_COMPONENT_INSTALL ON)
   set(PACK_INCLUDE_TOPDIR OFF)

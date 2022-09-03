@@ -125,8 +125,8 @@ jobs:
       - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
-          apt-get update && DEBIAN_FRONTEND=--noninteractive \
-          apt-get --no-install-recommends --assume-yes install \
+          sudo apt-get update && DEBIAN_FRONTEND=--noninteractive \
+          sudo apt-get --no-install-recommends --assume-yes install \
             libclang-dev \
             ninja-build \
             gcovr \
@@ -279,8 +279,8 @@ jobs:
       - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
-          apt-get update && DEBIAN_FRONTEND=--noninteractive \
-          apt-get --no-install-recommends --assume-yes install \
+          sudo apt-get update && DEBIAN_FRONTEND=--noninteractive \
+          sudo apt-get --no-install-recommends --assume-yes install \
             libclang-dev \
             ninja-build \
             ccache \
@@ -512,7 +512,7 @@ jobs:
         run: echo "::set-output name=rpm-macro::--define 'toolchain ${{matrix.compiler}}'"
 
       - name: "Install build dependencies"
-        run: ${{env.INSTALL_PACKAGES}} $(rpmspec ${{steps.fedora-compiler.outputs.rpm-macro}} -q --srpm --qt '[%{REQUIRES}]' deploy rpm.spec)
+        run: ${{env.INSTALL_PACKAGES}} $(rpmspec ${{steps.fedora-compiler.outputs.rpm-macro}} -q --srpm --qf '[%{REQUIRES}]' deploy rpm.spec)
 
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master
@@ -539,7 +539,7 @@ jobs:
           ca-certificates git cmake ninja-build qtbase5-dev \
           libqt5x11extras5-dev qttools5-dev libfmt-dev \
           libkf5widgetsaddons-dev libkf5windowsystem-dev gettext \
-          spdlog fmt \
+          libspdlog libfmt \
            ${{ matrix.compiler == 'gcc' && 'g++' || 'clang' }}
 
       - name: "🧰 Checkout"

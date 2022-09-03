@@ -116,6 +116,18 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
+      - name: (Linux/macOS) restore ccache
+        if: matrix.os != 'windows-latest'
+        uses: pat-s/always-upload-cache@v3.0.1
+        with:
+          path: ${{runner.workspace}}/ccache
+          key: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}-${{ github.sha }}
+          restore-keys: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}
+
+      - name: (Linux/macOS) check ccache stats prior to build
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: ccache --zero-stats --show-stats
+
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
@@ -125,13 +137,15 @@ jobs:
       - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get -y -qq update
-          sudo apt-get -y --no-install-recommends install \
+          apt-get update && DEBIAN_FRONTEND=--noninteractive \
+          apt-get --no-install-recommends --assume-yes install \
             libclang-dev \
             ninja-build \
             gcovr \
             ccache \
             cppcheck
+
+          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3
@@ -256,6 +270,18 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
+      - name: (Linux/macOS) restore ccache
+        if: matrix.os != 'windows-latest'
+        uses: pat-s/always-upload-cache@v3.0.1
+        with:
+          path: ${{runner.workspace}}/ccache
+          key: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}-${{ github.sha }}
+          restore-keys: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}
+
+      - name: (Linux/macOS) check ccache stats prior to build
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: ccache --zero-stats --show-stats
+
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
@@ -265,21 +291,32 @@ jobs:
       - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get -y -qq update
-          sudo apt-get -y --no-install-recommends install \
+          apt-get update && DEBIAN_FRONTEND=--noninteractive \
+          apt-get --no-install-recommends --assume-yes install \
             libclang-dev \
             ninja-build \
             ccache \
             cppcheck
+          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
+          echo "CC=clang" >> $GITHUB_ENV
 
       - name: "⚙️ 🍎 Install macos dependencies"
         if: runner.os == 'macOS'
+        env:
+          HOMEBREW_NO_ANALYTICS: "ON"
+          HOMEBREW_NO_AUTO_UPDATE: "ON"
+          HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK: "ON"
+          HOMEBREW_NO_INSTALL_CLEANUP: "ON"
         run: |
-          brew upgrade cmake
           brew install ninja ccache pkg-config
           ln -s "$(brew --prefix llvm)/bin/clang-format" "/usr/local/bin/clang-format"
           ln -s "$(brew --prefix llvm)/bin/clang-tidy" "/usr/local/bin/clang-tidy"
           ln -s "$(brew --prefix llvm)/bin/clang-apply-replacements" "/usr/local/bin/clang-apply-replacements"
+          echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
+          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
+          # Use latest available XCode
+          echo "DEVELOPER_DIR=/Applications/Xcode_12.4.app/Contents/Developer" >> $GITHUB_ENV
 
       - name: "🧊 ⚙️ Install Windows dependencies"
         if: runner.os ==  'Windows'
@@ -297,13 +334,6 @@ jobs:
       - name: "Add GCC problem matcher"
         if: runner.os ==  'Linux'
         uses: ammaraskar/gcc-problem-matcher@master
-
-      - name: "Set Compiler Environment"
-        if: runner.os != 'Windows'
-        uses: lukka/set-shell-env@v1
-        with:
-          CXX: "${{ matrix.cxx }}"
-          CC: "${{ matrix.cc }}"
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3

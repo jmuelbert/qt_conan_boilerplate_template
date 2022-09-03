@@ -478,7 +478,7 @@ jobs:
 
       - name: "Set Fedora compiler RPM macro"
         id: fedora-compiler
-        if: startsWith(matrox.container-image, 'fedora')
+        if: startsWith(matrix.container-image, 'fedora')
         run: echo "::set-output name=rpm-macro::--define 'toolchain ${{matrix.compiler}}'"
 
       - name: "Install build dependencies"

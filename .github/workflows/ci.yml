@@ -62,7 +62,7 @@ env:
   QT_VERSION: "6.3.1"
   QT_DIR: ${{ github.workspace }}
   QT_ARCH: "gcc_64"
-  QT_TOOLS: "tools_ifw"
+  QT_TOOLS: ""
   QT_TARGET: "desktop"
 
 jobs:

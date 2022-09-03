@@ -1,0 +1,73 @@
+{
+  "app-id": "io.github.jmuelbert.qtwidgettest",
+  "runtime": "org.kde.Platform",
+  "runtime-version": "5.15-21.08",
+  "sdk": "org.kde.Sdk",
+  "command": "qtwidgettest",
+  "finish-args": [
+    "--socket=x11",
+    "--socket=wayland",
+    "--share=ipc",
+    "--share=network",
+    "--device=dri",
+    "--filesystem=host:ro",
+    "--talk-name=org.freedesktop.Notifications",
+    "--talk-name=org.kde.StatusNotifierWatcher",
+    "--talk-name=org.freedesktop.FileManager1"
+  ],
+  "cleanup": [
+    "/include",
+    "/lib"
+    ],
+  "modules": [
+    {
+      "name": "fmt",
+      "buildsystem": "cmake-ninja",
+      "builddir": true,
+      "config-opts": [
+        "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON",
+        "-DCMAKE_CXX_STANDARD=17",
+        "-DFMT_DOC=OFF",
+        "-DFMT_TEST=OFF"
+      ],
+      "sources": [
+          {
+            "type": "archive",
+            "url" : "https://github.com/fmtlib/fmt/releases/download/9.1.0/fmt-9.1.0.zip",
+            "sha256" : "cceb4cb9366e18a5742128cb3524ce5f50e88b476f1e54737a47ffdf4df4c996"
+          }
+        ]
+    },
+    {
+      "name": "spdlog",
+      "buildsystem":"cmake-ninja",
+      "builddir":true,
+      "config-opts": [
+
+      ],
+      "sources": [
+        {
+          tpye: "archive",
+          "url": "https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.tar.gz"
+          "sha256": "697f91700237dbae2326b90469be32b876b2b44888302afbc7aceb68bcfe8224"
+        }
+      ]
+    },
+    {
+      "name":"qtwidgettest",
+      "buildsystem":"cmake-ninja",
+      "builddir":true,
+      "config-opts":[
+        "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        "-DOPTION_BUILD_TESTS=ON"
+      ],
+      "run-tests":true,
+      "sources":[
+        {
+          "type": "dir",
+          "path": "."
+        }
+      ]
+    }
+}

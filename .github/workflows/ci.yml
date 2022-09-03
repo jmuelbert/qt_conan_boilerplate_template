@@ -152,6 +152,9 @@ jobs:
         run: |
           conan remove -f '*/system'
 
+      - name: "Add GCC problem matcher"
+        uses: ammaraskar/gcc-problem-matcher@master
+
       - name: "Create Working directory"
         run: mkdir -p build
 
@@ -290,6 +293,10 @@ jobs:
           # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
           toolset: 14.2
           arch: "${{ matrix.pak_arch }}"
+
+      - name: "Add GCC problem matcher"
+        if: runner.os ==  'Linux'
+        uses: ammaraskar/gcc-problem-matcher@master
 
       - name: "Set Compiler Environment"
         if: runner.os != 'Windows'
@@ -436,9 +443,92 @@ jobs:
           name: windows-artifacts
           path: build/${{ env.PROJECT_NAME }}*.*
 
-  flatpak-build:
-    name: "🐧 Build flatpak on ubuntu-20.04"
-    runs-on: ubuntu-20.04
+  build-rpm:
+    name: "🐧 Build RPM"
+    strategy:
+      fail-fast: true
+      matrix:
+        container-image: ["fedora:35", "fedora:36", "opensuse/tumbleweed:latest", "mageia:8"]
+        compiler: [gcc]
+        include:
+          - container-image: "fedora:35"
+            compiler: clang
+          - container-image: "fedora:36"
+            compiler: clang
+    runs-on: ubuntu-latest
+    container: ${{matrix.container-image}}
+
+    steps:
+      - name: "Set packages install commmand for dnf"
+        if: startsWith(matrix.container-image, 'fedora') || startsWith(matrix.container-image, 'mageia')
+        run: echo 'INSTALL_PACKAGES=dnf -y --setopt=install_weak_deps=FALSE install' >> "$GITHUB_ENV"
+
+      - name: Set packages install command for zypper
+        if: startsWith(matrix.container-image, 'opensuse')
+        run: echo 'INSTALL_PACKAGES=zypper --non-interactive in --no-recommends' >> "$GITHUB_ENV"
+
+      - name: "Setup enrivonment"
+        run: ${{env.INSTALL_PACKAGES}} git rpm-build
+
+      - name: "🧰 Checkout"
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: "Set Fedora compiler RPM macro"
+        id: fedora-compiler
+        if: startsWith(matrox.container-image, 'fedora')
+        run: echo "::set-output name=rpm-macro::--define 'toolchain ${{matrix.compiler}}'"
+
+      - name: "Install build dependencies"
+        run: ${{env.INSTALL_PACKAGES}} $(rpmspec ${{steps.fedora-compiler.outputs.rpm-macro}}) -q --srpm --qt '[%{REQUIRES}]' deploy rpm.spec)
+
+      - name: "Add GCC problem matcher"
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: "Build RPM"
+        run: rpmbuild ${{steps.fedora-compiler.outputs.rpm-macro}} -bb --build-in-place deploy/rpm.spec
+
+  build-debian-ubuntu:
+    name: "Build debian/ubuntu"
+    strategy:
+      fail-fast: true
+      matrix:
+        container-image: ["debian:11", "ubuntu:22.04"]
+        compiler: [gcc, clang]
+
+    runs-on: ubuntu-latest
+    container: ${{ matrix.container-image }}
+
+    steps:
+      - name: "Install packages"
+        run: |
+          apt-get update && DEBIAN_FRONTEND=--noninteractive \
+          apt-get --no-install-recommends --assume-yes install \
+          ca-certificates git cmake ninja-build qtbase5-dev \
+          libqt5x11extras5-dev qttools5-dev libfmt-dev \
+          libkf5widgetsaddons-dev libkf5windowsystem-dev gettext \
+           ${{ matrix.compiler == 'gcc' && 'g++' || 'clang' }}
+
+      - name: "🧰 Checkout"
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: "Add GCC problem matcher"
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: "Build"
+        uses: equeim/action-cmake-build@v9
+        with:
+          # Can't use presets on Debian, CMake is too old
+          cmake-arguments: -D CMAKE_CXX_COMPILER=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+
+  build-flatpak:
+    name: "🐧 Build flatpak on ubuntu-latest"
+    runs-on: ubuntu-latest
     needs: tests
 
     steps:
@@ -460,25 +550,29 @@ jobs:
 
       - name: "Setup Flatpak"
         run: |
-          sudo apt-get -y -qq update
-          sudo apt-get install -y flatpak flatpak-builder
+          sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive \ 
+          apt-get --no-install-recommends --assume-yes install \
+          flatpak flatpak-builder elfutils
 
       - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y --noninteractive flathub org.freedesktop.Sdk//20.08
-          flatpak install -y --noninteractive flathub org.freedesktop.Platform.GL.default//21.08
-          flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
-          flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
+          # flatpak install -y --noninteractive flathub org.freedesktop.Sdk//20.08
+          # flatpak install -y --noninteractive flathub org.freedesktop.Platform.GL.default//21.08
+          # flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
+          # flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
+
+      - name: "Add GCC problem matcher"
+        uses: ammaraskar/gcc-problem-matcher@master
 
       - name: "📦 Create flatpak"
         run: |
           BUNDLE="io.github.jmuelbert.${{env.TARGET_NAME}}.flatpak"
-          MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.yml
+          MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.json
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
           BRANCH="master"
-          flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
+          build-flatpaker --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
@@ -627,7 +721,7 @@ jobs:
     name: "🗂 Create release and upload artifacts"
     needs:
       - build
-      - flatpak-build
+      - build-flatpak
       - snap-build
 
     runs-on: ubuntu-latest

@@ -13,7 +13,7 @@ endif()
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
   # Windows installer
   set(OPTION_PACK_GENERATOR
-      "NSIS64;ZIP"
+      ""WIX;NSIS64;ZIP"
       CACHE STRING "Package targets")
   set(PACK_COMPONENT_INSTALL ON)
   set(PACK_INCLUDE_TOPDIR OFF)
@@ -139,6 +139,14 @@ set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/deploy/images/data_512.png")
 set(CPACK_PACKAGE_FILE_NAME "${package_name}-${CPACK_PACKAGE_VERSION}")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "${package_name}")
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${package_name}")
+
+#
+# WIX package
+#
+
+set(CPACK_WIX_PRODUCT_GUID "2f5624f3-b297-4f98-b712-94e921771390")
+set(CPACK_WIX_UPGRADE_GUID "c5d8e18b-cfed-4e8a-9e5e-fcb6b49812ad")
+set(CPACK_WIX_PRODUCT_ICON "${PROJECT_SOURCE_DIR}/deploy/images/data_16.ico")
 
 #
 # NSIS package

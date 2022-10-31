@@ -8,12 +8,12 @@ matters a lot, qt_conan_boilerplate_template is getting better and better becaus
 
 - If you like qt_conan_boilerplate_template, star this project and share it with your friends.
 - Report bugs or request new features by
-    [opening issues](https://github.com/jmuelbert/qt_conan_boilerplate_template/issues/new/choose). Please
-    follow the issue templates and provide detailed information, this will help the
-    developers to find the reason of the bug and understand what feature you are
-    requesting for exactly.
+  [opening issues](https://github.com/jmuelbert/qt_conan_boilerplate_template/issues/new/choose). Please
+  follow the issue templates and provide detailed information, this will help the
+  developers to find the reason of the bug and understand what feature you are
+  requesting for exactly.
 - Help other people in issues/pull requests/other platforms if you are able to help
-    them.
+  them.
 - Write tutorials and blogs on how to use qt_conan_boilerplate_template.
 - Improve documentation, including the Markdown files and the comments in the codes.
 - Write codes for new features or bug fixes.
@@ -63,8 +63,7 @@ writing codes for a pull request, for these reasons:
 
 1. You may get help from others.
 2. Others can know you are working on it, this will save possible duplicate works.
-3. You will be notified if this feature is not going to be accepted, or the "bug" is
-   actually not a bug, etc., thus saving your time.
+3. You will be notified if this feature is not going to be accepted, or the "bug" is actually not a bug, etc., thus saving your time.
 
 ## Contributing rules
 
@@ -95,17 +94,17 @@ writing codes for a pull request, for these reasons:
 
 ## FAQ
 
--   Can I do it well if I've just started?
-    -   Everyone knows nothing at the beginning. Don't worry, our cool contributors will
-        help you when you meet difficulties. If you :heart: open source and keep trying,
-        everything will be better and better.
--   Do I need to learn about CMake?
-    -   No, you only need to know how to
-        [build from source](https://github.com/jmuelbert/qt_conan_boilerplate_template).
--   Some files are missing when compiling.
+- Can I do it well if I've just started?
+  - Everyone knows nothing at the beginning. Don't worry, our cool contributors will
+    help you when you meet difficulties. If you :heart: open source and keep trying,
+    everything will be better and better.
+- Do I need to learn about CMake?
+  - No, you only need to know how to
+    [build from source](https://github.com/jmuelbert/qt_conan_boilerplate_template).
+- Some files are missing when compiling.
 
-    -   If the CI tests are passed, it's probably because the submodules are updated.
-        You can run the following commands:
+  - If the CI tests are passed, it's probably because the submodules are updated.
+    You can run the following commands:
 
         ```sh
         git add .

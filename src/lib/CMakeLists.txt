@@ -1,244 +1,268 @@
 #
+# SPDX-FileCopyrightText: 2022 Project qt_conan_boilerplate_template, Jürgen Mülbert
+#
+# SPDX-License-Identifier: EUPL-1.2
+#
+#
 # External dependencies
 #
 
-# find_package(THIRDPARTY REQUIRED)
-
 #
-# Library name and options
+# App name and options
 #
 
-# Target name
-set(target myclass)
+cmake_minimum_required(VERSION 3.20..3.24 FATAL_ERROR)
 
-# Exit here if required dependencies are not met
-message(STATUS "Lib ${target}")
+# Set policies
+# Make sure that an old version of CMake is not being used so modern features are available
+# Update this to the mix, max versions that are applicable
+if(${CMAKE_VERSION} VERSION_LESS 3.24)
+    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+else()
+    cmake_policy(VERSION 3.24)
+endif()
 
-# Set API export file and macro
-string(MAKE_C_IDENTIFIER ${target} target_id)
-string(TOUPPER ${target_id} target_id)
-set(feature_file "include/${target}/${target}_features.h")
-set(export_file "include/${target}/${target}_export.h")
-set(template_export_file "include/${target}/${target}_api.h")
-set(export_macro "${target_id}_API")
+project(
+    qtwidgettestlib
+    VERSION 0.0.2
+    LANGUAGES CXX
+)
+
+set(PROJECT_PREFIX QTWIDGETTEST_LIB_)
+
+option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OFF)
+
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
+include(GenerateExportHeader)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 #
-# Sources
+# SOURCES
 #
+set(INCLUDE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}")
+set(SOURCE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
-set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/include/${target}")
-set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/source")
+set(HEADERS ${INCLUDE_PATH}/MyClass.h)
+set(SOURCES ${SOURCE_PATH}/MyClass.cpp)
 
-set(headers ${include_path}/MyClass.h)
-
-set(sources ${source_path}/MyClass.cpp)
-
-# Group source files
-set(header_group "Header Files (API)")
-set(source_group "Source Files")
-source_group_by_path(
-  ${include_path}
-  "\\\\.h$|\\\\.hpp$"
-  ${header_group}
-  ${headers})
-source_group_by_path(
-  ${source_path}
-  "\\\\.cpp$|\\\\.c$|\\\\.h$|\\\\.hpp$"
-  ${source_group}
-  ${sources})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+find_package(
+    QT
+    NAMES
+    Qt6
+    Qt5
+    REQUIRED
+    COMPONENTS Core
+)
+
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+
 #
 # Create library
 #
 
-find_package(
-  QT
-  NAMES
-  Qt6
-  Qt5
-  REQUIRED
-  COMPONENTS Core)
-
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
-
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-  qt_standard_project_setup()
-  qt_add_library(
-    ${target}
-    STATIC
-    ""
-    MANUAL_FINALIZATION)
+    qt_standard_project_setup()
+    qt_add_library(${PROJECT_NAME} "" MANUAL_FINALIZATION)
+    # Define PROJECT_NAME properties for Android with Qt 6 as:
+    #    set_property(PROJECT_NAME ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+    #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
+    # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#PROJECT_NAME-creation
 else()
-  add_library(${target} STATIC "")
+    add_library(${PROJECT_NAME} "")
 endif()
 
 # Create namespaced alias
-add_library(${META_PROJECT_NAME}::${target} ALIAS ${target})
+add_library(
+    ${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME}
+)
 
-target_sources(${target} PRIVATE ${sources} ${headers} ${MOC_SOURCE_FILES})
+# Add SOURCES to the project
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES} ${HEADERS} ${MOC_SOURCE_FILES})
+
+# Set API export file and macro
+string(MAKE_C_IDENTIFIER ${PROJECT_NAME} target_id)
+string(TOUPPER ${target_id} target_id)
+set(FEATURE_FILE "include/${PROJECT_NAME}/${PROJECT_NAME}_features.h")
+set(EXPORT_FILE "include/${PROJECT_NAME}/${PROJECT_NAME}_export.h")
+set(TEMPLATE_EXPORT_FILE"include/${PROEJECT_NAME}/${PROJETC_NAME}_api.h")
+set(EXPORT_MACRO "${target_id}_API")
+
 #
 # Include directories
 #
 
 # Export library for downstream projects
 export(
-  TARGETS ${target}
-  NAMESPACE ${META_PROJECT_NAME}::
-  FILE ${PROJECT_BINARY_DIR}/cmake/${target}/${target}-export.cmake)
+    TARGETS ${PROJECT_NAME}
+    NAMESPACE ${META_PROJECT_NAME}::
+    FILE ${PROJECT_BINARY_DIR}/cmake/${PROJECT_NAME}/${PROJECT_NAME}-export.cmake
+)
 
 # Create feature detection header
-# Compilers: https://cmake.org/cmake/help/v3.1/variable/CMAKE_LANG_COMPILER_ID.html#variable:CMAKE_%3CLANG%3E_COMPILER_ID
+# Compilers:
+#  https://cmake.org/cmake/help/v3.1/variable/CMAKE_LANG_COMPILER_ID.html#variable:CMAKE_%3CLANG%3E_COMPILER_ID
 # Feature: https://cmake.org/cmake/help/v3.1/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html
 
 # Check for availability of module; use pre-generated version if not found
 if(WriterCompilerDetectionHeaderFound)
-  write_compiler_detection_header(
-    FILE
-    ${feature_file}
-    PREFIX
-    ${target_id}
-    COMPILERS AppleClang
-              Clang
-              GNU
-              MSVC
-    FEATURES cxx_alignas
-             cxx_alignof
-             cxx_constexpr
-             cxx_final
-             cxx_noexcept
-             cxx_nullptr
-             cxx_sizeof_member
-             cxx_thread_local
-    VERSION 3.2)
+    write_compiler_detection_header(
+        FILE ${FEATURE_FILE} PREFIX ${target_id}
+        COMPILERS AppleClang Clang GNU MSVC
+        FEATURES cxx_alignas
+                 cxx_alignof
+                 cxx_constexpr
+                 cxx_final
+                 cxx_noexcept
+                 cxx_nullptr
+                 cxx_sizeof_member
+                 cxx_thread_local
+        VERSION 3.2
+    )
 else()
-  file(
-    COPY ${PROJECT_SOURCE_DIR}/src/codegeneration/${target}_features.h
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
-    USE_SOURCE_PERMISSIONS)
+    file(
+        COPY ${PROJECT_SOURCE_DIR}/codegeneration/${PROJECT_NAME}_features.h
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}
+        USE_SOURCE_PERMISSIONS
+    )
 endif()
-
-# Create API export header
-generate_export_header(
-  ${target}
-  EXPORT_FILE_NAME
-  ${export_file}
-  EXPORT_MACRO_NAME
-  ${export_macro})
-
-generate_template_export_header(${target} ${target_id} ${template_export_file})
 
 #
 # Project options
 #
 
-set_target_properties(
-  ${target}
-  PROPERTIES ${DEFAULT_PROJECT_OPTIONS} INSTALL_RPATH
-             "${LIBRARY_INSTALL_RPATH}" FOLDER
-             "${IDE_FOLDER}" VERSION
-             "${META_VERSION}" SOVERSION
-             "${META_VERSION_MAJOR}")
+# set_target_properties(
+#     ${PROJECT_NAME}
+#     PROPERTIES
+#         ${DEFAULT_PROJECT_OPTIONS} INSTALL_RPATH
+#         "${LIBRARY_INSTALL_RPATH}" FOLDER
+#         "${IDE_FOLDER}" VERSION
+#         "${PROJECT_VERSION}" SOVERSION
+#         "${PROJECT_VERSION_MAJOR}"
+# )
 
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}"
+               FOLDER "${IDE_FOLDER}"
+               VERSION "${PROJECT_VERSION}"
+               SOVERSION "${PROJECT_VERSION_MAJOR}"
+)
 #
 # Include directories
 #
 
 target_include_directories(
-  ${target}
-  PRIVATE ${PROJECT_BINARY_DIR}/source/include ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/include
-  PUBLIC ${DEFAULT_INCLUDE_DIRECTORIES}
-  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> $<INSTALL_INTERFACE:include>)
+    ${PROJECT_NAME}
+    PRIVATE ${PROJECT_BINARY_DIR}/source/include ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/include
+    PUBLIC ${DEFAULT_INCLUDE_DIRECTORIES}
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+              $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> $<INSTALL_INTERFACE:include>
+)
 
 #
 # Libraries
 #
 
 target_link_libraries(
-  ${target}
-  PRIVATE
-  PUBLIC ${DEFAULT_LIBRARIES} Qt${QT_VERSION_MAJOR}::Core
-  INTERFACE)
+    ${PROJECT_NAME}
+    PRIVATE
+    PUBLIC ${DEFAULT_LIBRARIES} Qt${QT_VERSION_MAJOR}::Core
+    INTERFACE
+)
 
 #
 # Compile definitions
 #
 
 target_compile_definitions(
-  ${target}
-  PRIVATE
-  PUBLIC $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_id}_STATIC_DEFINE> ${DEFAULT_COMPILE_DEFINITIONS}
-  INTERFACE)
+    ${PROJECT_NAME}
+    PRIVATE
+    PUBLIC $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_id}_STATIC_DEFINE> ${DEFAULT_COMPILE_DEFINITIONS}
+    INTERFACE
+)
 
 #
 # Compile options
 #
 
 target_compile_options(
-  ${target}
-  PRIVATE
-  PUBLIC ${DEFAULT_COMPILE_OPTIONS}
-  INTERFACE)
+    ${PROJECT_NAME}
+    PRIVATE
+    PUBLIC ${DEFAULT_COMPILE_OPTIONS}
+    INTERFACE
+)
 
 #
 # Linker options
 #
 
 target_link_libraries(
-  ${target}
-  PRIVATE
-  PUBLIC ${DEFAULT_LINKER_OPTIONS}
-  INTERFACE)
+    ${PROJECT_NAME}
+    PRIVATE
+    PUBLIC ${DEFAULT_LINKER_OPTIONS}
+    INTERFACE
+)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-  qt_finalize_target(${target})
+    qt_finalize_target(${PROJECT_NAME})
 endif()
-
-#
-# Target Health
-#
-
-perform_health_checks(${target} ${sources} ${headers})
 
 #
 # Deployment
 #
 
+# Create API export header
+generate_export_header(
+    ${PROJECT_NAME}
+    EXPORT_FILE_NAME
+    ${EXPORT_FILE}
+    EXPORT_MACRO_NAME
+    ${EXPORT_MACRO}
+)
+
 # Library
 install(
-  TARGETS ${target}
-  EXPORT "${target}-export"
-  COMPONENT dev
-  RUNTIME DESTINATION ${BIN_INSTALL_DIR} COMPONENT runtime
-  LIBRARY DESTINATION ${LIB_INSTALL_DIR} COMPONENT runtime
-  ARCHIVE DESTINATION ${LIB_INSTALL_DIR} COMPONENT dev)
+    TARGETS ${PROJECT_NAME}
+    EXPORT "${PROJECT_NAME}-export"
+    COMPONENT dev
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT runtime
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT runtime
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT dev
+)
 
 # Header files
 install(
-  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${target}
-  DESTINATION ${INCLUDE_INSTALL_DIR}
-  COMPONENT dev)
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT dev
+)
 
 # Generated header files
 install(
-  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
-  DESTINATION ${INCLUDE_INSTALL_DIR}
-  COMPONENT dev)
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT dev
+)
 
 # CMake config
 install(
-  EXPORT ${target}-export
-  NAMESPACE ${META_PROJECT_NAME}::
-  DESTINATION ${CMAKECONFIG_INSTALL_DIR}/${target}
-  COMPONENT dev)
+    EXPORT ${PROJECT_NAME}-export
+    NAMESPACE ${PROJECT_NAME}::
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+    COMPONENT dev
+)
 
 # Tests
 if(OPTION_BUILD_TESTS)
-  set(IDE_FOLDER "Tests")
-  enable_testing()
-  add_subdirectory(test)
+    set(IDE_FOLDER "Tests")
+    enable_testing()
+    add_subdirectory(test)
 endif()

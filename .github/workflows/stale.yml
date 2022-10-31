@@ -6,7 +6,9 @@
 # https://github.com/actions/stale
 name: Mark stale issues and pull requests
 
+# yamllint disable
 on:
+  # yamllint enable
   schedule:
     - cron: "20 12 * * *"
 

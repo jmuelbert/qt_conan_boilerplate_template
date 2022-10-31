@@ -2,7 +2,7 @@
 # Target 'pack'
 #
 
-add_custom_target(pack)
+add_custom_target(pack COMMENT "Add Pack as Build-Target")
 set_target_properties(pack PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 
 # Install additional runtime dependencies
@@ -19,7 +19,9 @@ include(packages/pack-${META_PROJECT_NAME}.cmake)
 #
 
 add_custom_target(
-  component_install
-  COMMAND make preinstall
-  COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/ComponentInstall.cmake
-  WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+    component_install
+    COMMAND make preinstall
+    COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/ComponentInstall.cmake
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    COMMENT "Add Install as build target"
+)

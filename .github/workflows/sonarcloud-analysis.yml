@@ -29,7 +29,9 @@
 
 name: "SonarCloud analysis"
 
+# yamllint disable
 on:
+  # yamllint enable
   push:
     branches: [main, develop]
     paths:
@@ -102,8 +104,6 @@ jobs:
           - "Ninja Multi-Config"
         build_type:
           - Debug
-        developer_mode:
-          - OFF
         qt_version:
           - "6.3.0"
         qt_target:
@@ -208,7 +208,6 @@ jobs:
           cd ..
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
             -DGIT_SHA:STRING=${{ github.sha }}

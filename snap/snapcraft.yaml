@@ -15,7 +15,7 @@ architectures:
 summary: A test.
 description: qt_canon_boilerplate is a test app.
 
-version: "0.6.0"
+version: '0.6.0'
 
 apps:
   qtwidgettest:
@@ -34,10 +34,10 @@ parts:
     plugin: cmake
     source: .
     cmake-parameters:
-      - "-DCMAKE_INSTALL_PREFIX=/usr"
-      - "-DCMAKE_BUILD_TYPE=Release"
-      - "-DENABLE_TESTING=OFF"
-      - "-DBUILD_TESTING=OFF"
+      - '-DCMAKE_INSTALL_PREFIX=/usr'
+      - '-DCMAKE_BUILD_TYPE=Release'
+      - '-DENABLE_TESTING=OFF'
+      - '-DBUILD_TESTING=OFF'
     source-type: git
     parse-info:
       - usr/share/metainfo/qtwidgettest.appdata.xml

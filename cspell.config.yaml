@@ -1,7 +1,7 @@
 ---
-version: "0.2"
+version: '0.2'
 files:
-  - "**/*"
+  - '**/*'
 dictionaryDefinitions:
   - name: cmake-refined
     path: ./config/cmake-refined-words.txt
@@ -26,16 +26,20 @@ dictionaries:
   - python-common
 ignorePaths:
   - s**/node_modules/**
-  - "**/vscode-extension/**"
-  - "**/.git/**"
-  - ".github/actions/**"
-  - ".github/workflows/**"
-  - "cmake/modules/**"
-  - "docs/api-docs/**"
-  - "cspell.config.yaml"
-  - "*.gz"
-  - "*.lock"
-  - "*.svg"
+  - '**/vscode-extension/**'
+  - '**/.git/**'
+  - '.github/actions/**'
+  - '.github/workflows/**'
+  - 'cmake/modules/**'
+  - 'docs/api-docs/**'
+  - 'cspell.config.yaml'
+  - '.clang-tidy'
+  - '.cmake-format.yaml'
+  - '.cmake-lint.yaml'
+  - '.codespell.rc'
+  - '*.gz'
+  - '*.lock'
+  - '*.svg'
   - .gitignore
   - .devcontainer/.dockerignore
   - .vscode
@@ -45,6 +49,7 @@ ignorePaths:
   - pnpm-lock.yaml
   - dist/**
   - build/**
+  - out/**
   - /project-words.txt
   - ./qt-words.txt
   - ./taskfile-words.txt
@@ -152,5 +157,3 @@ words:
   - Wuninitialized
   - Wunused
   - xcodeproj
-flagWords:
-  - hte

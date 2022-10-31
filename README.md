@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template/branch/main/graph/badge.svg)](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/db5c8cf8529e45d19e38011419f74f96)](https://www.codacy.com/gh/jmuelbert/qt_conan_boilerplate_template/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jmuelbert/qt_conan_boilerplate_template&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/db5c8cf8529e45d19e38011419f74f96)](https://www.codacy.com/gh/jmuelbert/qt_conan_boilerplate_template/dashboard?utm_source=github.com&utm_medium=referral&utm_content=jmuelbert/qt_conan_boilerplate_template&utm_campaign=Badge_Grade)
 [![CodeQL](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jmuelbert_qt_conan_boilerplate_template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jmuelbert_qt_conan_boilerplate_template)
 [![MegaLinter](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/mega-linter.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/mega-linter.yml)
@@ -13,14 +13,14 @@ This is a qt_conan_boilerplate_template GitHub template for getting up and runni
 
 It includes
 
-* examples for fuzz, unit, and constexpr testing
-* large github action testing matrix
+- examples for fuzz, unit, and constexpr testing
+- large github action testing matrix
 
 It requires
 
-* cmake
-* conan
-* a compiler
+- cmake
+- conan
+- a compiler
 
 For a simplified project, check out the [qt_conan_boilerplate_template](https://github.com/jmuelbert/qt_conan_boilerplate_template).
 
@@ -52,5 +52,7 @@ See [Catch2 tutorial](https://github.com/catchorg/Catch2/blob/master/docs/tutori
 See [libFuzzer Tutorial](https://github.com/google/fuzzing/blob/master/tutorial/libFuzzerTutorial.md)
 
 ## Icons
+
 See Icons by [Icons8](https://icons8.com)
-  * [App Symbol](https://icons8.com/icon/Wg3R9l3UYLiq/app-symbol)
+
+- [App Symbol](https://icons8.com/icon/Wg3R9l3UYLiq/app-symbol)

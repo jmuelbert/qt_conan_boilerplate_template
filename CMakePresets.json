@@ -1,137 +1,212 @@
 {
-  "version": 3,
-  "configurePresets": [
-    {
-      "name": "base",
-      "description": "For more information: http://aka.ms/cmakepresetsvs",
-      "hidden": true,
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
-      "installDir": "${sourceDir}/install",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
+    "version": 5,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 24,
+        "patch": 0
     },
-    {
-      "name": "x64-debug",
-      "displayName": "x64 Debug",
-      "description": "Sets debug build type and x64 arch",
-      "inherits": "base",
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "x64-release",
-      "displayName": "x64 Release",
-      "description": "Sets release build type",
-      "inherits": "x64-debug",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
-      "name": "x86-debug",
-      "displayName": "x86 Debug ",
-      "description": "Sets debug build type and x86 arch",
-      "inherits": "base",
-      "architecture": {
-        "value": "x86",
-        "strategy": "external"
-      },
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "x86-release",
-      "displayName": "x86 Release",
-      "description": "Sets release build type",
-      "inherits": "x86-debug",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
-      "name": "linux-debug",
-      "displayName": "Linux Debug",
-      "description": "Sets GCC",
-      "inherits": "base",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "gcc",
-        "CMAKE_CXX_COMPILER": "g++",
-        "CMAKE_BUILD_TYPE": "Debug"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      },
-      "vendor": {
-        "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
-          "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}",
-          "copyAdditionalIncludeDirectoriesList": [
-            "$env{HOME}/.vs/box2d-lite-actions/out/build/linux-debug/vcpkg_installed/x64-linux/include"
-          ]
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "displayName": "Base Config",
+            "description": "Base build using Ninja generator",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+                "ENABLE_CONAN": "TRUE",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}"
+            },
+            "environment": {
+                "PATH": "$env{HOME}/ninja/bin:$penv{PATH}"
+            }
+        },
+        {
+            "name": "windows-debug",
+            "displayName": "Debug",
+            "description": "Debug settings fpr windows x64",
+            "inherits": "base",
+            "generator": "Ninja Multi-Config",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                },
+                "OPTION_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": "TRUE"
+                }
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "windows-release",
+            "displayName": "Release settings for windows x64",
+            "description": "Sets release build type",
+            "inherits": "x64-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "linux-debug",
+            "displayName": "Debug settings for linux",
+            "description": "Sets GCC for debug",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "OPTION_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": "TRUE"
+                }
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "linux-release",
+            "displayName": "Release settings for linux",
+            "description": "Sets GCC for release",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "macos-debug",
+            "displayName": "Debug settings for macos",
+            "description": "Sets debug build type",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "OPTION_BUILD_TESTS": {
+                    "type": "BOOL",
+                    "value": "TRUE"
+                }
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "macos-release",
+            "displayName": "Release settings for macos",
+            "description": "Sets release build type",
+            "inherits": "macos-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
         }
-      }
-    },
-    {
-      "name": "linux-release",
-      "displayName": "Linux Release",
-      "description": "Sets release build type",
-      "inherits": "linux-debug",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    }
-  ],
-  "buildPresets": [
-    {
-      "name": "default-build-linux",
-      "displayName": "Default",
-      "configurePreset": "linux-debug",
-      "description": "Vanilla build"
-    },
-    {
-      "name": "default-build-windows",
-      "displayName": "Default",
-      "configurePreset": "x64-debug",
-      "description": "Vanilla build"
-    },
-    {
-      "name": "verbose-build-linux",
-      "displayName": "Verbose Build",
-      "description": "Passes -v to Ninja",
-      "configurePreset": "linux-debug",
-      "nativeToolOptions": ["-v"]
-    },
-    {
-      "name": "verbose-build-windows",
-      "displayName": "Verbose Build",
-      "configurePreset": "x64-debug",
-      "inherits": "verbose-build-linux"
-    }
-  ],
-  "testPresets": [
-    {
-      "name": "core-test-linux",
-      "description": "Enable output on failure",
-      "configurePreset": "linux-debug",
-      "output": {
-        "outputOnFailure": true
-      }
-    },
-    {
-      "name": "core-test-windows",
-      "inherits": "core-test-linux",
-      "configurePreset": "x64-debug"
-    }
-  ]
+    ],
+    "buildPresets": [
+        {
+            "name": "default-build-linux",
+            "displayName": "Default for linux",
+            "description": "Vanilla build",
+            "configurePreset": "linux-debug"
+        },
+        {
+            "name": "default-build-windows",
+            "displayName": "Default for windows",
+            "description": "Vanilla build",
+            "configurePreset": "windows-debug"
+        },
+        {
+            "name": "default-build-macos",
+            "displayName": "Default for macos",
+            "description": "Vanilla build",
+            "configurePreset": "macos-debug"
+        },
+        {
+            "name": "verbose-build-linux",
+            "displayName": "Verbose Build for linux",
+            "description": "Verbose build (Passes -v to Ninja",
+            "configurePreset": "linux-debug",
+            "nativeToolOptions": ["-v"]
+        },
+        {
+            "name": "verbose-build-windows",
+            "displayName": "Verbose Build for windows",
+            "description": "Verbose build (Passes -v to Ninja",
+            "configurePreset": "windows-debug",
+            "nativeToolOptions": ["-v"]
+        },
+        {
+            "name": "verbose-build-macos",
+            "displayName": "Verbose Build for macos",
+            "description": "Verbose build (Passes -v to Ninja",
+            "configurePreset": "macos-debug"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "core-test-linux",
+            "configurePreset": "linux-debug",
+            "description": "Enable output on failure",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "core-test-windows",
+            "configurePreset": "windows-debug",
+            "description": "Enable output on failure",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        },
+        {
+            "name": "core-test-macos",
+            "configurePreset": "macos-debug",
+            "description": "Enable output on failure",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            }
+        }
+    ]
 }

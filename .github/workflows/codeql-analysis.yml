@@ -12,7 +12,9 @@
 #
 name: "CodeQL"
 
+# yamllint disable
 on:
+  # yamllint enable
   push:
     branches: [main, develop]
     paths:

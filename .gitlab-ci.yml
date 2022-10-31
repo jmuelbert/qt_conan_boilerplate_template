@@ -1,7 +1,8 @@
+---
 image: ubuntu:latest
 ---
 variables:
-  SAST_IMAGE_SUFFIX: "-fips"
+  SAST_IMAGE_SUFFIX: '-fips'
 
 include:
   - template: Security/SAST.gitlab-ci.yml

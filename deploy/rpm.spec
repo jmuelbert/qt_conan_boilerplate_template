@@ -92,4 +92,3 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{app_id}.desktop
 %changelog
 * Sat Sep 03 2022 Jürgen Mülbert <juergen.muelbert@gmail.com> - 0.0.1-1
 -  qtwidgettest 0.0.1
-

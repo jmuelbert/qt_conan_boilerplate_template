@@ -5,7 +5,11 @@
 
 name: REUSE Compliance Check
 
-on: [push, pull_request]
+# yamllint disable
+on:
+  # yamllint enableon:
+  push:
+  pull_request:
 
 jobs:
   test:

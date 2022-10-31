@@ -1,13 +1,13 @@
 ---
 name: "Missspell fixer"
 
-on: 
-  push: 
+on:
+  push:
     branches: [main]
   pull_request:
     # The branches below must be a subset of the branches above
     types: [opened, synchronize, reopened]
-    
+
 jobs:
   misspell-fixer:
     runs-on: ubuntu-latest

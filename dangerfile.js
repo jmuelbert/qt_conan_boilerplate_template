@@ -1,6 +1,6 @@
 const { danger, fail, message, warn } = require('danger');
 const ISSUE_REGEX =
-  /https?:\/\/(?:www\.)?github\.com\/jmuelbert\/qt_conan_boilerplate_template\/issues\/(\d+)/i;
+    /https?:\/\/(?:www\.)?github\.com\/jmuelbert\/qt_conan_boilerplate_template\/issues\/(\d+)/i;
 const ISSUE_URL = 'https://github.com/jmuelbert/qt_conan_boilerplate_template/issues';
 const SOURCE_REGEX = /.*\.(cpp|c|h|lua)$/i;
 const TITLE_REGEX = /^(fix|improve|add|infra)/i;
@@ -11,52 +11,52 @@ const pr_title = danger.github.pr.title;
 // Checks the title to make sure it matches expectations
 const title_type = pr_title.match(TITLE_REGEX);
 if (title_type) {
-  // no-op
+    // no-op
 } else if (pr_title.match(/^\[?WIP\]?/i)) {
-  fail('PR is still a WIP, do not merge');
+    fail('PR is still a WIP, do not merge');
 } else {
-  fail('PR title must start with `fix`, `improve`, `add` or `infra` for release notes purposes.');
+    fail('PR title must start with `fix`, `improve`, `add` or `infra` for release notes purposes.');
 }
 
 // checks sourcefile changes to ensure any new TODO items also have a jmuelbert issue
 sourcefiles.forEach(function (filename) {
-  const additions = danger.git.diffForFile(filename);
-  additions.then((diff) => {
-    const issues = [];
-    diff.added.split('\n').forEach(function (item) {
-      if (item.includes('TODO:')) {
-        const has_issue = item.match(ISSUE_REGEX);
-        if (!has_issue) {
-          fail(
-            `Source file ${filename} includes a TODO with no qt_conan_boilerplate_template issue link.\n  New TODO items in source files must have an accompanying github issue`,
-          );
-        } else {
-          issues.push(has_issue[1]);
+    const additions = danger.git.diffForFile(filename);
+    additions.then((diff) => {
+        const issues = [];
+        diff.added.split('\n').forEach(function (item) {
+            if (item.includes('TODO:')) {
+                const has_issue = item.match(ISSUE_REGEX);
+                if (!has_issue) {
+                    fail(
+                        `Source file ${filename} includes a TODO with no qt_conan_boilerplate_template issue link.\n  New TODO items in source files must have an accompanying github issue`,
+                    );
+                } else {
+                    issues.push(has_issue[1]);
+                }
+            }
+        });
+        if (issues.length > 0) {
+            message(
+                `\`${filename}\` adds TODO issues: ${issues
+                    .map((iss) => `[${iss}](${ISSUE_URL}/${iss})`)
+                    .join(', ')}`,
+                { icon: ':heavy_check_mark:' },
+            );
         }
-      }
     });
-    if (issues.length > 0) {
-      message(
-        `\`${filename}\` adds TODO issues: ${issues
-          .map((iss) => `[${iss}](${ISSUE_URL}/${iss})`)
-          .join(', ')}`,
-        { icon: ':heavy_check_mark:' },
-      );
-    }
-  });
 });
 
 // Warns if a PR touched more than 10 source files.
 if (sourcefiles.length > 10) {
-  warn(
-    `PR makes changes to ${sourcefiles.length} source files. Double check the scope hasn't gotten out of hand`,
-  );
+    warn(
+        `PR makes changes to ${sourcefiles.length} source files. Double check the scope hasn't gotten out of hand`,
+    );
 }
 
 // Warns if the title is perhaps a bit verbose
 const title_wordcount = pr_title.split(' ').length;
 if (title_wordcount > 25) {
-  warn(
-    `PR title is ${title_wordcount} words long, double check it will make a good changelog line`,
-  );
+    warn(
+        `PR title is ${title_wordcount} words long, double check it will make a good changelog line`,
+    );
 }

@@ -6,7 +6,9 @@
 
 name: "DevSkim"
 
+# yamllint disable
 on:
+  # yamllint enable
   push:
     branches: [main]
 

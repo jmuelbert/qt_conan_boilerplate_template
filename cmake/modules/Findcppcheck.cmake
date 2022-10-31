@@ -8,16 +8,15 @@ include(FindPackageHandleStandardArgs)
 set(PROGRAMFILES_x86_ENV "PROGRAMFILES(x86)")
 
 find_program(
-  cppcheck_EXECUTABLE
-  NAMES cppcheck
-  PATHS "${CPPCHECK_DIR}"
-        "$ENV{CPPCHECK_DIR}"
-        "$ENV{PROGRAMFILES}/Cppcheck"
-        "$ENV{${PROGRAMFILES_x86_ENV}}/Cppcheck")
+    cppcheck_EXECUTABLE
+    NAMES cppcheck
+    PATHS "${CPPCHECK_DIR}" "$ENV{CPPCHECK_DIR}" "$ENV{PROGRAMFILES}/Cppcheck" "$ENV{${PROGRAMFILES_x86_ENV}}/Cppcheck"
+)
 
 find_package_handle_standard_args(
-  cppcheck
-  FOUND_VAR cppcheck_FOUND
-  REQUIRED_VARS cppcheck_EXECUTABLE)
+    cppcheck
+    FOUND_VAR cppcheck_FOUND
+    REQUIRED_VARS cppcheck_EXECUTABLE
+)
 
 mark_as_advanced(cppcheck_EXECUTABLE)

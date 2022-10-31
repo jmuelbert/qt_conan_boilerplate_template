@@ -7,7 +7,7 @@
 
 #include <utility>
 
-#include "myclass/MyClass.h"
+#include "qtwidgettestlib/MyClass.h"
 
 namespace mApp
 {

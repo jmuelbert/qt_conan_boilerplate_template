@@ -1,67 +1,80 @@
-cmake_minimum_required(VERSION 3.15...3.23 FATAL_ERROR)
+#
+# SPDX-FileCopyrightText: 2022 Project qt_conan_boilerplate_template, Jürgen Mülbert
+#
+# SPDX-License-Identifier: EUPL-1.2
+#
 
-# Meta information about the project
-
-set(META_PROJECT_NAME "qtconanboilerplate")
-
-# Declare project
-project("${META_PROJECT_NAME}-tests" C CXX)
+cmake_minimum_required(VERSION 3.20..3.24 FATAL_ERROR)
 
 # Set policies
-set_policy(CMP0054 NEW) # ENABLE CMP0054: Only interpret if() arguments as variables or keywords when unquoted.
-set_policy(CMP0042 NEW) # ENABLE CMP0042: MACOSX_RPATH is enabled by default.
-set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all target types.
-
-# Compiler settings and options
-
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/CompileOptions.cmake)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake/Custom.cmake)
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake")
+# Make sure that an old version of CMake is not being used so modern features are available
+# Update this to the mix, max versions that are applicable
+if(${CMAKE_VERSION} VERSION_LESS 3.24)
+    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 else()
-  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CompileOptions.cmake)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Custom.cmake)
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    cmake_policy(VERSION 3.24)
 endif()
+
+# Declare project
+project(
+    qtwidgettestlib-test
+    VERSION 0.0.2
+    LANGUAGES CXX
+)
+
+set(PROJECT_PREFIX QTWIDGETTESTLIB_TEST_)
+
+option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OFF)
+
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
+include(CTest)
+
+#
+# Sources
+#
+
+set(INCLUDE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}")
+set(SOURCE_PATH"${CMAKE_CURRENT_SOURCE_DIR}/source")
+
+set(HEADERS testmain.h)
+set(SOURCES testmain.cpp)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(
-  QT
-  NAMES
-  Qt6
-  Qt5
-  REQUIRED
-  COMPONENTS Core)
+    QT
+    NAMES
+    Qt6
+    Qt5
+    REQUIRED
+    COMPONENTS Core
+)
 
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Test)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-  qt_standard_project_setup()
-  qt_add_executable(
-    testMain
-    MANUAL_FINALIZATION
-    testmain.cpp
-    testmain.h)
+    qt_standard_project_setup()
+    qt_add_executable(testMain MANUAL_FINALIZATION testmain.cpp testmain.h)
 else()
-  add_executable(testMain testmain.cpp testmain.h)
+    add_executable(testMain testmain.cpp testmain.h)
 endif()
 
 set_target_properties(testMain PROPERTIES WIN32_EXECUTABLE TRUE)
 
 if(WIN32)
-  target_link_options(testMain PRIVATE "/entry:mainCRTStartup")
+    target_link_options(testMain PRIVATE "/entry:mainCRTStartup")
 endif()
 
-target_link_libraries(testMain PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Test
-                                       ${META_PROJECT_NAME}::myclass)
+target_link_libraries(
+    testMain
+    PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Test qtwidgettestlib::qtwidgettestlib
+)
 
 if(QT_VERSION_MAJOR EQUAL 6)
-  qt_finalize_executable(testMain)
+    qt_finalize_executable(testMain)
 endif()
 
 add_test(NAME testMain COMMAND testMain)

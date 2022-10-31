@@ -1,6 +1,10 @@
 ---
 name: Lint Commit Messages
-on: [pull_request]
+
+# yamllint disable
+on:
+  # yamllint enable
+  pull_request:
 
 jobs:
   commitlint:

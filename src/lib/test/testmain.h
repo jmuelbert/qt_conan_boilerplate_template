@@ -10,7 +10,7 @@
 #include <QObject>
 #include <QtTest>
 
-#include "myclass/MyClass.h"
+#include "qtwidgettestlib/MyClass.h"
 
 class Foo : public QObject
 {

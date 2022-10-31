@@ -7,51 +7,51 @@
 include(FindPackageHandleStandardArgs)
 
 find_path(
-  GLEW_INCLUDE_DIR GL/glew.h
-  PATHS $ENV{GLEW_DIR}
-        /usr
-        /usr/local
-        /sw
-        /opt/local
-  PATH_SUFFIXES /include
-  DOC "The directory where GL/glew.h resides")
+    GLEW_INCLUDE_DIR GL/glew.h
+    PATHS $ENV{GLEW_DIR}
+          /usr
+          /usr/local
+          /sw
+          /opt/local
+    PATH_SUFFIXES /include
+    DOC "The directory where GL/glew.h resides"
+)
 
 if(X64)
-  set(GLEW_BUILD_DIR Release/x64)
+    set(GLEW_BUILD_DIR Release/x64)
 else()
-  set(GLEW_BUILD_DIR Release/Win32)
+    set(GLEW_BUILD_DIR Release/Win32)
 endif()
 
 find_library(
-  GLEW_LIBRARY
-  NAMES GLEW
-        glew
-        glew32
-        glew32s
-  PATHS $ENV{GLEW_DIR}
-        /usr
-        /usr/local
-        /sw
-        /opt/local
-        # authors prefered choice for development
-        /build
-        /build-release
-        /build-debug
-        $ENV{GLEW_DIR}/build
-        $ENV{GLEW_DIR}/build-release
-        $ENV{GLEW_DIR}/build-debug
-  PATH_SUFFIXES /lib /lib64 /lib/${GLEW_BUILD_DIR}
-  DOC "The GLEW library")
+    GLEW_LIBRARY
+    NAMES GLEW glew glew32 glew32s
+    PATHS $ENV{GLEW_DIR}
+          /usr
+          /usr/local
+          /sw
+          /opt/local
+          # authors preferred choice for development
+          /build
+          /build-release
+          /build-debug
+          $ENV{GLEW_DIR}/build
+          $ENV{GLEW_DIR}/build-release
+          $ENV{GLEW_DIR}/build-debug
+    PATH_SUFFIXES /lib /lib64 /lib/${GLEW_BUILD_DIR}
+    DOC "The GLEW library"
+)
 
 if(WIN32)
 
-  find_file(
-    GLEW_BINARY
-    NAMES glew32.dll glew32s.dll
-    HINTS ${GLEW_INCLUDE_DIR}/..
-    PATHS $ENV{GLEW_DIR}
-    PATH_SUFFIXES /bin /bin/${GLEW_BUILD_DIR}
-    DOC "The GLEW binary")
+    find_file(
+        GLEW_BINARY
+        NAMES glew32.dll glew32s.dll
+        HINTS ${GLEW_INCLUDE_DIR}/..
+        PATHS $ENV{GLEW_DIR}
+        PATH_SUFFIXES /bin /bin/${GLEW_BUILD_DIR}
+        DOC "The GLEW binary"
+    )
 
 endif()
 

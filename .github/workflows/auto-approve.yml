@@ -1,9 +1,10 @@
 ---
 name: Auto approve
 
+# yamllint disable
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  # yamllint enable  pull_request:
+  types: [opened, synchronize, reopened]
 
 jobs:
   auto-approve:

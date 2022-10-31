@@ -1,6 +1,9 @@
+---
 name: Generate a changelog
 
+# yamllint disable
 on:
+  # yamllint enable
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:

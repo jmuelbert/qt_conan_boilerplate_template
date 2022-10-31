@@ -6,7 +6,9 @@ name: Docker
 # separate terms of service, privacy policy, and support
 # documentation.
 
+# yamllint disable
 on:
+  # yamllint enable
   schedule:
     - cron: "37 4 * * *"
   push:

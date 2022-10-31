@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+conan = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+recommonmark = "*"
+breathe = "*"
+pre-commit = "*"
+reuse = "*"
+checkov = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"

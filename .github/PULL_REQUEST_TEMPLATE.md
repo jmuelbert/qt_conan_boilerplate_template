@@ -23,10 +23,8 @@
 
 ## Checklist
 
-<!--- Go over all the following points, and put an `x` in all
-     the boxes that apply. -->
-<!--- You can open a pull request before all these are done, but
-     they should be done before getting merged. -->
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- You can open a pull request before all these are done, but they should be done before getting merged. -->
 
 - [ ] If the key of a setting is changed, the `old` attribute is updated or it is
       resolved in SettingsUpdater.
@@ -35,9 +33,8 @@
 - [ ] If needed, I have opened a pull request or an issue to update the
       [documentation](http://jmuelbert.github.io/qt_conan_boilerplate_template/).
 - [ ] If these changes are notable, they are documented in
-        [CHANGELOG.md](https://github.com/jmuelbert/qt_conan_boilerplate_template/blob/master/CHANGELOG.md).
+      [CHANGELOG.md](https://github.com/jmuelbert/qt_conan_boilerplate_template/blob/master/CHANGELOG.md).
 
 ## Additional text
 
-<!--- Anything else you want to say. For example, mention
- the translators if the translations need to be updated. --->
+<!--- Anything else you want to say. For example, mention the translators if the translations need to be updated. --->

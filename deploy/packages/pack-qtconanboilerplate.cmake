@@ -3,53 +3,104 @@
 #
 
 if(NOT EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
-  return()
+    return()
 endif()
 
 configure_file("${CMAKE_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_BINARY_DIR}/LICENSE.txt" COPYONLY)
+
+#
+# Package information
+#
+
+set(CPACK_PACKAGE_NAME "${package_name}")
+set(CPACK_PACKAGE_VENDOR "${package_vendor}")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${package_description}")
+set(CPACK_PACKAGE_VERSION "${META_VERSION}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${META_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${META_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${META_VERSION_PATCH}")
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_BINARY_DIR}/LICENSE.txt")
+else()
+    set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+endif()
+set(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_WELCOME "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/deploy/images/data_512.png")
+set(CPACK_PACKAGE_FILE_NAME "${package_name}-${CPACK_PACKAGE_VERSION}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "${package_name}")
+set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${package_name}")
+
+# Installers for 32- vs. 64-bit CMake:
+#  - Root install directory (displayed to end user at installer-run time)
+#  - "NSIS package/display name" (text used in the installer GUI)
+#  - Registry key used to store info about the installation
+if(CMAKE_CL_64)
+    set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+    set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION} (Win64)")
+else()
+    set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
+    set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_NAME} ${CPACK_PACKAGE_VERSION}")
+endif()
+set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_NSIS_PACKAGE_NAME}")
+
+if(${CPACK_SYSTEM_NAME} MATCHES Windows)
+    if(CMAKE_CL_64)
+        set(CPACK_SYSTEM_NAME win64-x64)
+        set(CPACK_IFW_TARGET_DIRECTORY "@RootDir@/Program Files/${CMAKE_PROJECT_NAME}")
+    else()
+        set(CPACK_SYSTEM_NAME win32-x86)
+    endif()
+endif()
 
 #
 # Output packages
 #
 
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
-  # Windows installer
-  set(OPTION_PACK_GENERATOR
-      "WIX;NSIS64;ZIP"
-      CACHE STRING "Package targets")
-  set(PACK_COMPONENT_INSTALL ON)
-  set(PACK_INCLUDE_TOPDIR OFF)
-elseif(UNIX AND SYSTEM_DIR_INSTALL)
-  # System installation packages for unix systems
-  if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+    # Windows installer
     set(OPTION_PACK_GENERATOR
-        "TGZ;DEB;RPM"
-        CACHE STRING "Package targets")
+        "WIX;NSIS64;ZIP"
+        CACHE STRING "Package targets"
+    )
     set(PACK_COMPONENT_INSTALL ON)
     set(PACK_INCLUDE_TOPDIR OFF)
-  else()
+elseif(UNIX AND SYSTEM_DIR_INSTALL)
+    # System installation packages for unix systems
+    if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+        set(OPTION_PACK_GENERATOR
+            "TGZ;DEB;RPM"
+            CACHE STRING "Package targets"
+        )
+        set(PACK_COMPONENT_INSTALL ON)
+        set(PACK_INCLUDE_TOPDIR OFF)
+    else()
+        set(OPTION_PACK_GENERATOR
+            "TGZ;ZIP"
+            CACHE STRING "Package targets"
+        )
+        set(PACK_COMPONENT_INSTALL OFF)
+        set(PACK_INCLUDE_TOPDIR OFF)
+    endif()
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+    # MacOS X disk image
+    # At the moment, DMG generator and CPACK_INCLUDE_TOPLEVEL_DIRECTORY=ON do not work together.
+    # Therefore, we disable dmg images for MacOS until we've found a solution
     set(OPTION_PACK_GENERATOR
-        "TGZ;ZIP"
-        CACHE STRING "Package targets")
+        "DragNDrop;TGZ"
+        CACHE STRING "Package targets"
+    )
     set(PACK_COMPONENT_INSTALL OFF)
     set(PACK_INCLUDE_TOPDIR OFF)
-  endif()
-elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
-  # MacOS X disk image
-  # At the moment, DMG generator and CPACK_INCLUDE_TOPLEVEL_DIRECTORY=ON do not work together.
-  # Therefore, we disable dmg images for MacOS until we've found a solution
-  set(OPTION_PACK_GENERATOR
-      "DragNDrop;TGZ"
-      CACHE STRING "Package targets")
-  set(PACK_COMPONENT_INSTALL OFF)
-  set(PACK_INCLUDE_TOPDIR OFF)
 else()
-  # Default (portable package for any platform)
-  set(OPTION_PACK_GENERATOR
-      "ZIP;TGZ"
-      CACHE STRING "Package targets")
-  set(PACK_COMPONENT_INSTALL OFF)
-  set(PACK_INCLUDE_TOPDIR ON)
+    # Default (portable package for any platform)
+    set(OPTION_PACK_GENERATOR
+        "ZIP;TGZ"
+        CACHE STRING "Package targets"
+    )
+    set(PACK_COMPONENT_INSTALL OFF)
+    set(PACK_INCLUDE_TOPDIR ON)
 endif()
 
 #
@@ -66,18 +117,18 @@ set(CPACK_COMPONENT_DEV_DEPENDS runtime)
 set(CPACK_COMPONENTS_ALL runtime dev)
 
 if(OPTION_BUILD_EXAMPLES)
-  set(CPACK_COMPONENT_EXAMPLES_DISPLAY_NAME "Example applications")
-  set(CPACK_COMPONENT_EXAMPLES_DESCRIPTION "Example applications for ${META_PROJECT_NAME} library")
-  set(CPACK_COMPONENT_EXAMPLES_DEPENDS runtime)
+    set(CPACK_COMPONENT_EXAMPLES_DISPLAY_NAME "Example applications")
+    set(CPACK_COMPONENT_EXAMPLES_DESCRIPTION "Example applications for ${META_PROJECT_NAME} library")
+    set(CPACK_COMPONENT_EXAMPLES_DEPENDS runtime)
 
-  set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} examples)
+    set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} examples)
 endif()
 
 if(OPTION_BUILD_DOCS)
-  set(CPACK_COMPONENT_DOCS_DISPLAY_NAME "Documentation")
-  set(CPACK_COMPONENT_DOCS_DESCRIPTION "Documentation of ${META_PROJECT_NAME} library")
+    set(CPACK_COMPONENT_DOCS_DISPLAY_NAME "Documentation")
+    set(CPACK_COMPONENT_DOCS_DESCRIPTION "Documentation of ${META_PROJECT_NAME} library")
 
-  set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} docs)
+    set(CPACK_COMPONENTS_ALL ${CPACK_COMPONENTS_ALL} docs)
 endif()
 
 #
@@ -86,16 +137,16 @@ endif()
 
 # Reset CPack configuration
 if(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
-  set(CPACK_IGNORE_FILES "")
-  set(CPACK_INSTALLED_DIRECTORIES "")
-  set(CPACK_SOURCE_IGNORE_FILES "")
-  set(CPACK_SOURCE_INSTALLED_DIRECTORIES "")
-  set(CPACK_STRIP_FILES "")
-  set(CPACK_SOURCE_TOPLEVEL_TAG "")
-  set(CPACK_SOURCE_PACKAGE_FILE_NAME "")
-  set(CPACK_PACKAGE_RELOCATABLE OFF)
-  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ${PACK_INCLUDE_TOPDIR})
-  set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ${PACK_INCLUDE_TOPDIR})
+    set(CPACK_IGNORE_FILES "")
+    set(CPACK_INSTALLED_DIRECTORIES "")
+    set(CPACK_SOURCE_IGNORE_FILES "")
+    set(CPACK_SOURCE_INSTALLED_DIRECTORIES "")
+    set(CPACK_STRIP_FILES "")
+    set(CPACK_SOURCE_TOPLEVEL_TAG "")
+    set(CPACK_SOURCE_PACKAGE_FILE_NAME "")
+    set(CPACK_PACKAGE_RELOCATABLE OFF)
+    set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ${PACK_INCLUDE_TOPDIR})
+    set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ${PACK_INCLUDE_TOPDIR})
 endif()
 
 # Find cpack executable
@@ -104,9 +155,9 @@ set(CPACK_COMMAND "${CPACK_PATH}/cpack")
 
 # Set install prefix
 if(SYSTEM_DIR_INSTALL)
-  set(CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
+    set(CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 else()
-  set(CPACK_PACKAGING_INSTALL_PREFIX "")
+    set(CPACK_PACKAGING_INSTALL_PREFIX "")
 endif()
 
 # Package project
@@ -123,30 +174,6 @@ set(package_maintainer ${META_AUTHOR_MAINTAINER})
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/deploy/packages/${project_name})
 
 #
-# Package information
-#
-
-set(CPACK_PACKAGE_NAME "${package_name}")
-set(CPACK_PACKAGE_VENDOR "${package_vendor}")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${package_description}")
-set(CPACK_PACKAGE_VERSION "${META_VERSION}")
-set(CPACK_PACKAGE_VERSION_MAJOR "${META_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${META_VERSION_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${META_VERSION_PATCH}")
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
-  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_BINARY_DIR}/LICENSE.txt")
-else()
-  set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
-endif()
-set(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README.md")
-set(CPACK_RESOURCE_FILE_WELCOME "${PROJECT_SOURCE_DIR}/README.md")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
-set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/deploy/images/data_512.png")
-set(CPACK_PACKAGE_FILE_NAME "${package_name}-${CPACK_PACKAGE_VERSION}")
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "${package_name}")
-set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${package_name}")
-
-#
 # WIX package
 #
 
@@ -160,28 +187,23 @@ set(CPACK_WIX_PRODUCT_ICON "${PROJECT_SOURCE_DIR}/deploy/images/data_16.ico")
 
 # Fix icon path
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Windows" AND CPACK_PACKAGE_ICON)
-  # NOTE: for using MUI (UN)WELCOME images we suggest to replace nsis defaults,
-  # since there is currently no way to do so without manipulating the installer template (which we won't).
-  # http://public.kitware.com/pipermail/cmake-developers/2013-January/006243.html
+    # NOTE: for using MUI (UN)WELCOME images we suggest to replace nsis defaults,
+    # since there is currently no way to do so without manipulating the installer template (which we won't).
+    # http://public.kitware.com/pipermail/cmake-developers/2013-January/006243.html
 
-  # SO the following only works for the installer icon, not for the welcome image.
+    # SO the following only works for the installer icon, not for the welcome image.
 
-  # NSIS requires "\\" - escaped backslash to work properly. We probably won't rely on this feature,
-  # so just replacing / with \\ manually.
+    # NSIS requires "\\" - escaped backslash to work properly. We probably won't rely on this feature,
+    # so just replacing / with \\ manually.
 
-  #file(TO_NATIVE_PATH "${CPACK_PACKAGE_ICON}" CPACK_PACKAGE_ICON)
-  string(
-    REGEX
-    REPLACE "/"
-            "\\\\\\\\"
-            CPACK_PACKAGE_ICON
-            "${CPACK_PACKAGE_ICON}")
+    #file(TO_NATIVE_PATH "${CPACK_PACKAGE_ICON}" CPACK_PACKAGE_ICON)
+    string(REGEX REPLACE "/" "\\\\\\\\" CPACK_PACKAGE_ICON "${CPACK_PACKAGE_ICON}")
 endif()
 
 # Fix installation path for x64 builds
 if(X64)
-  # http://public.kitware.com/Bug/view.php?id=9094
-  set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+    # http://public.kitware.com/Bug/view.php?id=9094
+    set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
 endif()
 
 # Package options
@@ -191,28 +213,25 @@ set(CPACK_NSIS_MUI_UNIICON "${PROJECT_SOURCE_DIR}/deploy/images/data_16.ico")
 
 # Optional Preliminaries (i.e., silent Visual Studio Redistributable install)
 if(NOT INSTALL_MSVC_REDIST_FILEPATH)
-  set(INSTALL_MSVC_REDIST_FILEPATH
-      ""
-      CACHE FILEPATH "Visual C++ Redistributable Installer (note: manual match the selected generator)" FORCE)
+    set(INSTALL_MSVC_REDIST_FILEPATH
+        ""
+        CACHE FILEPATH "Visual C++ Redistributable Installer (note: manual match the selected generator)" FORCE
+    )
 endif()
 
 if(EXISTS ${INSTALL_MSVC_REDIST_FILEPATH})
-  get_filename_component(MSVC_REDIST_NAME ${INSTALL_MSVC_REDIST_FILEPATH} NAME)
-  string(
-    REGEX
-    REPLACE "/"
-            "\\\\\\\\"
-            INSTALL_MSVC_REDIST_FILEPATH
-            ${INSTALL_MSVC_REDIST_FILEPATH})
-  list(
-    APPEND
-    CPACK_NSIS_EXTRA_INSTALL_COMMANDS
-    "
+    get_filename_component(MSVC_REDIST_NAME ${INSTALL_MSVC_REDIST_FILEPATH} NAME)
+    string(REGEX REPLACE "/" "\\\\\\\\" INSTALL_MSVC_REDIST_FILEPATH ${INSTALL_MSVC_REDIST_FILEPATH})
+    list(
+        APPEND
+        CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+        "
         SetOutPath \\\"$TEMP\\\"
         File \\\"${INSTALL_MSVC_REDIST_FILEPATH}\\\"
         ExecWait '\\\"$TEMP\\\\${MSVC_REDIST_NAME} /quiet\\\"'
         Delete \\\"$TEMP\\\\${MSVC_REDIST_NAME}\\\"
-        ")
+        "
+    )
 endif()
 
 #
@@ -282,9 +301,10 @@ include(CPack)
 
 # Create target
 add_custom_target(
-  pack-${project_name}
-  COMMAND ${CPACK_COMMAND} --config ${PROJECT_BINARY_DIR}/CPackConfig-${project_name}.cmake -C $<CONFIG>
-  WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+    pack-${project_name}
+    COMMAND ${CPACK_COMMAND} --config ${PROJECT_BINARY_DIR}/CPackConfig-${project_name}.cmake -C $<CONFIG>
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+)
 set_target_properties(pack-${project_name} PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 
 # Set dependencies

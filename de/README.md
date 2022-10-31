@@ -1,6 +1,11 @@
 # qt_conan_boilerplate_template
 
-[](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml)[](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template)![codecov](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template/branch/main/graph/badge.svg)[](https://www.codacy.com/gh/jmuelbert/qt_conan_boilerplate_template/dashboard?utm_source=github.com&utm_medium=referral&utm_content=jmuelbert/qt_conan_boilerplate_template&utm_campaign=Badge_Grade)![Codacy-Abzeichen](https://app.codacy.com/project/badge/Grade/db5c8cf8529e45d19e38011419f74f96)[](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml)![CodeQL](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml/badge.svg)[](https://sonarcloud.io/summary/new_code?id=jmuelbert_qt_conan_boilerplate_template)![Quality-Gate-Status](https://sonarcloud.io/api/project_badges/measure?project=jmuelbert_qt_conan_boilerplate_template&metric=alert_status)[](https://github.com/marketplace/actions/super-linter)![GitHub Super-Linter](https://github.com/jmuelbert/qt_conan_boilerplate_template/workflows/Lint.yml/badge.svg)
+[![ci](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template/branch/main/graph/badge.svg)](https://codecov.io/gh/jmuelbert/qt_conan_boilerplate_template)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/db5c8cf8529e45d19e38011419f74f96)](https://www.codacy.com/gh/jmuelbert/qt_conan_boilerplate_template/dashboard?utm_source=github.com&utm_medium=referral&utm_content=jmuelbert/qt_conan_boilerplate_template&utm_campaign=Badge_Grade)
+[![CodeQL](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/codeql-analysis.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jmuelbert_qt_conan_boilerplate_template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jmuelbert_qt_conan_boilerplate_template)
+[![MegaLinter](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/mega-linter.yml/badge.svg)](https://github.com/jmuelbert/qt_conan_boilerplate_template/actions/workflows/mega-linter.yml)
 
 ## Über qt_conan_boilerplate_template
 

@@ -1,6 +1,9 @@
 ---
 name: format
+
+# yamllint disable
 on:
+  # yamllint enable
   push:
     branches: [main, develop]
   pull_request:
@@ -25,7 +28,7 @@ jobs:
           exclude: "./third_party ./external"
           extensions: "h,cpp,hpp"
           clangFormatVersion: 12
-          inplace: True
+          inplace: true
 
       - name: "🟨 Setup Python"
         uses: actions/setup-python@v2

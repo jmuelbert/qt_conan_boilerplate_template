@@ -2,7 +2,7 @@ CMAKECONFIG
 DBUILD
 DCATCH
 DCMAKE
-depencencies
+dependencies
 cpack
 ctest
 NSIS

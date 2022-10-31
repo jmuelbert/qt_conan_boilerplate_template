@@ -14,3 +14,11 @@
 *.css
 *.scss
 *.ts
+
+out
+image
+dist
+bin
+.vscode-test
+
+Pipfile.lock

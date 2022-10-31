@@ -14,7 +14,9 @@
 
 name: "Codacy Security Scan"
 
+# yamllint disable
 on:
+  # yamllint enable
   push:
     branches: [main, develop]
     paths:

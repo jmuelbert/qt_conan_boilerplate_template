@@ -1,7 +1,9 @@
 ---
 name: "C/C++ CI"
 
+# yamllint disable
 on:
+  # yamllint enable
   push:
     tags:
       - "*"
@@ -150,6 +152,12 @@ jobs:
           set-env: "true"
           install-deps: "true"
 
+      - uses: hendrikmuhs/ccache-action@v1
+        if: runner.os == 'Linux'
+        with:
+          key: ${{ matrix.os }}-${{ matrix.build_type }}
+          max-size: 50M
+
       - name: (Linux/macOS) restore ccache
         if: matrix.os != 'windows-latest'
         uses: pat-s/always-upload-cache@v3.0.1
@@ -274,6 +282,18 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
+      - name: Configure Conan
+        shell: bash
+        run: |
+          conan config init
+          # if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+          #   conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
+          # fi
+          # conan profile update settings.compiler.cppstd=${{ matrix.config.compiler.std }} default
+          # conan profile update settings.build_type=${{ matrix.build_type }} default
+          conan profile update conf.tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" default
+          conan profile show default
+
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
         with:
@@ -321,6 +341,7 @@ jobs:
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
           # Use latest available XCode
           echo "DEVELOPER_DIR=/Applications/Xcode_12.4.app/Contents/Developer" >> $GITHUB_ENV
+          sudo xcode-select -s "/Applications/Xcode_13.0.app"
 
       - name: "🧊 ⚙️ Install Windows dependencies"
         if: runner.os ==  'Windows'
@@ -497,7 +518,7 @@ jobs:
     container: ${{matrix.container-image}}
 
     steps:
-      - name: "Set packages install commmand for dnf"
+      - name: "Set packages install command for dnf"
         if: startsWith(matrix.container-image, 'fedora') || startsWith(matrix.container-image, 'mageia')
         run: echo 'INSTALL_PACKAGES=dnf -y --setopt=install_weak_deps=FALSE install' >> "$GITHUB_ENV"
 
@@ -548,7 +569,7 @@ jobs:
           libqt5x11extras5-dev qttools5-dev libfmt-dev \
           libkf5widgetsaddons-dev libkf5windowsystem-dev gettext \
           libspdlog-dev libfmt-dev \
-           ${{ matrix.compiler == 'gcc' && 'g++' || 'clang' }}
+          ${{ matrix.compiler == 'gcc' && 'g++' || 'clang' }}
 
       - name: "🧰 Checkout"
         uses: actions/checkout@v3
@@ -589,7 +610,7 @@ jobs:
 
       - name: "Setup Flatpak"
         run: |
-          sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive \ 
+          sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive \
           apt-get --no-install-recommends --assume-yes install \
           flatpak flatpak-builder elfutils
 
@@ -755,7 +776,7 @@ jobs:
           email: bot@gh-pages.com
           build_dir: docs/_build
 
-  # Upload continous build
+  # Upload continuous build
   upload:
     name: "🗂 Create release and upload artifacts"
     needs:

@@ -8,16 +8,15 @@ include(FindPackageHandleStandardArgs)
 set(PROGRAMFILES_x86_ENV "PROGRAMFILES(x86)")
 
 find_program(
-  gcov_EXECUTABLE
-  NAMES gcov
-  PATHS "${GCOV_DIR}"
-        "$ENV{GCOV_DIR}"
-        "$ENV{PROGRAMFILES}/gcov"
-        "$ENV{${PROGRAMFILES_x86_ENV}}/gcov")
+    gcov_EXECUTABLE
+    NAMES gcov
+    PATHS "${GCOV_DIR}" "$ENV{GCOV_DIR}" "$ENV{PROGRAMFILES}/gcov" "$ENV{${PROGRAMFILES_x86_ENV}}/gcov"
+)
 
 find_package_handle_standard_args(
-  gcov
-  FOUND_VAR gcov_FOUND
-  REQUIRED_VARS gcov_EXECUTABLE)
+    gcov
+    FOUND_VAR gcov_FOUND
+    REQUIRED_VARS gcov_EXECUTABLE
+)
 
 mark_as_advanced(gcov_EXECUTABLE)

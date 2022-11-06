@@ -205,11 +205,9 @@ jobs:
           CXX: g++-10
           CC: gcc-10
         run: |
-          mkdir -p ./build
+          mkdir -pv ./build
           cd ./build
-          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
-          cd ..
-          cmake -S . -B ./build -G "${{matrix.generator}}" \
+          cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
             -DENABLE_CONAN:BOOL="TRUE"

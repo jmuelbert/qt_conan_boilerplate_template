@@ -154,7 +154,7 @@ jobs:
         run: |
           mkdir -p ./build
           cd ./build
-          cmake -S . -B ./build -G "${{matrix.generator}}" \
+          cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DOPT_ENABLE_COVERAGE:BOOL='OFF' \
             -DENABLE_CONAN:BOOL="TRUE"

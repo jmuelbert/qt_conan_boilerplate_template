@@ -14,6 +14,7 @@ macro(run_conan)
     endif()
 
     set(ENV{CONAN_REVISIONS_ENABLED} 1)
+    set(settings "")
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
     list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
@@ -52,26 +53,13 @@ macro(run_conan)
             set(LIST_OF_BUILD_TYPES ${CMAKE_CONFIGURATION_TYPES})
         endif()
 
-        is_verbose(_is_verbose)
-        if(NOT ${_is_verbose})
-            set(OUTPUT_QUIET "OUTPUT_QUIET")
-        else()
-            set(OUTPUT_QUIET OFF)
-        endif()
-
         foreach(TYPE ${LIST_OF_BUILD_TYPES})
             message(STATUS "Running Conan for build type '${TYPE}'")
 
-            if("${ProjectOptions_CONAN_PROFILE}" STREQUAL "")
-                # Detects current build settings to pass into conan
-                conan_cmake_autodetect(settings BUILD_TYPE ${TYPE})
-                set(CONAN_SETTINGS SETTINGS ${settings})
-                set(CONAN_ENV ENV "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}")
-            else()
-                # Derive all conan settings from a conan profile
-                set(CONAN_SETTINGS PROFILE ${ProjectOptions_CONAN_PROFILE} SETTINGS "build_type=${TYPE}")
-                # CONAN_ENV should be redundant, since the profile can set CC & CXX
-            endif()
+            # Detects current build settings to pass into conan
+            conan_cmake_autodetect(settings BUILD_TYPE ${TYPE})
+            set(CONAN_SETTINGS SETTINGS ${settings})
+            set(CONAN_ENV ENV "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}")
 
             # PATH_OR_REFERENCE ${CMAKE_SOURCE_DIR} is used to tell conan to process
             # the external "conanfile.py" provided with the project
@@ -83,7 +71,7 @@ macro(run_conan)
                 missing
                 # Pass compile-time configured options into conan
                 OPTIONS
-                ${ProjectOptions_CONAN_OPTIONS}
+                ${CONAN_OPTIONS}
                 # Pass CMake compilers to Conan
                 ${CONAN_ENV}
                 # Pass either autodetected settings or a conan profile

@@ -57,8 +57,9 @@ class QtTestConan(ConanFile):
     ]
 
     no_copy_source = True
-    generators = "cmake_find_package_multi"
-
+    generators = "CMakeDeps"
+    #   "cmake", "cmake_find_package",
+    
     @property
     def _use_libfmt(self):
         compiler = self.settings.compiler
@@ -145,13 +146,13 @@ class QtTestConan(ConanFile):
     def layout(self):
         cmake_layout(self)
 
-        # def generate(self):
-        #     # This generates "conan_toolchain.cmake" in self.generators_folder
-        #     tc = CMakeToolchain(self)
-        #     tc.variables["MYVAR"] = "1"
-        #     tc.variables["ENABLE_BUILD_DOCS"] = self.options.build_docs
-        #     tc.variables["ENABLE_USE_LIBFMT"] = self._use_libfmt
-        #     tc.generate()
+    def generate(self):
+        # This generates "conan_toolchain.cmake" in self.generators_folder
+        # tc = CMakeToolchain(self)
+        # tc.variables["MYVAR"] = "1"
+        # tc.variables["ENABLE_BUILD_DOCS"] = self.options.build_docs
+        # tc.variables["ENABLE_USE_LIBFMT"] = self._use_libfmt
+        # tc.generate()
 
         # This generates "foo-config.cmake" and "bar-config.cmake" in self.generators_folder
         deps = CMakeDeps(self)

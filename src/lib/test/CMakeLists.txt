@@ -78,3 +78,5 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 add_test(NAME testMain COMMAND testMain)
+
+add_folders(lib_test)

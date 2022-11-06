@@ -261,8 +261,10 @@ install(
 )
 
 # Tests
-if(OPTION_BUILD_TESTS)
+if(BUILD_TESTING)
     set(IDE_FOLDER "Tests")
     enable_testing()
     add_subdirectory(test)
 endif()
+
+add_folders(lib)

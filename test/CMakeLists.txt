@@ -44,10 +44,12 @@ add_executable(
     tests
     tests.cpp
 )
+
 target_link_libraries(
     tests
     PRIVATE Catch2::Catch2WithMain
 )
+
 add_test(NAME tests COMMAND tests)
 
 # TODO: Adopt to V3
@@ -72,10 +74,12 @@ add_executable(
     constexpr_tests
     constexpr_tests.cpp
 )
+
 target_link_libraries(
     constexpr_tests
     PRIVATE Catch2::Catch2WithMain
 )
+
 add_test(NAME constexpr_tests COMMAND constexpr_tests)
 
 # catch_discover_tests(
@@ -97,10 +101,12 @@ add_executable(
     relaxed_constexpr_tests
     constexpr_tests.cpp
 )
+
 target_link_libraries(
     relaxed_constexpr_tests
     PRIVATE Catch2::Catch2WithMain
 )
+
 target_compile_definitions(relaxed_constexpr_tests PRIVATE -DCATCH_CONFIG_RUNTIME_STATIC_REQUIRE)
 add_test(NAME relaxed_constexpr_tests COMMAND relaxed_constexpr_tests)
 
@@ -117,3 +123,5 @@ add_test(NAME relaxed_constexpr_tests COMMAND relaxed_constexpr_tests)
 #   "relaxed_constexpr."
 #   OUTPUT_SUFFIX
 #   .xml)
+
+add_folders(Test)

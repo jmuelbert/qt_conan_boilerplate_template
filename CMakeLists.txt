@@ -5,37 +5,10 @@
 #
 #
 
-# ECM_ENABLE_SANITIZER='address;leak;undefined'
-# Default="'address;leak;undefined'"
 #
-#
-# ENABLE=CACHE=[True, False]
-# Default="ON"
-#
-# ENABLE=COVERAGE=[True, False]
-# Default="ON"
-#
-# ENABLE_DOXYGEN=[True, False]
-# Default="ON"
-#
-# ENABLE_CPPCHECK=[True, False]
-# Default="ON"
-#
-# ENABLE_CLANG_TIDY=[True, False]
-# Default"ON"
-#
-# ENABLE_VS_ANALYSIS=[True, False]
-# Default="OFF"
-#
-# INCLUDE_WHAT_YOU_USE=[True, False]
-# Default="ON"
-#
-# ENABLE_PCH=[True, False]
-# Default="ON"
-#
-#
-# OPTION_BUILD_TESTS=[True, False]
+# BUILD_TESTING=[True, False]
 # Default=OFF
+#
 
 cmake_minimum_required(VERSION 3.20..3.24 FATAL_ERROR)
 
@@ -62,22 +35,11 @@ project(
 )
 
 # Project Options
-option(ECM_ENABLE_SANITIZER "ECM_ENABLE_SANITIZERS" "address;leak;undefined")
-option(ENABLE_NATIVE_OPTIMIZATION "NATIVE_OPTIMIZATION" ON)
-option(ENABLE_CACHE "CACHE" ON)
 option(ENABLE_CONAN "Load the depend libs with conan" OFF)
-option(ENABLE_COVERAGE "COVERAGE" ON)
-option(ENABLE_DOXYGEN "DOXYGEN" ON)
-option(ENABLE_CPPCHECK "CPPCHECK" ON)
-option(ENABLE_CLANG_TIDY "CLANG_TIDY" ON)
-option(ENABLE_VS_ANALYSIS "VS_ANALYSIS" OFF)
-option(ENABLE_INCLUDE_WHAT_YOU_USE "INCLUDE_WHAT_YOU_USE" ON)
-option(ENABLE_PCH "PCH" ON)
-option(OPTION_BUILD_TESTS "Build an run tests" OFF)
+option(BUILD_TESTING "Build and run all tests" OFF)
 
 # Include cmake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-
 set(projectPrefix QTTESTWIDGET_)
 
 # Options to enable folders in CMake generated projects for Visual Studio, Xcode, etc
@@ -114,75 +76,19 @@ include_guard()
 set(ProjectOptions_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/cmake)
 
 # include the files to allow calling individual functions (including the files does not run any code.)
-include(Common)
-include(Utilities)
-include(SystemLink)
-include(Cuda)
+include(cmake/project-is-top-level.cmake)
+include(cmake/variables.cmake)
+include(cmake/folders.cmake)
 include(PackageProject)
-include(Optimization)
-include(Cache)
-include(Linker)
 include(CompilerWarnings)
-include(Tests)
-include(Doxygen)
 include(StaticAnalyzers)
-include(MinGW)
-include(DetectCompiler)
-include(VCEnvironment)
+include(FeatureSummary)
 
 include(Conan)
 include(Vcpkg)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
-
-# Activate ECM
-find_package(ECM REQUIRED NO_MODULE)
-list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
-
-common_project_options()
-
-if(ECM_ENABLE_SANITIZER)
-    include(ECMEnableSanitizers)
-endif()
-
-if(ENABLE_CACHE)
-    # enable cache system
-    enable_cache()
-endif()
-
-# if(ENABLE_COVERAGE)
-#     enable_coverage(${PROJECT_NAME})
-# endif()
-
-if(ENABLE_DOXYGEN})
-    # enable doxygen
-    enable_doxygen()
-endif()
-
-# allow for static analysis options
-if(ENABLE_CPPCHECK)
-    enable_cppcheck(CPPCHECK_OPTIONS)
-endif()
-
-if(ENABLE_CLANG_TIDY)
-    enable_clang_tidy()
-endif()
-
-if(ENABLE_VS_ANALYSIS)
-    enable_vs_analysis(VS_ANALYSIS_RULESET)
-endif()
-
-if(ENABLE_INCLUDE_WHAT_YOU_USE)
-    enable_include_what_you_use()
-endif()
-
-# if(ENABLE_PCH)
-#     if(NOT PCH_HEADERS)
-#         set(PCH_HEADERS <vector> <string> <map> <utility>)
-#     endif()
-#     target_precompile_headers(${_options_target} INTERFACE PCH_HEADERS)
-# endif()
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
 
 if(ENABLE_VCPKG)
     run_vcpkg()
@@ -190,7 +96,13 @@ endif()
 
 if(ENABLE_CONAN)
     run_conan()
+    # Call with the CMakeDeps generator
+    include(${CMAKE_BINARY_DIR}/generators/cmakedeps_macros.cmake)
 endif()
+
+# # Activate ECM
+# find_package(ECM REQUIRED NO_MODULE)
+# list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 #
 # Project modules
@@ -210,8 +122,12 @@ add_subdirectory(src)
 # endif()
 
 # Tests
-if(OPTION_BUILD_TESTS)
+if(BUILD_TESTING)
     set(IDE_FOLDER "Tests")
     enable_testing()
     add_subdirectory(test)
 endif()
+
+include(cmake/dev-mode.cmake)
+
+feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)

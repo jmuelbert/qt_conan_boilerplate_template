@@ -7,206 +7,139 @@
     },
     "configurePresets": [
         {
-            "name": "base",
+            "name": "cmake-pedantic",
             "hidden": true,
-            "displayName": "Base Config",
-            "description": "Base build using Ninja generator",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/${presetName}",
+            "warnings": {
+                "dev": true,
+                "deprecated": true,
+                "uninitialized": false,
+                "unusedCli": true,
+                "systemVars": false
+            },
+            "errors": {
+                "dev": true,
+                "deprecated": true
+            }
+        },
+        {
+            "name": "dev-mode",
+            "hidden": true,
+            "inherits": "cmake-pedantic",
+            "cacheVariables": {
+                "DEVELOPER_MODE": "ON"
+            }
+        },
+        {
+            "name": "conan",
+            "hidden": true,
             "cacheVariables": {
                 "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
-                "ENABLE_CONAN": "TRUE",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}"
-            },
-            "environment": {
-                "PATH": "$env{HOME}/ninja/bin:$penv{PATH}"
+                "ENABLE_CONAN": "TRUE"
             }
         },
         {
-            "name": "windows-debug",
-            "displayName": "Debug",
-            "description": "Debug settings fpr windows x64",
-            "inherits": "base",
-            "generator": "Ninja Multi-Config",
-            "architecture": {
-                "value": "x64",
-                "strategy": "external"
-            },
+            "name": "cppcheck",
+            "hidden": true,
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": {
-                    "type": "STRING",
-                    "value": "Debug"
-                },
-                "OPTION_BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": "TRUE"
-                }
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Windows"
+                "CMAKE_CXX_CPPCHECK": "cppcheck;--inline-suppr"
             }
         },
         {
-            "name": "windows-release",
-            "displayName": "Release settings for windows x64",
-            "description": "Sets release build type",
-            "inherits": "x64-debug",
+            "name": "clang-tidy",
+            "hidden": true,
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Windows"
+                "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/"
             }
         },
         {
-            "name": "linux-debug",
-            "displayName": "Debug settings for linux",
-            "description": "Sets GCC for debug",
-            "inherits": "base",
+            "name": "ci-std",
+            "description": "This preset makes sure the project actually builds with at least the specified standard",
+            "hidden": true,
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_BUILD_TYPE": "Debug",
-                "OPTION_BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": "TRUE"
-                }
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Linux"
+                "CMAKE_CXX_EXTENSIONS": "OFF",
+                "CMAKE_CXX_STANDARD": "20",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON"
             }
         },
         {
-            "name": "linux-release",
-            "displayName": "Release settings for linux",
-            "description": "Sets GCC for release",
-            "inherits": "base",
+            "name": "flags-unix",
+            "hidden": true,
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_BUILD_TYPE": "Release"
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Linux"
+                "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wcast-qual -Wformat=2 -Wundef -Werror=float-equal -Wshadow -Wcast-align -Wunused -Wnull-dereference -Wdouble-promotion -Wimplicit-fallthrough -Wextra-semi -Woverloaded-virtual -Wnon-virtual-dtor -Wold-style-cast"
             }
         },
         {
-            "name": "macos-debug",
-            "displayName": "Debug settings for macos",
-            "description": "Sets debug build type",
-            "inherits": "base",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "OPTION_BUILD_TESTS": {
-                    "type": "BOOL",
-                    "value": "TRUE"
-                }
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Darwin"
-            }
-        },
-        {
-            "name": "macos-release",
-            "displayName": "Release settings for macos",
-            "description": "Sets release build type",
-            "inherits": "macos-debug",
+            "name": "ci-unix",
+            "generator": "Unix Makefiles",
+            "hidden": true,
+            "inherits": ["flags-unix", "ci-std"],
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Darwin"
-            }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "default-build-linux",
-            "displayName": "Default for linux",
-            "description": "Vanilla build",
-            "configurePreset": "linux-debug"
-        },
-        {
-            "name": "default-build-windows",
-            "displayName": "Default for windows",
-            "description": "Vanilla build",
-            "configurePreset": "windows-debug"
-        },
-        {
-            "name": "default-build-macos",
-            "displayName": "Default for macos",
-            "description": "Vanilla build",
-            "configurePreset": "macos-debug"
-        },
-        {
-            "name": "verbose-build-linux",
-            "displayName": "Verbose Build for linux",
-            "description": "Verbose build (Passes -v to Ninja",
-            "configurePreset": "linux-debug",
-            "nativeToolOptions": ["-v"]
-        },
-        {
-            "name": "verbose-build-windows",
-            "displayName": "Verbose Build for windows",
-            "description": "Verbose build (Passes -v to Ninja",
-            "configurePreset": "windows-debug",
-            "nativeToolOptions": ["-v"]
-        },
-        {
-            "name": "verbose-build-macos",
-            "displayName": "Verbose Build for macos",
-            "description": "Verbose build (Passes -v to Ninja",
-            "configurePreset": "macos-debug"
-        }
-    ],
-    "testPresets": [
-        {
-            "name": "core-test-linux",
-            "configurePreset": "linux-debug",
-            "description": "Enable output on failure",
-            "output": {
-                "outputOnFailure": true
-            },
-            "execution": {
-                "noTestsAction": "error",
-                "stopOnFailure": true
             }
         },
         {
-            "name": "core-test-windows",
-            "configurePreset": "windows-debug",
-            "description": "Enable output on failure",
-            "output": {
-                "outputOnFailure": true
-            },
-            "execution": {
-                "noTestsAction": "error",
-                "stopOnFailure": true
+            "name": "ci-macos",
+            "generator": "Ninja",
+            "hidden": true,
+            "inherits": ["flags-unix", "ci-std"],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
-            "name": "core-test-macos",
-            "configurePreset": "macos-debug",
-            "description": "Enable output on failure",
-            "output": {
-                "outputOnFailure": true
-            },
-            "execution": {
-                "noTestsAction": "error",
-                "stopOnFailure": true
+            "name": "ci-win64",
+            "inherits": ["flags-windows", "ci-std"],
+            "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
+            "hidden": true
+        },
+        {
+            "name": "coverage-unix",
+            "binaryDir": "${sourceDir}/build/coverage",
+            "inherits": "ci-unix",
+            "hidden": true,
+            "cacheVariables": {
+                "ENABLE_COVERAGE": "ON",
+                "CMAKE_BUILD_TYPE": "Coverage",
+                "CMAKE_CXX_FLAGS_COVERAGE": "-Og -g --coverage -fkeep-inline-functions -fkeep-static-functions",
+                "CMAKE_EXE_LINKER_FLAGS_COVERAGE": "--coverage",
+                "CMAKE_SHARED_LINKER_FLAGS_COVERAGE": "--coverage",
+                "CMAKE_MAP_IMPORTED_CONFIG_COVERAGE": "Coverage;RelWithDebInfo;Release;Debug;"
             }
+        },
+        {
+            "name": "ci-coverage",
+            "inherits": ["coverage-unix", "dev-mode", "conan"],
+            "cacheVariables": {
+                "COVERAGE_HTML_COMMAND": ""
+            }
+        },
+        {
+            "name": "ci-sanitize",
+            "binaryDir": "${sourceDir}/build/sanitize",
+            "inherits": ["ci-unix", "dev-mode", "conan"],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Sanitize",
+                "CMAKE_CXX_FLAGS_SANITIZE": "-O2 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-common",
+                "CMAKE_MAP_IMPORTED_CONFIG_SANITIZE": "Sanitize;RelWithDebInfo;Release;Debug;"
+            }
+        },
+        {
+            "name": "ci-build",
+            "binaryDir": "${sourceDir}/build",
+            "hidden": true
+        },
+        {
+            "name": "ci-macos",
+            "inherits": ["ci-build", "ci-macos", "dev-mode", "conan"]
+        },
+        {
+            "name": "ci-ubuntu",
+            "inherits": ["ci-build", "ci-unix", "clang-tidy", "conan", "cppcheck", "dev-mode"]
+        },
+        {
+            "name": "ci-windows",
+            "inherits": ["ci-build", "ci-win64", "dev-mode", "conan"]
         }
     ]
 }

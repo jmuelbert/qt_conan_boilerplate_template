@@ -10,7 +10,6 @@
 
 namespace cppbase
 {
-
 //! Compute factorial.
 int computeFactorial(const int integerNumber)
 {

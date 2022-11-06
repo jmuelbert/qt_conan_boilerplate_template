@@ -123,12 +123,6 @@ jobs:
         run: |
           sudo apt install -y libclang-dev ninja-build gcovr ccache
 
-      - name: Set up Clang
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: latest
-          platform: x64
-
       - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}"
         if: matrix.language == 'cpp'
         uses: jurplel/install-qt-action@v2
@@ -155,18 +149,15 @@ jobs:
         if: matrix.language == 'cpp'
         shell: bash
         env:
-          CXX: clang++
-          CC: clang
+          CXX: g++-10
+          CC: gcc-10
         run: |
           mkdir -p ./build
           cd ./build
-          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
-          cd ..
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DOPT_ENABLE_COVERAGE:BOOL='OFF' \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
-            -DGIT_SHA:STRING=${{ github.sha }}
+            -DENABLE_CONAN:BOOL="TRUE"
 
       - name: "📦 Build"
         if: matrix.language == 'cpp'

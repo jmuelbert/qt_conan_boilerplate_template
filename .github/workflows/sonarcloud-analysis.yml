@@ -144,12 +144,6 @@ jobs:
         run: |
           sudo apt install -y libclang-dev ninja-build gcovr ccache
 
-      - name: Set up Clang
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: latest
-          platform: x64
-
       - name: "⚙️ Install Qt Version ${{ matrix.qt_version  }}"
         uses: jurplel/install-qt-action@v2
         with:
@@ -208,8 +202,8 @@ jobs:
       - name: "⚙️ 🐧 Configure CMake"
         shell: bash
         env:
-          CXX: clang++
-          CC: clang
+          CXX: g++-10
+          CC: gcc-10
         run: |
           mkdir -p ./build
           cd ./build
@@ -218,8 +212,7 @@ jobs:
           cmake -S . -B ./build -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake" \
-            -DGIT_SHA:STRING=${{ github.sha }}
+            -DENABLE_CONAN:BOOL="TRUE"
 
       - name: "Run build-wrapper"
         run: |

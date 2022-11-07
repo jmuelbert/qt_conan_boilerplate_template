@@ -6,7 +6,7 @@ out/
 *.rej
 *.orig
 *.out
-/.clang-format
+# /.clang-format
 /.idea
 *.user*
 
@@ -29,7 +29,6 @@ graph_info.json
 *~
 _ReSharper*
 *.log
-
 
 # OS Generated Files
 .Trash-*
@@ -121,7 +120,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 # User spesific settings
-CMakeUserPresets.json
+# CMakeUserPresets.json
 CMakeSettings.json
 
 # Kate gitignore

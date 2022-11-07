@@ -208,11 +208,7 @@ jobs:
         shell: bash
         run: |
           mkdir -pv ./build
-          cd ./build
-          cmake -S .. -B . -G "${{matrix.generator}}" \
-            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DENABLE_CONAN:BOOL="TRUE"
+          cmake --prefix ci-ubuntu
 
       - name: "Run build-wrapper"
         run: |

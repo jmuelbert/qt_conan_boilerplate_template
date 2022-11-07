@@ -78,7 +78,7 @@
             }
         },
         {
-            "name": "ci-macos",
+            "name": "ci-osx",
             "generator": "Ninja",
             "hidden": true,
             "inherits": ["flags-unix", "ci-std"],
@@ -131,7 +131,7 @@
         },
         {
             "name": "ci-macos",
-            "inherits": ["ci-build", "ci-macos", "dev-mode", "conan"]
+            "inherits": ["ci-build", "ci-osx", "dev-mode", "conan"]
         },
         {
             "name": "ci-ubuntu",

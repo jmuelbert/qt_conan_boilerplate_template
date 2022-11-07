@@ -358,10 +358,11 @@
         },
         "checkov": {
             "hashes": [
-                "sha256:6591e0303f7470263430392e36cb62f07731200e25e2a902b9231269a2025e0e"
+                "sha256:7642e79b50dc895aafac53923c68e056ce23b8f5c689a9e73e6509a45b24da9a",
+                "sha256:f382caa5ec70f5ba9a7736e85b5228a398a733bdc57a95800c5cd6fb536524e7"
             ],
             "index": "pypi",
-            "version": "==2.2.22"
+            "version": "==2.2.26"
         },
         "click": {
             "hashes": [
@@ -831,11 +832,11 @@
         },
         "platformdirs": {
             "hashes": [
-                "sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788",
-                "sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19"
+                "sha256:0cb405749187a194f444c25c82ef7225232f11564721eabffc6ec70df83b11cb",
+                "sha256:6e52c21afff35cb659c6e52d8b4d61b9bd544557180440538f255d9382c8cbe0"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==2.5.2"
+            "version": "==2.5.3"
         },
         "pluginbase": {
             "hashes": [
@@ -876,6 +877,7 @@
         },
         "prettytable": {
             "hashes": [
+                "sha256:52f682ba4efe29dccb38ff0fe5bac8a23007d0780ff92a8b85af64bc4fc74d72",
                 "sha256:fe391c3b545800028edf5dbb6a5360893feb398367fcc1cf8d7a5b29ce5c59a1"
             ],
             "markers": "python_version >= '3.7'",
@@ -1375,11 +1377,11 @@
         },
         "termcolor": {
             "hashes": [
-                "sha256:6b2cf769e93364a2676e1de56a7c0cff2cf5bd07f37e9cc80b0dd6320ebfe388",
-                "sha256:7e597f9de8e001a3208c4132938597413b9da45382b6f1d150cff8d062b7aaa3"
+                "sha256:91dd04fdf661b89d7169cefd35f609b19ca931eb033687eaa647cef1ff177c49",
+                "sha256:b80df54667ce4f48c03fe35df194f052dc27a541ebbf2544e4d6b47b5d6949c4"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==2.0.1"
+            "version": "==2.1.0"
         },
         "toml": {
             "hashes": [

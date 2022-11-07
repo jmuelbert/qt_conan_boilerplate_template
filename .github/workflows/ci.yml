@@ -699,6 +699,9 @@ jobs:
           output_file: "images/diagram.svg"
           excluded_paths: "dist,node_modules"
 
+      - name: Metrics embed
+        uses: lowlighter/metrics@v3.28
+
   releaseNotes:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest

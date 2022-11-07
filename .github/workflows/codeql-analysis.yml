@@ -119,9 +119,14 @@ jobs:
           generator: ${{ matrix.generator }}
 
       - name: "🐧 ⚙️ Install Linux dependencies"
-        if: matrix.language == 'cpp'
         run: |
           sudo apt install -y libclang-dev ninja-build gcovr ccache
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 \
+                         --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
+                         --slave /usr/bin/gcov gcov /usr/bin/gcov-11 \
+                         --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 \
+                         --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 && \
+                          sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-11 110
 
       - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}"
         if: matrix.language == 'cpp'
@@ -148,9 +153,6 @@ jobs:
       - name: "⚙️ 🐧 Configure CMake"
         if: matrix.language == 'cpp'
         shell: bash
-        env:
-          CXX: g++-10
-          CC: gcc-10
         run: |
           mkdir -p ./build
           cd ./build

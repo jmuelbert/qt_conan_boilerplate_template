@@ -155,7 +155,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p ./build
-          cmake --prefix ci-ubuntu
+          cmake --preset ci-ubuntu
 
       - name: "📦 Build"
         if: matrix.language == 'cpp'

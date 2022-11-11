@@ -163,7 +163,7 @@ jobs:
             -DENABLE_CONAN:BOOL="ON" \
             -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
             -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "📦 Build"
         if: matrix.language == 'cpp'

@@ -8,9 +8,11 @@ name: codespell
 on:
   # yamllint enable  push:
   push:
-    branches: [main, development, release-*]
-    tags: [*]
+    branches: [main, develop, release-*]
+    tags:
+      - "*"
   pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:

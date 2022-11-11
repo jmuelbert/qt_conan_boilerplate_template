@@ -193,6 +193,12 @@ jobs:
             gcovr \
             ccache \
             cppcheck
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 \
+            --slave /usr/bin/g++ g++ /usr/bin/g++-10 \
+            --slave /usr/bin/gcov gcov /usr/bin/gcov-10 \
+            --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 \
+            --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 && \
+          sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-10 100
 
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
 
@@ -237,7 +243,7 @@ jobs:
         uses: ammaraskar/gcc-problem-matcher@master
 
       - name: "Create Working directory"
-        run: mkdir -p build
+        run: mkdir -pv build
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
@@ -245,14 +251,14 @@ jobs:
         working-directory: build
         shell: bash
         run: |
-          mkdir -p usr
+          mkdir -pv usr
           conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
             -DOPTION_BUILD_TESTS:BOOL="TRUE" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./build/generators/conan_toolchain.cmake"
+            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "🚧 Build"
         working-directory: build

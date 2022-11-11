@@ -174,8 +174,8 @@ jobs:
             -DBUILD_SHARED_LIBS:BOOL="TRUE" \
             -DOPTION_BUILD_TESTS:BOOL="TRUE" \
             -DENABLE_CONAN:BOOL="ON" \
-            -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
-            -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
+            -DOPTION_BUILD_DOCS:BOOL="TRUE" \
+            -DOPTION_ENABLE_COVERAGE:BOOL="FALSE" \
             -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "📦 Build"

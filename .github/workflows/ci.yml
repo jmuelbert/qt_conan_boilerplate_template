@@ -129,6 +129,8 @@ jobs:
 
   tests:
     runs-on: ${{ matrix.os }}
+    env:
+      CXX: g++-10
     strategy:
       fail-fast: false
 

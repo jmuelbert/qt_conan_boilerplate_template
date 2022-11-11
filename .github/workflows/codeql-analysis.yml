@@ -161,6 +161,13 @@ jobs:
         working-directory: build
         shell: bash
         run: |
+          conan install ../conanfile.py \
+            -pr:b=default \
+            -pr:h=default \
+            -b missing \
+            -s build_type="${{matrix.build_type}} \
+            -s compiler.cppstd=17 \
+            -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \

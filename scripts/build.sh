@@ -43,7 +43,7 @@ GENERATOR="Ninja"
 APPIMAGE_DST_PATH="${TARGET_NAME}.AppDir"
 TARGET_NAME=qtwidgettest
 cd ./"${BUILD_DIR}" || exit
-conan install ../conanfile.py -pr:b=default -pr:h=default -b missing -s build_type="${BUILD_TYPE}" -s compiler.cppstd=20 -o QtTestConan:build_all=True
+conan install ../conanfile.py -pr:b=default -pr:h=default -b missing -s build_type="${BUILD_TYPE}" -s compiler.cppstd=17 -o QtTestConan:build_all=True
 # conan create ../conanfile.py -pr:b=default -pr:h=default -o QtTestConan:build_docs=True -o QtTestConan:build_tests=True -o QtTestConan:build_all=True
 cd ..
 cmake -S . -B "${BUILD_DIR}" -G "$GENERATOR" \

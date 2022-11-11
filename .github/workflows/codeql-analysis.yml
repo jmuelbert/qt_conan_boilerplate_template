@@ -155,7 +155,16 @@ jobs:
         shell: bash
         run: |
           mkdir -p ./build
-          cmake --preset ci-ubuntu
+          cmake -S . -B build -G "$GENERATOR" \
+            -DCMAKE_BUILD_TYPE:STRING="${BUILD_TYPE}" \
+            -DCMAKE_INSTALL_PREFIX:PATH="build/usr" \
+            -DBUILD_SHARED_LIBS:BOOL="${SHARED_LIBS}" \
+            -DOPTION_BUILD_TESTS:BOOL="${TESTING}" \
+            -DBUILD_ALL:BOOL="ON" \
+            -DENABLE_CONAN:BOOL="ON" \
+            -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
+            -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
+            -DCMAKE_TOOLCHAIN_FILE:PATH="${BUILD_DIR}/generators/conan_toolchain.cmake"
 
       - name: "📦 Build"
         if: matrix.language == 'cpp'

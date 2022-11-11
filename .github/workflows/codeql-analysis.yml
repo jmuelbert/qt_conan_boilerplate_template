@@ -155,7 +155,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p ./build
-          cmake -S . -B build -G "$GENERATOR" \
+          cmake -S . -B build -G "Ninja" \
             -DCMAKE_BUILD_TYPE:STRING="${BUILD_TYPE}" \
             -DCMAKE_INSTALL_PREFIX:PATH="build/usr" \
             -DBUILD_SHARED_LIBS:BOOL="${SHARED_LIBS}" \

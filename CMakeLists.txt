@@ -70,6 +70,10 @@ define_property(
        "
 )
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 include_guard()
 
 # only usable here
@@ -96,8 +100,6 @@ endif()
 
 if(ENABLE_CONAN)
     run_conan()
-    # Call with the CMakeDeps generator
-    include(${CMAKE_BINARY_DIR}/generators/cmakedeps_macros.cmake)
 endif()
 
 # # Activate ECM

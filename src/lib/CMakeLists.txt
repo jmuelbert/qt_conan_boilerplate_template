@@ -69,7 +69,13 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 #
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_standard_project_setup()
+    if(${QT_VERSION_MINOR} GREATER_EQUAL 3)
+        qt_standard_project_setup()
+    else()
+        set(CMAKE_AUTOMOC ON)
+        set(CMAKE_AUTOUIC ON)
+        include(GNUInstallDirs)
+    endif()
     qt_add_library(${PROJECT_NAME} "" MANUAL_FINALIZATION)
     # Define PROJECT_NAME properties for Android with Qt 6 as:
     #    set_property(PROJECT_NAME ${PROJECT_NAME} APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

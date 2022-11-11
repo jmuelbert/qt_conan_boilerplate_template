@@ -61,6 +61,7 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  PYTHON_VERSION: "3.10"
   QT_VERSION: "6.3.1"
   QT_DIR: ${{ github.workspace }}
   QT_ARCH: "gcc_64"
@@ -68,6 +69,63 @@ env:
   QT_TARGET: "desktop"
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with: { python-version: "${{ env.PYTHON_VERSION }}" }
+
+      - name: Install codespell
+        run: pip3 install codespell
+
+      - name: Lint
+        run: cmake -D FORMAT_COMMAND=clang-format-12 -p cmake/lint.cmake
+
+      - name: Spell Check
+        if: allways()
+        run: cmake -P cmake/spell.cmake
+
+  coverage:
+    needs: [lint]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/chechout@v3
+
+      - name: Install lcov
+        run: sudo apt-get update --q
+          && sudo apt-get install lcov -q -y
+
+      - name: Install Python
+        run: actions/setup-python@v4
+        with: { python-version: "${{ env.PYTHON_VERSION }}" }
+
+      - name: Install dependencies
+        run: pip3 install "conan<2"
+          && conan profile new default --detect
+          && conan profile update settings.compiler.libcxx=libstdc++11 default
+
+      - name: Configure
+        run: cmake --preset=ci-coverage
+
+      - name: Build
+        run: cmake --build build/coverage -j 2
+
+      - name: Test
+        working-directory: build/coverage
+        run: ctest --output-on-failure -j 2
+
+      - name: Process coverage info
+        run: cmake --build build/coverage -t coverage
+
+      - name: Submit to codecov.io
+        uses: codecov/codecov-actions@v3
+        with:
+          file: build/coverage/coverage.info
   tests:
     runs-on: ${{ matrix.os }}
     strategy:

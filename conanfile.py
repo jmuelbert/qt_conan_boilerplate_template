@@ -57,9 +57,9 @@ class QtTestConan(ConanFile):
     ]
 
     no_copy_source = True
-    generators = "CMakeDeps"
+    generators = "CMakeDeps", "CMakeToolchain"
     #   "cmake", "cmake_find_package",
-    
+
     @property
     def _use_libfmt(self):
         compiler = self.settings.compiler
@@ -98,23 +98,23 @@ class QtTestConan(ConanFile):
         self.options["qt"].qttranslations = True
 
     def requirements(self):
-        self.requires("spdlog/1.10.0")
+        self.requires("spdlog/1.11.0")
         self.requires("extra-cmake-modules/5.93.0")
 
         if self._use_libfmt:
-            self.requires("fmt/8.1.1")
+            self.requires("fmt/9.1.0")
 
         qtDir = os.environ.get("Qt6_Dir")
         if qtDir == 0:
-            self.requires("qt/6.3.0")
+            self.requires("qt/6.3.1")
 
     def build_requirements(self):
         if self.options.build_tests:
             self.test_requires("gtest/cci.20210126")
-            self.test_requires("doctest/2.4.8")
+            self.test_requires("doctest/2.4.9")
             self.test_requires("catch2/3.1.0")
-        if self.options.build_docs:
-            self.tool_requires("doxygen/1.9.4")
+        # if self.options.build_docs:
+        #    self.tool_requires("doxygen/1.9.4")
 
     # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
     def configure(self):
@@ -141,18 +141,18 @@ class QtTestConan(ConanFile):
                 raise ConanInvalidConfiguration("project requires at least MSVC 19.28")
         else:
             raise ConanInvalidConfiguration("Unsupported compiler")
-        check_min_cppstd(self, 20)
+        check_min_cppstd(self,17)
 
     def layout(self):
         cmake_layout(self)
 
     def generate(self):
         # This generates "conan_toolchain.cmake" in self.generators_folder
-        # tc = CMakeToolchain(self)
-        # tc.variables["MYVAR"] = "1"
-        # tc.variables["ENABLE_BUILD_DOCS"] = self.options.build_docs
-        # tc.variables["ENABLE_USE_LIBFMT"] = self._use_libfmt
-        # tc.generate()
+        tc = CMakeToolchain(self)
+        tc.variables["MYVAR"] = "1"
+        tc.variables["ENABLE_BUILD_DOCS"] = self.options.build_docs
+        tc.variables["ENABLE_USE_LIBFMT"] = self._use_libfmt
+        tc.generate()
 
         # This generates "foo-config.cmake" and "bar-config.cmake" in self.generators_folder
         deps = CMakeDeps(self)

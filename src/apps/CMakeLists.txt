@@ -37,8 +37,6 @@ option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OF
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-include(GNUInstallDirs)
-
 #Generate version - header
 configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}-version.h @ONLY)
 
@@ -56,10 +54,6 @@ set(SOURCES ${SOURCE_PATH}/main.cpp ${SOURCE_PATH}/mainwindow.cpp ${SOURCE_PATH}
 set(TS_FILES translations/QtWidgetTest_de_DE.ts)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
@@ -80,7 +74,13 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 #
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_standard_project_setup()
+    if(${QT_VERSION_MINOR} GREATER_EQUAL 3)
+        qt_standard_project_setup()
+    else()
+        set(CMAKE_AUTOMOC ON)
+        set(CMAKE_AUTOUIC ON)
+        include(GNUInstallDirs)
+    endif()
     qt_add_executable(
         ${PROJECT_NAME}
         WIN32

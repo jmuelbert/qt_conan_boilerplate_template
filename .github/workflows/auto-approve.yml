@@ -4,7 +4,7 @@ name: Auto approve
 # yamllint disable
 on:
   # yamllint enable  pull_request:
-  push:
+  pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:

@@ -7,9 +7,9 @@ name: codespell
 # yamllint disable
 on:
   # yamllint enable  push:
-
-  branches: [master, development, release-*]
-  tags: [Mudlet-*]
+  push:
+    branches: [main, development, release-*]
+    tags: [*]
   pull_request:
   workflow_dispatch:
 

@@ -450,13 +450,18 @@ jobs:
         working-directory: build
         shell: pwsh
         run: |
-          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}"  -g CMakeToolchain
+
           cmake  `
           -S .. -B  . `
           -G "Visual Studio 16 2019" -A "x64" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
+          -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" `
+          -DBUILD_SHARED_LIBS:BOOL="TRUE" `
+          -DOPTION_BUILD_TESTS:BOOL="TRUE" `
+          -DENABLE_CONAN:BOOL="ON" `
+          -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
+          -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" `
           -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake" `
-          -DCMAKE_INSTALL_PREFIX:PATH=${{github.workspace}}/program
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results.
@@ -465,22 +470,29 @@ jobs:
         working-directory: build
         shell: bash
         run: |
-          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
           cmake -S .. -B . -G "${{matrix.generator}}" \
-            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
+           -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
+           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
+           -DBUILD_SHARED_LIBS:BOOL="TRUE" \
+           -DOPTION_BUILD_TESTS:BOOL="TRUE" \
+           -DENABLE_CONAN:BOOL="ON" \
+           -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
+           -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
+           -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "⚙️ 🍎 Configure CMake"
         working-directory: build
         shell: bash
         if: runner.os ==  'macOS'
         run: |
-          conan install ../conanfile.py -b missing -pr:b default -s build_type="${{ matrix.build_type }}" -g CMakeToolchain
-          cmake -S .. -B . -G "${{matrix.generator}}" \
-            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
+          cmake -S .. -B  -G "${{matrix.generator}}" \
+           -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
+           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
+           -DBUILD_SHARED_LIBS:BOOL="TRUE" \
+           -DOPTION_BUILD_TESTS:BOOL="TRUE" \
+           -DENABLE_CONAN:BOOL="ON" \
+           -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
+           -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build

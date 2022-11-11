@@ -16,7 +16,7 @@ from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
 
-required_conan_version = ">=1.50.0"
+required_conan_version = ">=1.53.0"
 
 
 class QtTestConan(ConanFile):

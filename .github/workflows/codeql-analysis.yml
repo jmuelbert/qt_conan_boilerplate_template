@@ -52,7 +52,6 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   CLANG_TIDY_VERSION: "13.0.0"
   CXX: g++-10
-  
 
 jobs:
   analyze:
@@ -169,6 +168,7 @@ jobs:
             -b missing \
             -s build_type="${{matrix.build_type}}" \
             -s compiler.cppstd=17 \
+            -s:b compiler=gcc-10 \
             -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \

@@ -256,7 +256,7 @@ jobs:
             -pr:b=default \
             -pr:h=default \
             -b missing \
-            -s build_type="${{matrix.build_type}} \
+            -s build_type="${{matrix.build_type}}" \
             -s compiler.cppstd=17 \
             -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \

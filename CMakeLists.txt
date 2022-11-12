@@ -34,8 +34,7 @@ project(
     LANGUAGES C CXX
 )
 
-# Project Options
-option(ENABLE_CONAN "Load the depend libs with conan" OFF)
+# Project Option
 option(BUILD_TESTING "Build and run all tests" OFF)
 
 # Include cmake modules
@@ -98,9 +97,7 @@ if(ENABLE_VCPKG)
     run_vcpkg()
 endif()
 
-if(ENABLE_CONAN)
-    run_conan()
-endif()
+run_conan()
 
 # # Activate ECM
 # find_package(ECM REQUIRED NO_MODULE)

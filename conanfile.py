@@ -14,11 +14,10 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
-from conan.tools.layout import basic_layout
 from conan.tools.build import check_min_cppstd
 from conan.tools.scm import Version
 
-required_conan_version = ">=1.52.0"
+required_conan_version = ">=1.50.0"
 
 
 class QtTestConan(ConanFile):
@@ -63,6 +62,15 @@ class QtTestConan(ConanFile):
     generators = "CMakeDeps", "CMakeToolchain"
     #   "cmake", "cmake_find_package",
 
+
+    @property
+    def _build_all(self):
+        return bool(self.conf["user.build:all"])
+
+    @property
+    def _skip_docs(self):
+        return bool(self.conf["user.build:skip_docs"])
+
     @property
     def _use_libfmt(self):
         compiler = self.settings.compiler
@@ -87,7 +95,7 @@ class QtTestConan(ConanFile):
             return int(f"{compiler.version}0")
 
     def set_version(self):
-        content = load(self, os.path.join(self.recipe_folder, "CMakeLists.txt"))
+        content = load(self, os.path.join(self.recipe_folder, "src/apps//CMakeLists.txt"))
         version = re.search(
             r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content
         ).group(1)
@@ -112,12 +120,12 @@ class QtTestConan(ConanFile):
             self.requires("qt/6.3.1")
 
     def build_requirements(self):
-        if self.options.build_tests:
+        if self._build_all:
             self.test_requires("gtest/cci.20210126")
             self.test_requires("doctest/2.4.9")
             self.test_requires("catch2/3.1.0")
-        # if self.options.build_docs:
-        #    self.tool_requires("doxygen/1.9.4")
+        if self.options.build_docs:
+           self.tool_requires("doxygen/1.9.4")
 
     # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
     def configure(self):
@@ -153,7 +161,7 @@ class QtTestConan(ConanFile):
         # This generates "conan_toolchain.cmake" in self.generators_folder
         tc = CMakeToolchain(self)
         tc.variables["MYVAR"] = "1"
-        tc.variables["ENABLE_BUILD_DOCS"] = self.options.build_docs
+        tc.variables["ENABLE_BUILD_DOCS"] = self._build_all and not self._skip_docs
         tc.variables["ENABLE_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
 
@@ -163,12 +171,9 @@ class QtTestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        if self.settings.build_type == "Debug":
-            self.options.tests = true
-
-        # cmake.configure(build_script_folder=None if self.options.build_tests else "src")
+        cmake.configure(build_script_folder=None if self._build_all else "src")
         cmake.build()
-        if self.options.build_tests:
+        if self._build_all:
             cmake.test()
 
     def package_id(self):
@@ -186,7 +191,9 @@ class QtTestConan(ConanFile):
         rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
 
     def package_info(self):
-        # compiler = self.settings.compiler
+        compiler = self.settings.compiler
+
+
         self.cpp_info.names["generator_name"] = "<PKG_NAME>"
         self.cpp_info.includedirs = ["include"]  # Ordered list of include paths
         self.cpp_info.libs = []  # The libs to link against

@@ -1,31 +1,4 @@
-#! /bin/sh
-
-# Style
-osType="$(uname -s)"
-
-case "$osType" in
-"Darwin")
-  {
-    echo "Running on Mac OSX."
-    CURRENT_OS="OSX"
-    BUILD_DIR=build
-  }
-  ;;
-"Linux")
-  {
-    BUILD_DIR=build
-  }
-  ;;
-*)
-  {
-    echo "Unsupported OS, exiting"
-    exit
-  }
-  ;;
-esac
-
-rm -rf "${BUILD_DIR}"
-mkdir -pv "${BUILD_DIR}" || exit
+#! /bin/bash
 
 BUILD_TYPE="Debug"
 GENERATOR="Ninja"
@@ -42,11 +15,40 @@ GENERATOR="Ninja"
 # TESTING=ON
 APPIMAGE_DST_PATH="${TARGET_NAME}.AppDir"
 TARGET_NAME=qtwidgettest
-cd ./"${BUILD_DIR}" || exit
-conan install ../conanfile.py -pr:b=default -pr:h=default -b missing -s build_type="${BUILD_TYPE}" -s compiler.cppstd=17 -o QtTestConan:build_all=True
-# conan create ../conanfile.py -pr:b=default -pr:h=default -o QtTestConan:build_docs=True -o QtTestConan:build_tests=True -o QtTestConan:build_all=True
-cd ..
-cmake -S . -B "${BUILD_DIR}" -G "$GENERATOR" \
+
+# Function to test exit status of a command.
+# It exits if the command failed.
+function testExitStatus() {
+  if [ $1 -ne 0 ]; then
+    echo "$2 failed"
+    exit 1
+  else
+    echo "$2 successed"
+  fi
+}
+
+# Create build directory
+BUILD_DIR=build
+mkdir -pv "${BUILD_DIR}" || exit
+testExitStatus $? "mkdir"
+
+# Update path into build directory
+cd build
+testExitStatus $? "cd"
+conan user
+conan profile new default --detect --force
+conan install ../conanfile.py \
+  --build=missing \
+  -c tools.system.package_manager:mode=install \
+  -c tools.system.package_manager:sudo=True \
+  -pr:b=default \
+  -pr:h=default \
+  -s build_type="${BUILD_TYPE}" \
+  -s compiler.cppstd=17 \
+  -o QtTestConan:build_all=True
+
+# Configure cmake
+cmake -S .. -B . -G "$GENERATOR" \
   -DCMAKE_BUILD_TYPE:STRING="${BUILD_TYPE}" \
   -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
   -DBUILD_SHARED_LIBS:BOOL="${SHARED_LIBS}" \
@@ -56,12 +58,8 @@ cmake -S . -B "${BUILD_DIR}" -G "$GENERATOR" \
   -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
   -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
   -DCMAKE_TOOLCHAIN_FILE:PATH="${BUILD_DIR}/generators/conan_toolchain.cmake"
+testExitStatus $? "cmake config"
 
-cmake --build ./"${BUILD_DIR}" --config "${BUILD_TYPE}" --target install
-cmake --build ./"${BUILD_DIR}" --config "${BUILD_TYPE}" --target pack
-
-ctest -VV -C "${BUILD_TYPE}"
-
-# cpack -C ${BUILD_TYPE} -G TBZ2
-# cpack -C ${BUILD_TYPE} -G DragNDrop
-# cpack -C ${BUILD_TYPE} -G IFW
+# Build using cmake (with install)
+cmake --build . --config "${BUILD_TYPE}" --target install
+testExitStatus $? "cmake build"

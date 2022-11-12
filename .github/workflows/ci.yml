@@ -168,7 +168,7 @@ jobs:
 
       - name: "⚙️ Install Python"
         id: python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
 
       - name: "⚙️ Install Python dependencies"
         shell: bash
@@ -178,6 +178,12 @@ jobs:
           if [ -f ./.github/workflows/requirements.txt ]; then
             pip install -r ./.github/workflows/requirements.txt;
           fi
+          echo "Setup conan"
+          conan user
+          conan profile new default --detect
+          conan profile update settings.compiler.cppstd=17 default
+          conan profile update settings.compiler.version=10 default
+          conan profile update settings.compiler.gcc default
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -195,13 +201,6 @@ jobs:
             gcovr \
             ccache \
             cppcheck
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 \
-            --slave /usr/bin/g++ g++ /usr/bin/g++-10 \
-            --slave /usr/bin/gcov gcov /usr/bin/gcov-10 \
-            --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 \
-            --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 && \
-          sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-10 100
-
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
@@ -255,12 +254,12 @@ jobs:
         run: |
           mkdir -pv usr
           conan install ../conanfile.py \
+            --build=missing \
+            -c tools.system.package_manager:mode=install \
+            -c tools.system.package_manager:sudo=True \
             -pr:b=default \
             -pr:h=default \
-            -b missing \
             -s build_type="${{matrix.build_type}}" \
-            -s compiler=gcc \
-            -s compiler.version=10 \
             -s compiler.cppstd=17 \
             -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \

@@ -211,19 +211,19 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:2ee2fe24b71e83e13fba673f2abfa25f066b47477be01b6a0f4d1fedc157995c",
-                "sha256:a3a923d7086fee6df9cbd019dddbf6fd922cc0fd0fa898c6ef47b1e6d0aab80c"
+                "sha256:b39303fdda9b5d77a152e3ec9f264ae318ccdaa853eaf694626dc335464ded98",
+                "sha256:c02fc93a926944b4b426a170d2dae274b4c8c09ec5259450b94269a8ce990dd7"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.26.7"
+            "version": "==1.26.8"
         },
         "botocore": {
             "hashes": [
-                "sha256:32b2bfce1d6340f2af5c113358cc307839b1758991e4ee2bab150137fb30202c",
-                "sha256:de553225b203dd4f1c991b9543f3232b08adb3da873ad05996f81928838ec813"
+                "sha256:48cf33d7c513320711321c3b303b0c9810b23e15fa03424f7323883e4ce6cef8",
+                "sha256:9c6adcf4e080be63b92f50d01e176ef2d1d2a3da7d8387a964abb9eb65fc8aad"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==1.29.7"
+            "version": "==1.29.8"
         },
         "bottle": {
             "hashes": [
@@ -358,11 +358,11 @@
         },
         "checkov": {
             "hashes": [
-                "sha256:4b557b6ab0324deae79cf7e111ae8ee602c59a69bc522d8b62ab374e17550457",
-                "sha256:ebde15720e5630733c7f08020a07ca580adaec50f05d357fb38011bc6c57c23d"
+                "sha256:c6f4b244cd05d5a7945299c1f30b125a424d71e9106478782a77d7f3c1248a3d",
+                "sha256:ef09e52d504a716a7a4b5b00ab2a66c6ff6678f25f65d9ddc89fafd305597f5e"
             ],
             "index": "pypi",
-            "version": "==2.2.43"
+            "version": "==2.2.44"
         },
         "click": {
             "hashes": [
@@ -634,7 +634,7 @@
                 "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852",
                 "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"
             ],
-            "markers": "python_version >= '3.7'",
+            "markers": "python_version >= '3'",
             "version": "==3.1.2"
         },
         "jmespath": {

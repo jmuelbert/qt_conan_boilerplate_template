@@ -14,15 +14,18 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
+from conan.tools.layout import basic_layout
+from conan.tools.build import check_min_cppstd
 from conan.tools.scm import Version
 
-required_conan_version = ">=1.53.0"
+required_conan_version = ">=1.52.0"
 
 
 class QtTestConan(ConanFile):
     name = "qt_test"
 
     # Optional metadata
+    homepage = "https://github.com/jmuelbert/qt-conan_boilerplate_template"
     license = "EUPL-1.2"
     author = "Jürgen Mülbert"
     url = "https://github.com/jmuelbert/qt-conan_boilerplate_template"
@@ -163,7 +166,7 @@ class QtTestConan(ConanFile):
         if self.settings.build_type == "Debug":
             self.options.tests = true
 
-        cmake.configure(build_script_folder=None if self.options.build_tests else "src")
+        # cmake.configure(build_script_folder=None if self.options.build_tests else "src")
         cmake.build()
         if self.options.build_tests:
             cmake.test()

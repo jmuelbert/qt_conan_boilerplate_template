@@ -264,7 +264,6 @@ jobs:
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
             -DOPTION_BUILD_TESTS:BOOL="TRUE" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "🚧 Build"
         working-directory: build

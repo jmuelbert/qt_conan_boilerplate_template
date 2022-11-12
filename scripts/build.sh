@@ -37,15 +37,6 @@ cd build
 testExitStatus $? "cd"
 conan user
 conan profile new default --detect --force
-conan install ../conanfile.py \
-  --build=missing \
-  -c tools.system.package_manager:mode=install \
-  -c tools.system.package_manager:sudo=True \
-  -pr:b=default \
-  -pr:h=default \
-  -s build_type="${BUILD_TYPE}" \
-  -s compiler.cppstd=17 \
-  -o QtTestConan:build_all=True
 
 # Configure cmake
 cmake -S .. -B . -G "$GENERATOR" \
@@ -53,11 +44,9 @@ cmake -S .. -B . -G "$GENERATOR" \
   -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
   -DBUILD_SHARED_LIBS:BOOL="${SHARED_LIBS}" \
   -DOPTION_BUILD_TESTS:BOOL="${TESTING}" \
-  -DBUILD_ALL:BOOL="ON" \
-  -DENABLE_CONAN:BOOL="ON" \
   -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
-  -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
-  -DCMAKE_TOOLCHAIN_FILE:PATH="${BUILD_DIR}/generators/conan_toolchain.cmake"
+  -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}"
+
 testExitStatus $? "cmake config"
 
 # Build using cmake (with install)

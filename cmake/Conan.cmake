@@ -13,8 +13,20 @@ macro(run_conan)
         )
     endif()
 
+    if(BUILD_TESTING OR BUILD_FUZZY_TESTS)
+        set(test_option "-c user.build:all=True")
+    endif()
+
     set(ENV{CONAN_REVISIONS_ENABLED} 1)
-    set(settings "")
+    set(options
+        "-c tools.system.package_manager:mode=install
+        -c tools.system.package_manager:sudo=True
+        -pr:b=default
+        -pr:h=default
+        -s compiler.cppstd=${CMAKE_CXX_STANDARD} "
+    )
+    string(CONCAT USER_SETTINGS "${test_option}" "${options}")
+    message("Settings=${CONAN_OPTIONS}")
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
     list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
@@ -39,7 +51,7 @@ macro(run_conan)
         else()
             message(
                 FATAL_ERROR
-                    "Could not set up conan because \"${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake\" does not exist"
+                    "Could not set up conan  because \"${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake\" does not exist"
             )
         endif()
         conan_basic_setup()
@@ -49,7 +61,7 @@ macro(run_conan)
             message(STATUS "Single configuration build!")
             set(LIST_OF_BUILD_TYPES ${CMAKE_BUILD_TYPE})
         else()
-            message(STATUS "Multi-configuration build: '${CMAKE_CONFIGURATION_TYPES}'!")
+            message(STATUS "Multi-configuration  build: '${CMAKE_CONFIGURATION_TYPES}'!")
             set(LIST_OF_BUILD_TYPES ${CMAKE_CONFIGURATION_TYPES})
         endif()
 
@@ -76,9 +88,10 @@ macro(run_conan)
                 ${CONAN_ENV}
                 # Pass either autodetected settings or a conan profile
                 ${CONAN_SETTINGS}
+                # User settings
                 ${OUTPUT_QUIET}
             )
         endforeach()
     endif()
-
+    set("generators/conan_toolchain.cmake")
 endmacro()

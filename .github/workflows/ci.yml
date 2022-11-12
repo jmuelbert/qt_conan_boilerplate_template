@@ -181,9 +181,6 @@ jobs:
           echo "Setup conan"
           conan user
           conan profile new default --detect
-          conan profile update settings.compiler.cppstd=17 default
-          conan profile update settings.compiler.version=10 default
-          conan profile update settings.compiler.gcc default
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -253,15 +250,15 @@ jobs:
         shell: bash
         run: |
           mkdir -pv usr
-          conan install ../conanfile.py \
-            --build=missing \
-            -c tools.system.package_manager:mode=install \
-            -c tools.system.package_manager:sudo=True \
-            -pr:b=default \
-            -pr:h=default \
-            -s build_type="${{matrix.build_type}}" \
-            -s compiler.cppstd=17 \
-            -o QtTestConan:build_all=True
+          # conan install ../conanfile.py \
+          #   --build=missing \
+          #   -c tools.system.package_manager:mode=install \
+          #   -c tools.system.package_manager:sudo=True \
+          #   -pr:b=default \
+          #   -pr:h=default \
+          #   -s build_type="${{matrix.build_type}}" \
+          #   -s compiler.cppstd=17 \
+          #   -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \

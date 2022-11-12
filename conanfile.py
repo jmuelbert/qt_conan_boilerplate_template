@@ -68,8 +68,8 @@ class QtTestConan(ConanFile):
         return bool(self.conf["user.build:all"])
 
     @property
-    def _skip_docs(self):
-        return bool(self.conf["user.build:skip_docs"])
+    def _build_tests(self):
+        return bool(self.conf["user.build:tests"])
 
     @property
     def _use_libfmt(self):
@@ -113,19 +113,19 @@ class QtTestConan(ConanFile):
         self.requires("extra-cmake-modules/5.93.0")
 
         if self._use_libfmt:
-            self.requires("fmt/8.1.1")
+            self.requires("fmt/9.1.0")
 
         qtDir = os.environ.get("Qt6_Dir")
         if qtDir == 0:
             self.requires("qt/6.3.1")
 
     def build_requirements(self):
-        if self._build_all:
+        if self._build_tests:
             self.test_requires("gtest/cci.20210126")
             self.test_requires("doctest/2.4.9")
             self.test_requires("catch2/3.1.0")
-        if self.options.build_docs:
-           self.tool_requires("doxygen/1.9.4")
+        # if self.options.build_docs:
+        #    self.tool_requires("doxygen/1.9.4")
 
     # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
     def configure(self):

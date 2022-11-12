@@ -222,8 +222,6 @@ jobs:
             -b missing \
             -s build_type="${{matrix.build_type}}" \
             -s compiler.cppstd=17 \
-            -s compiler=gcc \
-            -s compiler.version=10 \
             -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \

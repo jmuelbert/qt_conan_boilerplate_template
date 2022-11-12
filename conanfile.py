@@ -121,7 +121,7 @@ class QtTestConan(ConanFile):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         if compiler == "gcc":
-            if version < 10:
+            if version < 9:
                 raise ConanInvalidConfiguration("project requires at least g++-10")
         elif compiler == "clang":
             if version < 12:

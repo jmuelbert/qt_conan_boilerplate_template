@@ -102,7 +102,7 @@ class QtTestConan(ConanFile):
         self.requires("extra-cmake-modules/5.93.0")
 
         if self._use_libfmt:
-            self.requires("fmt/9.1.0")
+            self.requires("fmt/8.1.1")
 
         qtDir = os.environ.get("Qt6_Dir")
         if qtDir == 0:

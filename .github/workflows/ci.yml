@@ -250,20 +250,11 @@ jobs:
         shell: bash
         run: |
           mkdir -pv usr
-          # conan install ../conanfile.py \
-          #   --build=missing \
-          #   -c tools.system.package_manager:mode=install \
-          #   -c tools.system.package_manager:sudo=True \
-          #   -pr:b=default \
-          #   -pr:h=default \
-          #   -s build_type="${{matrix.build_type}}" \
-          #   -s compiler.cppstd=17 \
-          #   -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DOPTION_BUILD_TESTS:BOOL="TRUE" \
+            -DOPTION_BUILD_TESTS:BOOL="TRUE" 
 
       - name: "🚧 Build"
         working-directory: build

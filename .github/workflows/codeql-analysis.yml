@@ -128,6 +128,10 @@ jobs:
                          --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 \
                          --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 && \
                           sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-10 100
+          echo "Setup conan"
+          conan user
+          conan profile new default --detect
+          conan profile update compiler.version=10
 
       - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}"
         if: matrix.language == 'cpp'
@@ -162,22 +166,11 @@ jobs:
         working-directory: build
         shell: bash
         run: |
-          conan install ../conanfile.py \
-            -pr:b=default \
-            -pr:h=default \
-            -b missing \
-            -s build_type="${{matrix.build_type}}" \
-            -s compiler.cppstd=17 \
-            -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
-            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
-            -DBUILD_SHARED_LIBS:BOOL="TRUE" \
-            -DOPTION_BUILD_TESTS:BOOL="TRUE" \
-            -DENABLE_CONAN:BOOL="ON" \
-            -DOPTION_BUILD_DOCS:BOOL="TRUE" \
-            -DOPTION_ENABLE_COVERAGE:BOOL="FALSE" \
-            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
+            -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
+            -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
+            -DOPTION_BUILD_TESTS:BOOL="TRUE"
 
       - name: "📦 Build"
         if: matrix.language == 'cpp'

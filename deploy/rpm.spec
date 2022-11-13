@@ -19,19 +19,19 @@ BuildRequires: cmake
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
 BuildRequires: make
-BuildRequires: cmake(Qt5)
-BuildRequires: cmake(Qt5Concurrent)
-BuildRequires: cmake(Qt5Core)
-BuildRequires: cmake(Qt5DBus)
-BuildRequires: cmake(Qt5LinguistTools)
-BuildRequires: cmake(Qt5Network)
-BuildRequires: cmake(Qt5Test)
-BuildRequires: cmake(Qt5Widgets)
-BuildRequires: cmake(Qt5X11Extras)
-BuildRequires: cmake(fmt)
-BuildRequires: cmake(spdlog)
-BuildRequires: cmake(KF5WidgetsAddons)
-BuildRequires: cmake(KF5WindowSystem)
+BuildRequires: Qt5
+BuildRequires: Qt5Concurrent
+BuildRequires: Qt5Core
+BuildRequires: Qt5DBus
+BuildRequires: Qt5LinguistTools
+BuildRequires: Qt5Network
+BuildRequires: Qt5Test
+BuildRequires: Qt5Widgets
+BuildRequires: Qt5X11Extras
+BuildRequires: fmt
+BuildRequires: spdlog)
+BuildRequires: KF5WidgetsAddons
+BuildRequires: KF5WindowSystem
 
 %if %{defined suse_version}
 BuildRequires: appstream-glib
@@ -66,7 +66,6 @@ Remote GUI for Transmission BitTorrent client.
 
 %prep
 %autosetup -n tremotesf2-%{version}
-
 
 %build
 %if %{defined suse_version} && 0%{?suse_version} == 1500

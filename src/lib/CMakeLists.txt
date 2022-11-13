@@ -115,7 +115,7 @@ export(
 # Check for availability of module; use pre-generated version if not found
 if(WriterCompilerDetectionHeaderFound)
     write_compiler_detection_header(
-        FILE ${FEATURE_FILE} PREFIX ${target_id}
+        FILE ${FEATURE_FILE} PREFIX ${PROJECT_NAME_ID}
         COMPILERS AppleClang Clang GNU MSVC
         FEATURES cxx_alignas
                  cxx_alignof

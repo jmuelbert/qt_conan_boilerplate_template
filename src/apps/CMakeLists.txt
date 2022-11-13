@@ -353,11 +353,11 @@ install(
 )
 
 # Install cmake find script for the project
-install(
-    FILES "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}-config.cmake"
-    DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT dev
-)
+# install(
+#     FILES "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}-config.cmake"
+#     DESTINATION ${CMAKE_INSTALL_BINDIR}
+#     COMPONENT dev
+# )
 
 # Tests
 if(BUILD_TESTING)

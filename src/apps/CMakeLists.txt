@@ -303,24 +303,29 @@ qt_deploy_runtime_dependencies(
     install(SCRIPT ${DEPLOY_SCRIPT}) # Add its runtime dependencies
 elseif(UNIX AND NOT APPLE)
     # appdata
-    # GNUInstallDirs is called from qt_standard_settings()
 
     install(TARGETS ${PROJECT_NAME} ${INSTALL_PROJECT_NAMES_DEFAULT_ARGS})
 
     configure_file(
         ${CMAKE_SOURCE_DIR}/cmake/config/appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY
     )
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml DESTINATION "${APPDATA_INSTALL_DIR}")
+    # APPDATA_DIR
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
+    )
 
     configure_file(
         ${CMAKE_SOURCE_DIR}/cmake/config/app.desktop.in
         ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY
     )
+    #${XDG_APPS_INSTALL_DIR}
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
-            DESTINATION "${XDG_APPS_INSTALL_DIR}"
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
     )
 
-    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${ICON_INSTALL_DIR}")
+    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons"
+    )
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
@@ -332,21 +337,7 @@ elseif(UNIX AND NOT APPLE)
     find_program(GZIP gzip)
     if(GZIP)
         configure_file(${CMAKE_SOURCE_DIR}/cmake/config/app.1.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 @ONLY)
-        add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
-            COMMAND ${GZIP} -c ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 > ${PROJECT_NAME}.1.gz
-            COMMENT "Create the bin gz archive"
-            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1
-        )
-        add_custom_project_name(
-            man
-            ALL
-            COMMENT
-            "Create man-file"
-            DEPENDS
-            ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz
-        )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1.gz DESTINATION "${MAN_INSTALL_DIR}")
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.1 DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/man")
     endif()
 endif()
 

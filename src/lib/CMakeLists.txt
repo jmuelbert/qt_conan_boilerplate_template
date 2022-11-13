@@ -35,7 +35,6 @@ option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OF
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(GenerateExportHeader)
-include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 #
@@ -48,10 +47,6 @@ set(HEADERS ${INCLUDE_PATH}/MyClass.h)
 set(SOURCES ${SOURCE_PATH}/MyClass.cpp)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 
 find_package(
     QT

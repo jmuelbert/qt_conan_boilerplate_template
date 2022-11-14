@@ -178,9 +178,14 @@ jobs:
           if [ -f ./.github/workflows/requirements.txt ]; then
             pip install -r ./.github/workflows/requirements.txt;
           fi
+
+      - name: Configure Conan
+        shell: bash
+        run: |
           echo "Setup conan"
           conan user
-          conan profile new default --detect
+          conan config init
+          conan profile show default
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -254,7 +259,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DOPTION_BUILD_TESTS:BOOL="TRUE" 
+            -DOPTION_BUILD_TESTS:BOOL="TRUE"
 
       - name: "🚧 Build"
         working-directory: build
@@ -332,7 +337,7 @@ jobs:
 
       - name: "⚙️ Install Python"
         id: python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
 
       - name: "⚙️ Install Python dependencies"
         shell: bash
@@ -346,13 +351,9 @@ jobs:
       - name: Configure Conan
         shell: bash
         run: |
+          echo "Setup conan"
+          conan user
           conan config init
-          # if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
-          #   conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
-          # fi
-          # conan profile update settings.compiler.cppstd=${{ matrix.config.compiler.std }} default
-          # conan profile update settings.build_type=${{ matrix.build_type }} default
-          conan profile update conf.tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" default
           conan profile show default
 
       - name: "🔧 Setup Cache"
@@ -452,23 +453,12 @@ jobs:
         working-directory: build
         shell: pwsh
         run: |
-          conan install ../conanfile.py \
-            -pr:b=default \
-            -pr:h=default \
-            -b missing \
-            -s build_type="${{matrix.build_type}} \
-            -s compiler.cppstd=17 \
-            -o QtTestConan:build_all=True
           cmake  `
           -S .. -B  . `
           -G "Visual Studio 16 2019" -A "x64" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" `
           -DBUILD_SHARED_LIBS:BOOL="TRUE" `
-          -DOPTION_BUILD_TESTS:BOOL="TRUE" `
-          -DENABLE_CONAN:BOOL="ON" `
-          -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
-          -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" `
           -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake" `
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
@@ -478,21 +468,10 @@ jobs:
         working-directory: build
         shell: bash
         run: |
-          conan install ../conanfile.py \
-            -pr:b=default \
-            -pr:h=default \
-            -b missing \
-            -s build_type="${{matrix.build_type}} \
-            -s compiler.cppstd=17 \
-            -o QtTestConan:build_all=True
           cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
            -DBUILD_SHARED_LIBS:BOOL="TRUE" \
-           -DOPTION_BUILD_TESTS:BOOL="TRUE" \
-           -DENABLE_CONAN:BOOL="ON" \
-           -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
-           -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "⚙️ 🍎 Configure CMake"
@@ -500,21 +479,10 @@ jobs:
         shell: bash
         if: runner.os ==  'macOS'
         run: |
-          conan install ../conanfile.py \
-            -pr:b=default \
-            -pr:h=default \
-            -b missing \
-            -s build_type="${{matrix.build_type}} \
-            -s compiler.cppstd=17 \
-            -o QtTestConan:build_all=True
           cmake -S .. -B  -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
            -DBUILD_SHARED_LIBS:BOOL="TRUE" \
-           -DOPTION_BUILD_TESTS:BOOL="TRUE" \
-           -DENABLE_CONAN:BOOL="ON" \
-           -DOPTION_BUILD_DOCS:BOOL="TRUE" \
-           -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}" \
            -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
@@ -596,90 +564,6 @@ jobs:
           name: windows-artifacts
           path: build/${{ env.PROJECT_NAME }}*.*
 
-  build-rpm:
-    name: "🐧 Build RPM"
-    strategy:
-      fail-fast: true
-      matrix:
-        container-image: ["fedora:35", "fedora:36", "opensuse/tumbleweed:latest", "mageia:8"]
-        compiler: [gcc]
-        include:
-          - container-image: "fedora:35"
-            compiler: clang
-          - container-image: "fedora:36"
-            compiler: clang
-    runs-on: ubuntu-latest
-    container: ${{matrix.container-image}}
-
-    steps:
-      - name: "Set packages install command for dnf"
-        if: startsWith(matrix.container-image, 'fedora') || startsWith(matrix.container-image, 'mageia')
-        run: echo 'INSTALL_PACKAGES=dnf -y --setopt=install_weak_deps=FALSE install' >> "$GITHUB_ENV"
-
-      - name: Set packages install command for zypper
-        if: startsWith(matrix.container-image, 'opensuse')
-        run: echo 'INSTALL_PACKAGES=zypper --non-interactive in --no-recommends' >> "$GITHUB_ENV"
-
-      - name: "Setup enrivonment"
-        run: ${{env.INSTALL_PACKAGES}} git rpm-build
-
-      - name: "🧰 Checkout"
-        uses: actions/checkout@v3
-        with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
-
-      - name: "Set Fedora compiler RPM macro"
-        id: fedora-compiler
-        if: startsWith(matrix.container-image, 'fedora')
-        run: echo "::set-output name=rpm-macro::--define 'toolchain ${{matrix.compiler}}'"
-
-      - name: "Install build dependencies"
-        run: ${{env.INSTALL_PACKAGES}} $(rpmspec ${{steps.fedora-compiler.outputs.rpm-macro}} -q --srpm --qf '[%{REQUIRES}]' deploy/rpm.spec)
-
-      - name: "Add GCC problem matcher"
-        uses: ammaraskar/gcc-problem-matcher@master
-
-      - name: "Build RPM"
-        run: rpmbuild ${{steps.fedora-compiler.outputs.rpm-macro}} -bb --build-in-place deploy/rpm.spec
-
-  build-debian-ubuntu:
-    name: "Build debian/ubuntu"
-    strategy:
-      fail-fast: true
-      matrix:
-        container-image: ["debian:11", "ubuntu:22.04"]
-        compiler: [gcc, clang]
-
-    runs-on: ubuntu-latest
-    container: ${{ matrix.container-image }}
-
-    steps:
-      - name: "Install packages"
-        run: |
-          apt-get update && DEBIAN_FRONTEND=--noninteractive \
-          apt-get --no-install-recommends --assume-yes install \
-          ca-certificates git cmake ninja-build qtbase5-dev \
-          libqt5x11extras5-dev qttools5-dev libfmt-dev \
-          libkf5widgetsaddons-dev libkf5windowsystem-dev gettext \
-          libspdlog-dev libfmt-dev \
-          ${{ matrix.compiler == 'gcc' && 'g++' || 'clang' }}
-
-      - name: "🧰 Checkout"
-        uses: actions/checkout@v3
-        with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
-
-      - name: "Add GCC problem matcher"
-        uses: ammaraskar/gcc-problem-matcher@master
-
-      - name: "Build"
-        uses: equeim/action-cmake-build@v9
-        with:
-          # Can't use presets on Debian, CMake is too old
-          cmake-arguments: -D CMAKE_CXX_COMPILER=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
-
   build-flatpak:
     name: "🐧 Build flatpak on ubuntu-latest"
     runs-on: ubuntu-latest
@@ -711,10 +595,8 @@ jobs:
       - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          # flatpak install -y --noninteractive flathub org.freedesktop.Sdk//20.08
-          # flatpak install -y --noninteractive flathub org.freedesktop.Platform.GL.default//21.08
-          # flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
-          # flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
+          flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
+          flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
 
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master

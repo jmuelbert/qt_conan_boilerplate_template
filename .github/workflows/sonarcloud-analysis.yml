@@ -122,25 +122,6 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: "Install Python"
-        id: python
-        uses: actions/setup-python@v3
-
-      - name: "Install Python dependencies"
-        shell: bash
-        id: python-deps
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f ./.github/workflows/requirements.txt ]; then
-            pip install -r ./.github/workflows/requirements.txt;
-          fi
-
-      - name: "Setup Cache"
-        uses: ./.github/actions/setup_cache
-        with:
-          build_type: ${{ matrix.build_type }}
-          generator: ${{ matrix.generator }}
-
       - name: "🐧 ⚙️ Install Linux dependencies"
         run: |
           sudo apt install -y libclang-dev ninja-build gcovr ccache
@@ -150,11 +131,30 @@ jobs:
             --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 \
             --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 && \
           sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-10 100
+
+      - name: "Install Python"
+        id: python
+        uses: actions/setup-python@v4
+
+      - name: "Install Python dependencies"
+        shell: bash
+        id: python-deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f ./.github/workflows/requirements.txt ]; then
+            pip install -r ./.github/workflows/requirements.txt;
+          fi
           echo "Setup conan"
           conan user
-          conan profile new default --detect
+          conan profile new default --detect --force
           conan profile update compiler.version=10
-          
+
+      - name: "Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
+
       - name: "⚙️ Install Qt Version ${{ matrix.qt_version  }}"
         uses: jurplel/install-qt-action@v2
         with:

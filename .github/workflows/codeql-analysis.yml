@@ -51,7 +51,6 @@ env:
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   CLANG_TIDY_VERSION: "13.0.0"
-  CXX: g++-10
 
 jobs:
   analyze:
@@ -100,25 +99,6 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
           # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-      - name: "Install Python"
-        id: python
-        uses: actions/setup-python@v3
-
-      - name: "Install Python dependencies"
-        shell: bash
-        id: python-deps
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f ./.github/workflows/requirements.txt ]; then
-            pip install -r ./.github/workflows/requirements.txt;
-          fi
-
-      - name: "🔧 Setup Cache"
-        uses: ./.github/actions/setup_cache
-        with:
-          build_type: ${{ matrix.build_type }}
-          generator: ${{ matrix.generator }}
-
       - name: "🐧 ⚙️ Install Linux dependencies"
         run: |
           sudo apt install -y libclang-dev ninja-build gcovr ccache
@@ -128,10 +108,29 @@ jobs:
                          --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 \
                          --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 && \
                           sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-10 100
+
+      - name: "Install Python"
+        id: python
+        uses: actions/setup-python@v4
+
+      - name: "Install Python dependencies"
+        shell: bash
+        id: python-deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f ./.github/workflows/requirements.txt ]; then
+            pip install -r ./.github/workflows/requirements.txt;
+          fi
           echo "Setup conan"
           conan user
           conan profile new default --detect
           conan profile update compiler.version=10
+
+      - name: "🔧 Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
 
       - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}"
         if: matrix.language == 'cpp'

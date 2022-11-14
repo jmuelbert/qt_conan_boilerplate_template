@@ -6,13 +6,13 @@ add_custom_target(pack COMMENT "Add Pack as Build-Target")
 set_target_properties(pack PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 
 # Install additional runtime dependencies
-include(${PROJECT_SOURCE_DIR}/cmake/RuntimeDependencies.cmake)
+# include(${PROJECT_SOURCE_DIR}/cmake/RuntimeDependencies.cmake)
 
 #
 # Packages
 #
 
-include(packages/pack-${META_PROJECT_NAME}.cmake)
+include(packages/pack.cmake)
 
 #
 # Target 'component_install'

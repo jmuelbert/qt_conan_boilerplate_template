@@ -394,8 +394,8 @@ jobs:
           echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
           # Use latest available XCode
-          echo "DEVELOPER_DIR=/Applications/Xcode_12.4.app/Contents/Developer" >> $GITHUB_ENV
-          sudo xcode-select -s "/Applications/Xcode_13.0.app"
+          sudo xcode-select -s "/Applications/Xcode_13.2.1.app"
+          echo "DEVELOPER_DIR=/Applications/Xcode_13.2.1.app/Contents/Developer" >> $GITHUB_ENV
 
       - name: "🧊 ⚙️ Install Windows dependencies"
         if: runner.os ==  'Windows'
@@ -459,12 +459,11 @@ jobs:
         run: |
           cmake  `
           -S .. -B  . `
-          # -G "Visual Studio 16 2019" -A "x64" `
           -G "Ninja" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" `
           -DBUILD_SHARED_LIBS:BOOL="TRUE"
-
+        # -G "Visual Studio 16 2019" -A "x64" `
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results.
       - name: "⚙️ 🐧 Configure CMake"

@@ -481,7 +481,7 @@ jobs:
         shell: bash
         if: runner.os ==  'macOS'
         run: |
-          cmake -S .. -B  -G "${{matrix.generator}}" \
+          cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
            -DBUILD_SHARED_LIBS:BOOL="TRUE"
@@ -491,14 +491,12 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          cmake --build . --config ${{matrix.build_type}} --target pack
 
       - name: "⚙️ 🧊 Build"
         if: runner.os ==  'Windows'
         working-directory: build
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          cmake --build . --config ${{matrix.build_type}} --target  pack
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -619,8 +617,8 @@ jobs:
             $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
   snap-build:
-    name: "🐧 Build snap on ubuntu-22.04"
-    runs-on: ubuntu-22.04
+    name: "🐧 Build snap on ubuntu-20.04"
+    runs-on: ubuntu-20.04
     needs: tests
 
     steps:

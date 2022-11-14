@@ -106,9 +106,11 @@ jobs:
           echo "CXX=g++-10" >> $GITHUB_ENV
           echo "CC=gcc-10" >> $GITHUB_ENV
 
-      - name: "Install Python"
+      - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
       - name: "Install Python dependencies"
         shell: bash

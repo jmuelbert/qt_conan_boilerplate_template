@@ -169,6 +169,8 @@ jobs:
       - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
       - name: "⚙️ Install Python dependencies"
         shell: bash
@@ -311,7 +313,7 @@ jobs:
             pak_arch: win64
             # generator: 'Visual Studio 16 2019'
           - name: ubuntu-latest-clang++
-            os: ubuntu-latest
+            os: ubuntu-22.04
             qt_arch: gcc_64
             cxx: clang++
             cc: clang
@@ -338,6 +340,8 @@ jobs:
       - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
       - name: "⚙️ Install Python dependencies"
         shell: bash
@@ -347,7 +351,6 @@ jobs:
           if [ -f ./.github/workflows/requirements.txt ]; then
             pip install -r ./.github/workflows/requirements.txt;
           fi
-
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -619,7 +622,7 @@ jobs:
 
   snap-build:
     name: "🐧 Build snap on ubuntu-22.04"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: tests
 
     steps:

@@ -379,18 +379,6 @@ jobs:
           conan config init
           conan profile show default
 
-      - name: (Linux/macOS) restore ccache
-        if: matrix.os != 'windows-latest'
-        uses: pat-s/always-upload-cache@v3.0.1
-        with:
-          path: ${{runner.workspace}}/ccache
-          key: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}-${{ github.sha }}
-          restore-keys: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}
-
-      - name: (Linux/macOS) check ccache stats prior to build
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: ccache --zero-stats --show-stats
-
       - name: "⚙️ 🍎 Install macos dependencies"
         if: runner.os == 'macOS'
         env:
@@ -421,6 +409,18 @@ jobs:
           # 14.1 is for vs2017, 14.2 is vs2019, following the upstream vcpkg build from Qv2ray-deps repo
           toolset: 14.2
           arch: "${{ matrix.pak_arch }}"
+
+      - name: (Linux/macOS) restore ccache
+        if: matrix.os != 'windows-latest'
+        uses: pat-s/always-upload-cache@v3.0.1
+        with:
+          path: ${{runner.workspace}}/ccache
+          key: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}-${{ github.sha }}
+          restore-keys: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}
+
+      - name: (Linux/macOS) check ccache stats prior to build
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: ccache --zero-stats --show-stats
 
       - name: "Add GCC problem matcher"
         if: runner.os ==  'Linux'
@@ -459,7 +459,8 @@ jobs:
         run: |
           cmake  `
           -S .. -B  . `
-          -G "Visual Studio 16 2019" -A "x64" `
+          # -G "Visual Studio 16 2019" -A "x64" `
+          -G "Ninja" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" `
           -DBUILD_SHARED_LIBS:BOOL="TRUE"
@@ -522,8 +523,6 @@ jobs:
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - \
           | grep "appimagetool-.*-${APPIMAGETOOL_ARCH}.AppImage" | head -n 1 | cut -d '"' -f 2) -O appimagetool
           chmod +x appimagetool
-        env:
-          APPIMAGETOOL_ARCH: x86_64
 
       - name: "🐧 📦 Create AppImage"
         if: runner.os == 'Linux'

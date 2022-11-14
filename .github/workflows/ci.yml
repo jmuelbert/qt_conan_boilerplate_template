@@ -348,13 +348,6 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
-      - name: Configure Conan
-        shell: bash
-        run: |
-          echo "Setup conan"
-          conan user
-          conan config init
-          conan profile show default
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -374,6 +367,14 @@ jobs:
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
           echo "CXX=clang++" >> $GITHUB_ENV
           echo "CC=clang" >> $GITHUB_ENV
+
+      - name: Configure Conan
+        shell: bash
+        run: |
+          echo "Setup conan"
+          conan user
+          conan config init
+          conan profile show default
 
       - name: (Linux/macOS) restore ccache
         if: matrix.os != 'windows-latest'
@@ -458,8 +459,7 @@ jobs:
           -G "Visual Studio 16 2019" -A "x64" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" `
-          -DBUILD_SHARED_LIBS:BOOL="TRUE" `
-          -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake" `
+          -DBUILD_SHARED_LIBS:BOOL="TRUE"
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results.
@@ -471,8 +471,7 @@ jobs:
           cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
-           -DBUILD_SHARED_LIBS:BOOL="TRUE" \
-           -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
+           -DBUILD_SHARED_LIBS:BOOL="TRUE"
 
       - name: "⚙️ 🍎 Configure CMake"
         working-directory: build
@@ -482,8 +481,7 @@ jobs:
           cmake -S .. -B  -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
-           -DBUILD_SHARED_LIBS:BOOL="TRUE" \
-           -DCMAKE_TOOLCHAIN_FILE:PATH="./generators/conan_toolchain.cmake"
+           -DBUILD_SHARED_LIBS:BOOL="TRUE"
 
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build
@@ -608,7 +606,7 @@ jobs:
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
           BRANCH="master"
-          build-flatpaker --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
+          flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
@@ -620,7 +618,7 @@ jobs:
             $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
   snap-build:
-    name: "🐧 Build snap on ubuntu-20.04"
+    name: "🐧 Build snap on ubuntu-22.04"
     runs-on: ubuntu-20.04
     needs: tests
 

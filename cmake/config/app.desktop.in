@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Exec=@TARGET@ %F
-Name=@TARGET@
+Exec=@PROJECT_NAME@ %F
+Name=@PROJECT_NAME@
 GenericName=Company Collector
 Comment=@META_PROJECT_DESCRIPTION@
 Icon=icons8-app-symbol-80

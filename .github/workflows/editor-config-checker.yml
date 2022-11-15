@@ -4,8 +4,8 @@ name: EditorConfig Checker
 on:
   push:
     branches: [main, develop]
-      paths:
-        - ".editorconfig"
+    paths:
+      - ".editorconfig"
   pull_request:
     branches:
       - main

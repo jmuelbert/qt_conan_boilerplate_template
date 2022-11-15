@@ -3,7 +3,7 @@ name: DangerJS
 
 # yamllint disable
 on:
-  # yamllint enable
+  # yamllint enable 
   pull_request_target:
 
 jobs:

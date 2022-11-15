@@ -181,6 +181,21 @@ jobs:
             pip install -r ./.github/workflows/requirements.txt;
           fi
 
+      - name: "🐧 ⚙️ Install Linux dependencies"
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update && DEBIAN_FRONTEND=--noninteractive \
+          sudo apt-get --no-install-recommends --assume-yes install \
+            libclang-dev \
+            ninja-build \
+            gcovr \
+            ccache \
+            cppcheck
+          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
+          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
+          echo "CXX=g++-10" >> $GITHUB_ENV
+          echo "CC=gcc-10" >> $GITHUB_ENV
+          
       - name: Configure Conan
         shell: bash
         run: |
@@ -194,18 +209,6 @@ jobs:
         with:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
-
-      - name: "🐧 ⚙️ Install Linux dependencies"
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update && DEBIAN_FRONTEND=--noninteractive \
-          sudo apt-get --no-install-recommends --assume-yes install \
-            libclang-dev \
-            ninja-build \
-            gcovr \
-            ccache \
-            cppcheck
-          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3
@@ -368,8 +371,8 @@ jobs:
             ccache \
             cppcheck
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
-          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++-12" >> $GITHUB_ENV
+          echo "CC=clang-12" >> $GITHUB_ENV
 
       - name: Configure Conan
         shell: bash
@@ -466,6 +469,7 @@ jobs:
         # -G "Visual Studio 16 2019" -A "x64" `
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results.
+
       - name: "⚙️ 🐧 Configure CMake"
         if: runner.os ==  'Linux'
         working-directory: build
@@ -542,7 +546,7 @@ jobs:
 
       - name: "🐧 📤 Upload Linux artifacts"
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: AppImage
           path: "./*.AppImage*"

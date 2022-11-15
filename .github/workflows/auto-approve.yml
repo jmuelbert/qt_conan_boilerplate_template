@@ -3,10 +3,10 @@ name: Auto approve
 
 # yamllint disable
 on:
-  # yamllint enable  pull_request:
   pull_request:
     types: [opened, synchronize, reopened]
-
+  # yamllint enable
+  
 jobs:
   auto-approve:
     runs-on: ubuntu-latest

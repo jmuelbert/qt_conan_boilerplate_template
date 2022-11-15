@@ -6,7 +6,7 @@ on:
   # yamllint enable  schedule:
   schedule:
     - cron: "59 23 * * 0"
-  workflow_dispatch
+  workflow_dispatch:
   
 jobs:
   automerge:

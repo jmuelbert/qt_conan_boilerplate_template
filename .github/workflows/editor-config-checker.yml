@@ -2,13 +2,17 @@
 name: EditorConfig Checker
 
 on:
+  push:
+    branches: [main, develop]
+      paths:
+        - ".editorconfig"
   pull_request:
     branches:
       - main
 
 jobs:
   editorconfig:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: editorconfig-checker/action-editorconfig-checker@main

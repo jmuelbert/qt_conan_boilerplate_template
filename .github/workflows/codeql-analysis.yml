@@ -129,16 +129,14 @@ jobs:
           conan config init
           conan profile show default
 
-      - name: (Linux/macOS) restore ccache
-        if: matrix.os != 'windows-latest'
+      - name: restore ccache
         uses: pat-s/always-upload-cache@v3.0.1
         with:
           path: ${{runner.workspace}}/ccache
           key: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}-${{ github.sha }}
           restore-keys: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}
 
-      - name: (Linux/macOS) check ccache stats prior to build
-        if: runner.os == 'Linux' || runner.os == 'macOS'
+      - name: check ccache stats prior to build
         run: ccache --zero-stats --show-stats
 
       - name: "Add GCC problem matcher"
@@ -170,9 +168,6 @@ jobs:
         if: matrix.language == 'cpp'
         run: |
           conan remove -f '*/system'
-
-      - name: "Add GCC problem matcher"
-        uses: ammaraskar/gcc-problem-matcher@master
 
       - name: "Create Working directory"
         run: mkdir -pv build

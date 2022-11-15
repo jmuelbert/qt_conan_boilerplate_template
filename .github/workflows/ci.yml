@@ -1,5 +1,5 @@
 ---
-name: "C/C++ CI"
+name: "Continuous Integration"
 
 # yamllint disable
 on:
@@ -305,7 +305,7 @@ jobs:
           - "Ninja"
         include:
           - name: windows-latest-cl.exe
-            os: windows-2019
+            os: windows-latest
             cxx: cl.exe
             cc: cl.exe
             qt_arch: win64_msvc2019_64
@@ -313,7 +313,7 @@ jobs:
             pak_arch: win64
             # generator: 'Visual Studio 16 2019'
           - name: ubuntu-latest-clang++
-            os: ubuntu-22.04
+            os: ubuntu-latest
             qt_arch: gcc_64
             cxx: clang++
             cc: clang

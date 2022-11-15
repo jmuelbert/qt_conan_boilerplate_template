@@ -6,6 +6,7 @@ on:
   # yamllint enable
   schedule:
     - cron: "0 3 * * *"
+
   workflow_dispatch:
     inputs:
       from:
@@ -20,10 +21,10 @@ on:
 jobs:
   generate-changelog:
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'Mudlet' }}
+    if: ${{ github.repository_owner == 'jmuelbert' }}
 
     steps:
-      - name: Checkout Mudlet repository
+      - name: Checkout jmuelbert repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0

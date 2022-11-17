@@ -121,7 +121,7 @@ class QtTestConan(ConanFile):
 
     def build_requirements(self):
         if self._build_tests:
-            self.test_requires("gtest/cci.20210126")
+            # self.test_requires("gtest/cci.20210126")
             self.test_requires("doctest/2.4.9")
             self.test_requires("catch2/3.1.0")
         # if self.options.build_docs:

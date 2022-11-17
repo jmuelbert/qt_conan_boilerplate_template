@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 #
 
-cmake_minimum_required(VERSION 3.20..3.24 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.16..3.24 FATAL_ERROR)
 
 # Set policies
 # Make sure that an old version of CMake is not being used so modern features are available

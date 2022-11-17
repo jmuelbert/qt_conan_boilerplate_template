@@ -11,7 +11,9 @@ set_target_properties(pack PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 #
 # Packages
 #
-
+set(META_PROJECT_NAME "TEST")
+set(META_AUTHOR_ORGANIZATION "Jürgen Mülbert")
+set(META_AUTHOR_MAINTAINER "Jürgen Mülbert")
 include(packages/pack.cmake)
 
 #

@@ -10,7 +10,7 @@
 # Default=OFF
 #
 
-cmake_minimum_required(VERSION 3.20..3.24 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.16..3.24 FATAL_ERROR)
 
 # Set policies
 # Make sure that an old version of CMake is not being used so modern features are available
@@ -27,7 +27,7 @@ endif()
 
 # Declare project
 project(
-    qtwidgettest}
+    qtwidgettest
     VERSION 0.0.2
     DESCRIPTION "A qt cpp conan template project"
     HOMEPAGE_URL "https://gihub.com/jmuelbert/qt_conan_boilerplate_template"
@@ -82,7 +82,7 @@ set(ProjectOptions_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
 include(cmake/folders.cmake)
-include(PackageProject)
+# include(PackageProject)
 include(CompilerWarnings)
 include(StaticAnalyzers)
 include(FeatureSummary)

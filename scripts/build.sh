@@ -52,3 +52,9 @@ testExitStatus $? "cmake config"
 # Build using cmake (with install)
 cmake --build . --config "${BUILD_TYPE}" --target install
 testExitStatus $? "cmake build"
+
+# Package
+cmake --build . --config "${BUILD_TYPE}" --target all
+
+# Test with CTest
+ctest -VV -C "${BUILD_TYPE}"

@@ -161,14 +161,19 @@ else()
 endif()
 
 # Package project
-set(project_name ${META_PROJECT_NAME}) # Name of package project
-set(project_root ${META_PROJECT_NAME}) # Name of root project that is to be installed
+set(project_name "${META_PROJECT_NAME}") # Name of package project
+set(project_root "${META_PROJECT_NAME}") # Name of root project that is to be installed
 
 # Package information
-string(TOLOWER ${META_PROJECT_NAME} package_name)
-set(package_description ${META_PROJECT_DESCRIPTION})
-set(package_vendor ${META_AUTHOR_ORGANIZATION})
-set(package_maintainer ${META_AUTHOR_MAINTAINER})
+string(TOLOWER "${META_PROJECT_NAME}" package_name)
+set(package_description "${META_PROJECT_DESCRIPTION}")
+set(package_vendor "${META_AUTHOR_ORGANIZATION}")
+set(package_maintainer "${META_AUTHOR_MAINTAINER}")
+
+message(STATUS "package_name        : ${package_name}")
+message(STATUS "package_description : ${package_description}")
+message(STATUS "project_name        : ${project_name}")
+message(STATUS "project_root        : ${project_root}")
 
 # Package specific options
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/deploy/packages/${project_name})

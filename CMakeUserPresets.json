@@ -4,6 +4,6 @@
         "conan": {}
     },
     "include": [
-        "/Users/juergen/Projects/GitHub/qt_conan_boilerplate_template/build/generators/CMakePresets.json"
+        "/home/ubuntu/dev/qt_conan_boilerplate_template/build/generators/CMakePresets.json"
     ]
 }

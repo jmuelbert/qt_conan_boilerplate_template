@@ -41,6 +41,9 @@ option(BUILD_TESTING "Build and run all tests" OFF)
 option(ENABLE_CONAN "Load dependecies with conan" TRUE)
 # Include cmake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
+
 set(projectPrefix QTTESTWIDGET_)
 
 # Options to enable folders in CMake generated projects for Visual Studio, Xcode, etc

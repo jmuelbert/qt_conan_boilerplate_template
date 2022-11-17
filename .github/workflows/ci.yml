@@ -178,7 +178,7 @@ jobs:
         id: python-deps
         run: |
           python -m pip install --upgrade pip
-          run: pip3 install "conan<2"
+          pip3 install "conan<2"
 
       - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'

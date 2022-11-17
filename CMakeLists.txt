@@ -9,6 +9,8 @@
 # BUILD_TESTING=[True, False]
 # Default=OFF
 #
+# ENABLE_CONAN=[True, False]
+# Default=True
 
 cmake_minimum_required(VERSION 3.16..3.24 FATAL_ERROR)
 
@@ -36,7 +38,7 @@ project(
 
 # Project Option
 option(BUILD_TESTING "Build and run all tests" OFF)
-
+option(ENABLE_CONAN "Load dependecies with conan" TRUE)
 # Include cmake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 set(projectPrefix QTTESTWIDGET_)
@@ -86,17 +88,10 @@ include(CompilerWarnings)
 include(StaticAnalyzers)
 include(FeatureSummary)
 
-include(Conan)
-include(Vcpkg)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
-
-if(ENABLE_VCPKG)
-    run_vcpkg()
+if(ENABLE_CONAN)
+    include(Conan)
+    run_conan()
 endif()
-
-run_conan()
 
 # # Activate ECM
 # find_package(ECM REQUIRED NO_MODULE)

@@ -259,7 +259,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DBUILD_TESTING:BOOL="TRUE"
+            -DBUILD_TESTING:BOOL=${{ matrix.build_type == 'Debug' }}
 
       - name: "🚧 Build"
         working-directory: build
@@ -361,8 +361,7 @@ jobs:
           sudo apt-get --no-install-recommends --assume-yes install \
             libclang-dev \
             ninja-build \
-            ccache \
-            cppcheck
+            ccache
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
           echo "CXX=clang++-12" >> $GITHUB_ENV
           echo "CC=clang-12" >> $GITHUB_ENV
@@ -488,12 +487,14 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
+          ls -al build
 
       - name: "⚙️ 🧊 Build"
         if: runner.os ==  'Windows'
         working-directory: build
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
+          ls -al build
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -502,7 +503,6 @@ jobs:
         run: |
           sudo apt-get -y --no-install-recommends install tree
           cmake --build . --config ${{matrix.build_type}} --target install
-          tree -ps "${{github.workspace}}/AppDir"
 
       - name: (Linux/macOS) check ccache stats prior to build
         if: runner.os == 'Linux' || runner.os == 'macOS'
@@ -537,6 +537,8 @@ jobs:
           mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
           pwd
           ls -al
+          ls -al AppDir
+          ls -al build
 
       - name: "🐧 📤 Upload Linux artifacts"
         if: runner.os == 'Linux'
@@ -600,6 +602,7 @@ jobs:
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
           BRANCH="main"
+          cat CMakeLists.txt
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
@@ -634,6 +637,8 @@ jobs:
           fetch-depth: 0
 
       - name: "📦 Create snap"
+        env:
+          ENABLE_CONAN: OFF
         uses: snapcore/action-build@v1
         id: snapcraft
         with:

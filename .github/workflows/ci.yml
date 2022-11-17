@@ -609,7 +609,7 @@ jobs:
           MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.json
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
-          BRANCH="master"
+          BRANCH="main"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
@@ -653,7 +653,6 @@ jobs:
         shell: bash
         run: |
           mv ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
-          ls
 
       - name: "🐧 📤 Upload artifact: SnapPack"
         uses: actions/upload-artifact@v3

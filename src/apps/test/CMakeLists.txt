@@ -25,7 +25,6 @@ project("${META_PROJECT_NAME}-tests" LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-include(ecmaddtests)
 
 # ---- Dependencies ----
 

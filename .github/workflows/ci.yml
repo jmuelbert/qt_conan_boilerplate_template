@@ -148,6 +148,7 @@ jobs:
           - "Ninja"
         build_type:
           - Debug
+        qt_version: [5.15.2, 6.4.0]
 
     permissions:
       actions: read
@@ -213,7 +214,7 @@ jobs:
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3
         with:
-          version: "${{ env.QT_VERSION }}"
+          version: "${{ matrix.qt_version }}"
           dir: "${{ env.QT_DIR }}"
           # host: ${{ runner.os }}
           arch: "${{ env.QT_ARCH }}"
@@ -264,7 +265,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DOPTION_BUILD_TESTS:BOOL="TRUE"
+            -DBUILD_TESTING:BOOL="TRUE"
 
       - name: "🚧 Build"
         working-directory: build
@@ -597,8 +598,8 @@ jobs:
       - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y --noninteractive flathub org.kde.Platform/6.3
-          flatpak install -y --noninteractive flathub org.kde.Sdk//6.3
+          flatpak install -y --noninteractive flathub org.kde.Platform/5.15-21.08
+          flatpak install -y --noninteractive flathub org.kde.Sdk/5.15-21.08
 
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master

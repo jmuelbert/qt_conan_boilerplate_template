@@ -1,8 +1,9 @@
 {
     "app-id": "io.github.jmuelbert.qtwidgettest",
     "runtime": "org.kde.Platform",
-    "runtime-version": "6.3",
+    "runtime-version": "5.15-21.08",
     "sdk": "org.kde.Sdk",
+    "default-branch": "main",
     "command": "qtwidgettest",
     "finish-args": [
         "--socket=x11",
@@ -15,7 +16,10 @@
         "--talk-name=org.kde.StatusNotifierWatcher",
         "--talk-name=org.freedesktop.FileManager1"
     ],
-    "cleanup": ["/include", "/lib"],
+    "cleanup": [
+        "/include",
+        "/lib"
+    ],
     "modules": [
         {
             "name": "fmt",
@@ -40,7 +44,9 @@
             "name": "spdlog",
             "buildsystem": "cmake-ninja",
             "builddir": true,
-            "config-opts": [""],
+            "config-opts": [
+                ""
+            ],
             "sources": [
                 {
                     "type": "archive",
@@ -53,7 +59,10 @@
             "name": "qtwidgettest",
             "buildsystem": "cmake-ninja",
             "builddir": true,
-            "config-opts": ["-DCMAKE_BUILD_TYPE=RelWithDebInfo", "-DOPTION_BUILD_TESTS=ON"],
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+                "-DOPTION_BUILD_TESTS=ON"
+            ],
             "run-tests": true,
             "sources": [
                 {

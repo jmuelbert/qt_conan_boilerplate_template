@@ -29,7 +29,7 @@ class QtTestConan(ConanFile):
     author = "Jürgen Mülbert"
     url = "https://github.com/jmuelbert/qt-conan_boilerplate_template"
     description = "<Description of QtTest here>"
-    topics = ("qt_biolerpalte", "conan", "qt6")
+    topics = ("qt_biolerplate", "conan", "qt6")
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
@@ -69,7 +69,7 @@ class QtTestConan(ConanFile):
 
     @property
     def _build_tests(self):
-        return bool(self.conf["user.build:tests"])
+        return bool(self.settings.build_type=="Debug")
 
     @property
     def _use_libfmt(self):

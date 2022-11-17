@@ -18,15 +18,6 @@ macro(run_conan)
     endif()
 
     set(ENV{CONAN_REVISIONS_ENABLED} 1)
-    set(options
-        "-c tools.system.package_manager:mode=install
-        -c tools.system.package_manager:sudo=True
-        -pr:b=default
-        -pr:h=default
-        -s compiler.cppstd=${CMAKE_CXX_STANDARD} "
-    )
-    string(CONCAT USER_SETTINGS "${test_option}" "${options}")
-    message("Settings=${CONAN_OPTIONS}")
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
     list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 

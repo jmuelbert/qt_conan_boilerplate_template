@@ -40,10 +40,6 @@ set(SOURCE_PATH"${CMAKE_CURRENT_SOURCE_DIR}/source")
 set(HEADERS testmain.h)
 set(SOURCES testmain.cpp)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
 find_package(
     QT
     NAMES
@@ -56,7 +52,13 @@ find_package(
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Test)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_standard_project_setup()
+    if(${QT_VERSION_MINOR} GREATER_EQUAL 3)
+        qt_standard_project_setup()
+    else()
+        set(CMAKE_AUTOMOC ON)
+        set(CMAKE_AUTOUIC ON)
+        include(GNUInstallDirs)
+    endif()
     qt_add_executable(testMain MANUAL_FINALIZATION testmain.cpp testmain.h)
 else()
     add_executable(testMain testmain.cpp testmain.h)

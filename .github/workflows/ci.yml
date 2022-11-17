@@ -597,8 +597,8 @@ jobs:
       - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y --noninteractive flathub org.kde.Platform//5.15-21.08
-          flatpak install -y --noninteractive flathub org.kde.Sdk//5.15-21.08
+          flatpak install -y --noninteractive flathub org.kde.Platform/6.3
+          flatpak install -y --noninteractive flathub org.kde.Sdk//6.3
 
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master
@@ -649,17 +649,11 @@ jobs:
         with:
           snapcraft-args: --enable-experimental-extensions
 
-      - name: "Rename snap name"
-        shell: bash
-        run: |
-          mv ${{ steps.snapcraft.outputs.snap }} $GITHUB_WORKSPACE/${TARGET_NAME}_${{ steps.get_version.outputs.VERSION }}_amd64.snap
-
       - name: "🐧 📤 Upload artifact: SnapPack"
         uses: actions/upload-artifact@v3
         with:
           name: snapcraft-artifact
-          path: |
-            $GITHUB_WORKSPACE/${{ env.TARGET_NAME}}_*_amd64.snap
+          path: ${{ steps.snapcraft.outputs.snap }}
 
   diagram:
     name: "Build diagram"

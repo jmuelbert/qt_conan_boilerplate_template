@@ -207,7 +207,7 @@ jobs:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
 
-      - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}""
+      - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}"
         uses: jurplel/install-qt-action@v3
         with:
           version: "${{ matrix.qt_version }}"
@@ -346,9 +346,7 @@ jobs:
         id: python-deps
         run: |
           python -m pip install --upgrade pip
-          if [ -f ./.github/workflows/requirements.txt ]; then
-            pip install -r ./.github/workflows/requirements.txt;
-          fi
+          pip3 install "conan<2"
 
       - name: "🔧 Setup Cache"
         uses: ./.github/actions/setup_cache
@@ -592,9 +590,6 @@ jobs:
       - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y --noninteractive flathub org.kde.Platform/5.15-21.08
-          flatpak install -y --noninteractive flathub org.kde.Sdk/5.15-21.08
-
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master
 

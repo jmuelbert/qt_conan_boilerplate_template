@@ -77,6 +77,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
     # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#PROJECT_NAME-creation
 else()
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_AUTOUIC ON)
+    include(GNUInstallDirs)
     add_library(${PROJECT_NAME} "")
 endif()
 

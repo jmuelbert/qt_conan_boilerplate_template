@@ -129,8 +129,6 @@ jobs:
 
   tests:
     runs-on: ${{ matrix.os }}
-    env:
-      CXX: g++-10
     strategy:
       fail-fast: false
 
@@ -209,7 +207,7 @@ jobs:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
 
-      - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
+      - name: "⚙️ Install Qt Version ${{ matrix.qt_version }}""
         uses: jurplel/install-qt-action@v3
         with:
           version: "${{ matrix.qt_version }}"
@@ -230,16 +228,14 @@ jobs:
           key: ${{ matrix.os }}-${{ matrix.build_type }}
           max-size: 50M
 
-      - name: (Linux/macOS) restore ccache
-        if: matrix.os != 'windows-latest'
+      - name: restore ccache
         uses: pat-s/always-upload-cache@v3.0.1
         with:
           path: ${{runner.workspace}}/ccache
           key: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}-${{ github.sha }}
           restore-keys: ccache-${{matrix.os}}-${{matrix.compiler}}-${{matrix.qt}}
 
-      - name: (Linux/macOS) check ccache stats prior to build
-        if: runner.os == 'Linux' || runner.os == 'macOS'
+      - name: check ccache stats prior to build
         run: ccache --zero-stats --show-stats
 
       - name: "Cleanup Conan system packages (they are not properly cached)"
@@ -271,7 +267,7 @@ jobs:
         run: |
           cmake --build . --config ${{matrix.build_type}}
 
-      - name: (Linux/macOS) check ccache stats prior to build
+      - name: check ccache stats prior to build
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: ccache --zero-stats --show-stats
 

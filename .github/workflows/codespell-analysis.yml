@@ -21,18 +21,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: codespell-project/codespell-problem-matcher@v1
-      - uses: codespell-project/actions-codespell@master
-        with:
-          check_filenames: true
-          skip: >-
-            ./.git,
-            ./3rdparty,
-            ./translations,
-            ./src/fonts,
-            ./squish-tests,
-            *.aff,
-            *.dic,
-            *.ts
-          ignore_words_file: ./.github/codespell-wordlist.txt
-          builtin: "clear,code,rare,informal,names"
+      - uses: streetsidesoftware/cspell-action@v2

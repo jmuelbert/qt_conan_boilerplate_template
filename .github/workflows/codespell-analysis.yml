@@ -58,17 +58,17 @@ jobs:
           # Default: warning
           inline: warning
 
-    # Determines if the action should be failed if any spelling issues are found.
-    # Allowed values are: true, false
-    # Default: true
-    strict: true
+          # Determines if the action should be failed if any spelling issues are found.
+          # Allowed values are: true, false
+          # Default: true
+          strict: true
 
-    # Limit the files checked to the ones in the pull request or push.
-    incremental_files_only: true
+          # Limit the files checked to the ones in the pull request or push.
+            incremental_files_only: true
 
-    # Path to `cspell.json`
-    config: "."
+          # Path to `cspell.json`
+            config: "."
 
-    # Log progress and other information during the action execution.
-    # Default: false
-    verbose: false
+          # Log progress and other information during the action execution.
+          # Default: false
+            verbose: false

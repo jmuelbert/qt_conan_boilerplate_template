@@ -333,7 +333,6 @@ jobs:
         id: python
         uses: actions/setup-python@v4
         with:
-        with:
           # Read python version from a file .python-version
           python-version-file: ".python-version"
           #check-latest: true

@@ -30,7 +30,7 @@ cleanup:
   - /cmake
   - '*.a'
   - '*.la'
-  - *.cmake
+  - '*.cmake'
 modules:
   - name: fmt
     buildsystem: cmake-ninja

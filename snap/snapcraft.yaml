@@ -21,8 +21,8 @@ apps:
   qtwidgettest:
     common-id: com.github.jmuelbert.qt_canon_boilerplate
     command: usr/bin/qtwidgettest
-    command-chain:
-      - snap/command-chain/add-qt-shortcuts
+    # command-chain:
+    #   - snap/command-chain/add-qt-shortcuts
     extensions:
       - kde-neon
     plugs:
@@ -87,10 +87,10 @@ parts:
     stage-packages:
       - xdg-user-dirs
 
-  qtctl:
-    source: https://github.com/snapcrafters/qtctl.git
-    plugin: cmake
-    build-snaps: [kde-frameworks-5-qt-5-15-core20-sdk]
+  # qtctl:
+  #   source: https://github.com/snapcrafters/qtctl.git
+  #   plugin: cmake
+  #   build-snaps: [kde-frameworks-5-qt-5-15-core20-sdk]
 
   # This part removes all the files in this snap which already exist in
   # connected content and base snaps. Since these files will be available
@@ -107,11 +107,11 @@ parts:
     build-snaps: # List all content-snaps and base snaps you're using here
       - core20
       - kde-frameworks-5-qt-5-15-core20
-    override-prime: |
-      set -eux
-      for snap in "core20" "kde-frameworks-5-qt-5-15-core20"; do  # List all content-snaps and base snaps you're using here
-        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
-      done
+    # override-prime: |
+    #   set -eux
+    #   for snap in "core20" "kde-frameworks-5-qt-5-15-core20"; do  # List all content-snaps and base snaps you're using here
+    #     cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+    #   done
 plugs:
   gtk-3-themes:
     interface: content

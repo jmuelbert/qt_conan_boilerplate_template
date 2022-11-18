@@ -38,7 +38,7 @@ jobs:
           #   .*/**/*.yml
           #
           # To not check hidden files, use:
-          # files: "**"
+          #  files: "**"
           #
           # Default: ALL files
           files: ""

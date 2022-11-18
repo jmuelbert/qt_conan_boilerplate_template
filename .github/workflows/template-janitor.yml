@@ -282,12 +282,15 @@ jobs:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.config.generator }}
 
-      - name: "⚙️ Install Linux dependencies"
+      - name: "🐧 ⚙️ Install Linux dependencies"
         if: runner.os == 'Linux'
         run: |
           sudo apt-get -y -qq update
           sudo apt-get -y --no-install-recommends install \
             ccache
+          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
+          echo "CXX=g++-10" >> $GITHUB_ENV
+          echo "CC=gcc-10" >> $GITHUB_ENV
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
         uses: jurplel/install-qt-action@v3

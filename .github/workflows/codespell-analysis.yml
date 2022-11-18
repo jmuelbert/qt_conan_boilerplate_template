@@ -41,7 +41,7 @@ jobs:
           #  files: "**"
           #
           # Default: ALL files
-          files: ""
+          files: "**"
 
           # Check files and directories starting with `.`.
           # - "true" - glob searches will match against `.dot` files.
@@ -64,11 +64,11 @@ jobs:
           strict: true
 
           # Limit the files checked to the ones in the pull request or push.
-            incremental_files_only: true
+          incremental_files_only: true
 
           # Path to `cspell.json`
-            config: "."
+          config: "."
 
           # Log progress and other information during the action execution.
           # Default: false
-            verbose: false
+          verbose: false

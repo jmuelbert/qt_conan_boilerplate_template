@@ -8,15 +8,6 @@ on:
     - cron: "0 3 * * *"
 
   workflow_dispatch:
-    inputs:
-      from:
-        description: "Generate from this release/commit (defaults to the latest release)"
-        required: false
-        # default is calculated dynamically
-      to:
-        description: "Generate until this release/commit (defaults to latest development)"
-        required: false
-        default: "HEAD"
 
 jobs:
   generate-changelog:

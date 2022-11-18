@@ -52,7 +52,7 @@ parts:
     source-type: git
     source-branch: main
     plugin: cmake
-    configflags:
+    cmake-parameters::
       - '-DCMAKE_INSTALL_PREFIX=/usr'
       - '-DCMAKE_BUILD_TYPE=Release'
       - '-DENABLE_TESTING=OFF'

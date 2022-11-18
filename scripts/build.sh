@@ -19,7 +19,7 @@ TARGET_NAME=qtwidgettest
 # Function to test exit status of a command.
 # It exits if the command failed.
 function testExitStatus() {
-  if [ $1 -ne 0 ]; then
+  if [ "$1" -ne 0 ]; then
     echo "$2 failed"
     exit 1
   else
@@ -33,8 +33,8 @@ mkdir -pv "${BUILD_DIR}" || exit
 testExitStatus $? "mkdir"
 
 # Update path into build directory
-cd build
-testExitStatus $? "cd"
+cd build || exit
+
 conan user
 conan profile new default --detect --force
 

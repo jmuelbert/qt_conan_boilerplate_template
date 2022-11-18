@@ -482,19 +482,19 @@ jobs:
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
            -DBUILD_SHARED_LIBS:BOOL="TRUE"
 
+      # TODO: Stored in install
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
         working-directory: build
         if: runner.os == 'macOS'
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          ls -al build
 
+      # TODO: Stored in install
       - name: "⚙️ 🧊 Build"
         if: runner.os ==  'Windows'
         working-directory: build
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          ls -al build
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -519,6 +519,7 @@ jobs:
         env:
           APPIMAGETOOL_ARCH: x86_64
 
+      # TODO: Stored in build directory
       - name: "🐧 📦 Create AppImage"
         if: runner.os == 'Linux'
         shell: bash
@@ -533,12 +534,8 @@ jobs:
           fi
           chmod +x ${APPIMAGE_DST_PATH}/usr/lib64/ld-*.so.*
           $GITHUB_WORKSPACE/appimagetool ${APPIMAGE_DST_PATH}
-          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
-          mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
-          pwd
-          ls -al
-          ls -al AppDir
-          ls -al build
+          # mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage
+          # mv $GITHUB_WORKSPACE/${{env.TARGET_NAME}}-*-x86_64.AppImage.zsync build/${{env.TARGET_NAME}}-${{ steps.get_version.outputs.VERSION }}.x86_64.AppImage.zsync
 
       - name: "🐧 📤 Upload Linux artifacts"
         if: runner.os == 'Linux'
@@ -552,14 +549,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: macos-artifacts
-          path: build/${{ env.PROJECT_NAME }}-*.*
+          path: install/${{ env.PROJECT_NAME }}-*.*
 
       - name: "🧊 📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:
           name: windows-artifacts
-          path: build/${{ env.PROJECT_NAME }}*.*
+          path: install/${{ env.PROJECT_NAME }}*.*
 
   build-flatpak:
     name: "🐧 Build flatpak on ubuntu-latest"
@@ -598,11 +595,10 @@ jobs:
       - name: "📦 Create flatpak"
         run: |
           BUNDLE="io.github.jmuelbert.${{env.TARGET_NAME}}.flatpak"
-          MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.json
+          MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.yaml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
           BRANCH="main"
-          cat CMakeLists.txt
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
@@ -637,8 +633,6 @@ jobs:
           fetch-depth: 0
 
       - name: "📦 Create snap"
-        env:
-          ENABLE_CONAN: OFF
         uses: snapcore/action-build@v1
         id: snapcraft
         with:

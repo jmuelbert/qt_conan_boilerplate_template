@@ -4,7 +4,7 @@ adopt-info: qtwidgettest
 icon: assets/icons/icons8-app-symbol-80.png
 
 base: core20
-grade: stable
+grade: devel
 confinement: strict
 compression: lzo
 
@@ -19,8 +19,10 @@ version: '0.6.0'
 
 apps:
   qtwidgettest:
-    command: usr/bin/qtwidgettest
     common-id: com.github.jmuelbert.qt_canon_boilerplate
+    command: usr/bin/qtwidgettest
+    command-chain:
+      - snap/command-chain/add-qt-shortcuts
     extensions:
       - kde-neon
     plugs:
@@ -29,37 +31,10 @@ apps:
       - desktop-legacy
       - wayland
       - x11
+    environment:
+      QT_QPA_PLATFORMTHEME: gtk3
+
 parts:
-  qtwidgettest:
-    plugin: cmake
-    source: .
-    cmake-parameters:
-      - '-DCMAKE_INSTALL_PREFIX=/usr'
-      - '-DCMAKE_BUILD_TYPE=Release'
-      - '-DENABLE_TESTING=OFF'
-      - '-DBUILD_TESTING=OFF'
-    source-type: git
-    parse-info:
-      - usr/share/metainfo/qtwidgettest.appdata.xml
-    build-snaps:
-      - kde-frameworks-5-qt-5-15-core20
-    build-packages:
-      - python
-      - catch
-      - libmpfr-dev
-      - libfmt-dev
-      - libspdlog-dev
-      - libgmp-dev
-      - kdoctools-dev
-    stage-packages:
-      - libmpfr6
-      - libgmp10
-    override-pull: |
-      snapcraftctl pull
-
-    after:
-      - extra-cmake-modules
-
   extra-cmake-modules:
     source: https://github.com/KDE/extra-cmake-modules.git
     source-depth: 1
@@ -70,3 +45,75 @@ parts:
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DBUILD_TESTING=OFF
     prime: [-./*]
+  qtwidgettest:
+    after:
+      - extra-cmake-modules
+    source: https://gitub.com/jmuelbert/qt_conan_boilerplate_template
+    source-type: git
+    source-branch: main
+    plugin: cmake
+    configflags:
+      - '-DCMAKE_INSTALL_PREFIX=/usr'
+      - '-DCMAKE_BUILD_TYPE=Release'
+      - '-DENABLE_TESTING=OFF'
+      - '-DBUILD_TESTING=OFF'
+      - '-DENABLE_CONAN=OFF'
+    build-snaps:
+      - kde-frameworks-5-qt-5-15-core20-sdk
+    build-packages:
+      - python
+      - catch
+      - libmpfr-dev
+      - libfmt-dev
+      - libspdlog-dev
+      - libgmp-dev
+      - kdoctools-dev
+    parse-info:
+      - usr/share/metainfo/qtwidgettest.appdata.xml
+
+  runtime:
+    plugin: nil
+    stage-packages:
+      - zlib1g
+    prime:
+      - '-usr/lib/x86_64-linux-gnu/libQt5*'
+      - '-usr/lib/x86_64-linux-gnu/libqt5*'
+
+  launcher:
+    source: scripts
+    plugin: dump
+    organize:
+      add-qt-shortcuts: snap/command-chain/add-qt-shortcuts
+    stage-packages:
+      - xdg-user-dirs
+
+  qtctl:
+    source: https://github.com/snapcrafters/qtctl.git
+    plugin: cmake
+    build-snaps: [kde-frameworks-5-qt-5-15-core20-sdk]
+
+  # This part removes all the files in this snap which already exist in
+  # connected content and base snaps. Since these files will be available
+  # at runtime from the content and base snaps, they do not need to be
+  # included in this snap itself.
+  #
+  # More info: https://snapcraft-utils-library.readthedocs.io/en/latest/lib/cleanup.html
+  #
+  cleanup:
+    after: # Make this part run last; list all your other parts here
+      - krita
+      - runtime
+    plugin: nil
+    build-snaps: # List all content-snaps and base snaps you're using here
+      - core20
+      - kde-frameworks-5-qt-5-15-core20
+    override-prime: |
+      set -eux
+      for snap in "core20" "kde-frameworks-5-qt-5-15-core20"; do  # List all content-snaps and base snaps you're using here
+        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      done
+plugs:
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/data-dir/themes
+    default-provider: gtk-common-themes

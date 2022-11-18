@@ -14,6 +14,11 @@ jobs:
   editorconfig:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: "🧰 Checkout"
+        uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
       - uses: editorconfig-checker/action-editorconfig-checker@main
       - run: editorconfig-checker

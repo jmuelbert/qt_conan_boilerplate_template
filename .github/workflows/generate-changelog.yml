@@ -15,9 +15,10 @@ jobs:
     if: ${{ github.repository_owner == 'jmuelbert' }}
 
     steps:
-      - name: Checkout jmuelbert repository
+      - name: "🧰 Checkout"
         uses: actions/checkout@v3
         with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
       - name: Install Lua 5.1.5

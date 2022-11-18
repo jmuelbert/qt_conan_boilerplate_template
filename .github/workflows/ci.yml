@@ -160,7 +160,10 @@ jobs:
         id: python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          # Read python version from a file .python-version
+          python-version-file: ".python-version"
+          #check-latest: true
+          cache: pip
 
       - name: "⚙️ Install Python dependencies"
         shell: bash
@@ -330,7 +333,11 @@ jobs:
         id: python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+        with:
+          # Read python version from a file .python-version
+          python-version-file: ".python-version"
+          #check-latest: true
+          cache: pip
 
       - name: "⚙️ Install Python dependencies"
         shell: bash

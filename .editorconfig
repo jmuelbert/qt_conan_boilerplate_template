@@ -32,7 +32,6 @@ indent_style = space
 indent_size = 4
 tab_width = 4
 
-
 # Source code files
 [*.{c,cxx,cpp,h,hxx,hpp,java,m,mm,py,swift,xsl}]
 indent_style = space
@@ -41,7 +40,7 @@ tab_width = 4
 
 [*.{md,markdown}]
 indent_size = 1
-max_line_length = 0
+max_line_length = 128
 trim_trailing_whitespace = false
 
 [*.{sh,msx}]

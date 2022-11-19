@@ -38,7 +38,7 @@ SHOW_ELAPSED_TIME: true
 EMAIL_REPORTER: false
 FILEIO_REPORTER: true
 JSON_REPORTER: true
-GITHUB_STATUS_REPORTER: false
+GITHUB_STATUS_REPORTER: true
 PLUGINS:
   - https://raw.githubusercontent.com/oxsecurity/megalinter/main/.automation/test/mega-linter-plugin-test/test.megalinter-descriptor.yml
 PRE_COMMANDS:

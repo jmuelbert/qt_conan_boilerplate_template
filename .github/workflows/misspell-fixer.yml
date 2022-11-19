@@ -8,15 +8,14 @@ on:
     # The branches below must be a subset of the branches above
     types: [opened, synchronize, reopened]
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pull-requests: write
-  id-token: write
 
 jobs:
   misspell-fixer:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      actions: write
     steps:
       - name: "🧰 Checkout"
         uses: actions/checkout@v3
@@ -34,7 +33,6 @@ jobs:
         uses: peter-evans/create-pull-request@v4.2.0
         if: failure()
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Fix typos by misspell-fixer
           title: Fix typos by misspell-fixer for ${{ github.ref }}
           assignees: ${{ github.actor }}

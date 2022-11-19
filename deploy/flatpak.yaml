@@ -53,12 +53,11 @@ modules:
         sha256: 697f91700237dbae2326b90469be32b876b2b44888302afbc7aceb68bcfe8224
   - name: qtwidgettest
     buildsystem: cmake-ninja
-    builddir: true,
+    builddir: true
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DENABLE_CONAN=OFF
       - -DBUILD_TESTING=OFF
     sources:
-      - type: git
-        url: https://gitub.com/jmuelbert/qt_conan_boilerplate_template
-        branch: main
+      - type: dir
+        path: '.'

@@ -51,8 +51,7 @@ parts:
     source: .
     source-type: git
     plugin: cmake
-    cmake-generator:
-      - Ninja
+    cmake-generator: Ninja
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DCMAKE_BUILD_TYPE=Release

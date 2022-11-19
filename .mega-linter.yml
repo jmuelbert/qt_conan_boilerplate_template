@@ -9,9 +9,11 @@ DISABLE:
   # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
   # - SPELL # Uncomment to disable checks of spelling mistakes
 DISABLE_LINTERS:
-# - JSON_PRETTIER
-# - REPOSITORY_GITLEAKS
-# - SPELL_PROSELINT
+  # - JSON_PRETTIER
+  # - REPOSITORY_GITLEAKS
+  # - SPELL_PROSELINT
+  - C_CPPLINT
+  - CPP_CPPLINT
 DISABLE_ERRORS_LINTERS:
   - PYTHON_BANDIT
   - PYTHON_PYRIGHT
@@ -24,7 +26,7 @@ JSON_JSONLINT_FILTER_REGEX_EXCLUDE: '(\.vscode/)'
 # YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: '(templates/\.mega-linter\.yml)'
 # YAML_PRETTIER_FILTER_REGEX_EXCLUDE: '(templates/\.mega-linter\.yml|mkdocs\.yml)'
 # YAML_V8R_FILTER_REGEX_EXCLUDE: '(descriptors|templates/\.mega-linter\.yml|\.codecov\.yml)'
-YAML_V8R_FILTER_REGEX_EXCLUDE: '(\.github/)'
+YAML_V8R_FILTER_REGEX_EXCLUDE: '(.gitlab-ci.yml)'
 BASH_FILTER_REGEX_EXCLUDE: '(lib)'
 MARKDOWN_FILTER_REGEX_EXCLUDE: '(license\.md)'
 # MARKDOWN_MARKDOWN_LINK_CHECK_DISABLE_ERRORS: true
@@ -34,6 +36,7 @@ DOCKERFILE_HADOLINT_ARGUMENTS: '--ignore DL3003 --ignore DL3007 --ignore DL3013 
 REPOSITORY_TRIVY_ARGUMENTS:
   - '--skip-dirs'
   - '.automation/test'
+REPOSITORY_GOODCHECK_FILTER_REGEX_EXCLUDE: ('goodcheck.yml')
 SHOW_ELAPSED_TIME: true
 EMAIL_REPORTER: false
 FILEIO_REPORTER: true

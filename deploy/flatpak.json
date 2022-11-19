@@ -54,9 +54,7 @@
             "name": "spdlog",
             "buildsystem": "cmake-ninja",
             "builddir": true,
-            "config-opts": [
-                ""
-            ],
+            "config-opts": [""],
             "sources": [
                 {
                     "type": "archive",
@@ -69,10 +67,7 @@
             "name": "qtwidgettest",
             "buildsystem": "cmake-ninja",
             "builddir": true,
-            "config-opts": [
-                "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
-                "-DOPTION_BUILD_TESTS=ON"
-            ],
+            "config-opts": ["-DCMAKE_BUILD_TYPE=RelWithDebInfo", "-DOPTION_BUILD_TESTS=ON"],
             "run-tests": true,
             "sources": [
                 {

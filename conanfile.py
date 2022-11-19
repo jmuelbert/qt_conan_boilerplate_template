@@ -14,7 +14,6 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
-from conan.tools.build import check_min_cppstd
 from conan.tools.scm import Version
 
 required_conan_version = ">=1.50.0"
@@ -62,14 +61,13 @@ class QtTestConan(ConanFile):
     generators = "CMakeDeps", "CMakeToolchain"
     #   "cmake", "cmake_find_package",
 
-
     @property
     def _build_all(self):
         return bool(self.conf["user.build:all"])
 
     @property
     def _build_tests(self):
-        return bool(self.settings.build_type=="Debug")
+        return bool(self.settings.build_type == "Debug")
 
     @property
     def _use_libfmt(self):
@@ -95,7 +93,9 @@ class QtTestConan(ConanFile):
             return int(f"{compiler.version}0")
 
     def set_version(self):
-        content = load(self, os.path.join(self.recipe_folder, "src/apps//CMakeLists.txt"))
+        content = load(
+            self, os.path.join(self.recipe_folder, "src/apps//CMakeLists.txt")
+        )
         version = re.search(
             r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content
         ).group(1)
@@ -152,7 +152,7 @@ class QtTestConan(ConanFile):
                 raise ConanInvalidConfiguration("project requires at least MSVC 19.28")
         else:
             raise ConanInvalidConfiguration("Unsupported compiler")
-        check_min_cppstd(self,17)
+        check_min_cppstd(self, 17)
 
     def layout(self):
         cmake_layout(self)
@@ -192,7 +192,6 @@ class QtTestConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
-
 
         self.cpp_info.names["generator_name"] = "<PKG_NAME>"
         self.cpp_info.includedirs = ["include"]  # Ordered list of include paths

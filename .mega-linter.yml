@@ -9,9 +9,9 @@ DISABLE:
   # - COPYPASTE # Uncomment to disable checks of excessive copy-pastes
   - SPELL # Uncomment to disable checks of spelling mistakes
 DISABLE_LINTERS:
-  # - JSON_PRETTIER
-  # - REPOSITORY_GITLEAKS
-  # - SPELL_PROSELINT
+# - JSON_PRETTIER
+# - REPOSITORY_GITLEAKS
+# - SPELL_PROSELINT
 DISABLE_ERRORS_LINTERS:
   - PYTHON_BANDIT
   - PYTHON_PYRIGHT

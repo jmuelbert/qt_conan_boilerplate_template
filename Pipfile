@@ -12,6 +12,7 @@ breathe = "*"
 pre-commit = "*"
 reuse = "*"
 checkov = "*"
+aqtinstall = "*"
 
 [dev-packages]
 

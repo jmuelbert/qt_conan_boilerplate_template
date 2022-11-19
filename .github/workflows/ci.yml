@@ -19,9 +19,8 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/ci.yml"
-      - "deploy/flatpak.json"
-      - "deploy/rpm.spec"
-      - "snap/snapcraft.yml"
+      - "deploy/flatpak.yaml"
+      - "snap/snapcraft.yaml"
 
   pull_request:
     # The branches below must be a subset of the branches above
@@ -36,9 +35,8 @@ on:
       - CMakeLists.txt
       - conanfile.py
       - ".github/workflows/ci.yml"
-      - "deploy/flatpak.json"
-      - "deploy/rpm.spec"
-      - "snap/snapcraft.yml"
+      - "deploy/flatpak.yaml"
+      - "snap/snapcraft.yaml"
 
   workflow_dispatch:
 
@@ -52,7 +50,6 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  PYTHON_VERSION: "3.10"
   QT_VERSION: "6.3.1"
   QT_DIR: ${{ github.workspace }}
   QT_ARCH: "gcc_64"
@@ -131,8 +128,7 @@ jobs:
       # Disable/enable builds in this list to meet the above recommendations
       # and your own projects needs
       matrix:
-        os:
-          - ubuntu-latest
+        os: [ ubuntu-latest, ubuntu-22.04 ]
         generator:
           - "Ninja"
         build_type:
@@ -146,7 +142,7 @@ jobs:
 
     steps:
       - name: "Cancel Previous Runs"
-        uses: styfle/cancel-workflow-action@0.5.0
+        uses: styfle/cancel-workflow-action
         with:
           access_token: ${{ github.token }}
 
@@ -161,8 +157,8 @@ jobs:
         uses: actions/setup-python@v4
         with:
           # Read python version from a file .python-version
-          python-version-file: ".python-version"
-          #check-latest: true
+          # python-version-file: ".python-version"
+          check-latest: true
           cache: pip
 
       - name: "⚙️ Install Python dependencies"
@@ -262,11 +258,9 @@ jobs:
           cmake --build . --config ${{matrix.build_type}}
 
       - name: check ccache stats prior to build
-        if: runner.os == 'Linux' || runner.os == 'macOS'
         run: ccache --zero-stats --show-stats
 
       - name: "🐧 🧪 Test and coverage"
-        if: runner.os == 'Linux'
         working-directory: build
         # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
@@ -587,6 +581,7 @@ jobs:
       - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+          
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master
 

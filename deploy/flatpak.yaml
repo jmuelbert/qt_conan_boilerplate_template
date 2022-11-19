@@ -3,7 +3,7 @@ app-id: io.github.jmuelbert.qtwidgettest
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
-default-branch': main
+default-branch: main
 command: qtwidgettest
 rename-icon: qtwidgettest
 rename-desktop-file: qtwidgettest
@@ -38,7 +38,7 @@ modules:
     config-opts:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
-      - -DCMAKE_CXX_STANDARD=17
+      - -DENABLE_CONAN=OFF
       - -DFMT_DOC=OFF
       - -DFMT_TEST=OFF
     sources:

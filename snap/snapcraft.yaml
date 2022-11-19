@@ -15,7 +15,7 @@ architectures:
 summary: A test.
 description: qt_canon_boilerplate is a test app.
 
-version: '0.6.0'
+version: '0.0.2'
 
 apps:
   qtwidgettest:
@@ -48,9 +48,8 @@ parts:
   qtwidgettest:
     after:
       - extra-cmake-modules
-    source: https://gitub.com/jmuelbert/qt_conan_boilerplate_template
+    source: .
     source-type: git
-    source-branch: main
     plugin: cmake
     configflags:
       - '-DCMAKE_INSTALL_PREFIX=/usr'
@@ -59,7 +58,7 @@ parts:
       - '-DBUILD_TESTING=OFF'
       - '-DENABLE_CONAN=OFF'
     build-snaps:
-      - kde-frameworks-5-qt-5-15-core20-sdk
+      - kde-frameworks-5-qt-5-15-core20
     build-packages:
       - python
       - catch
@@ -101,7 +100,7 @@ parts:
   #
   cleanup:
     after: # Make this part run last; list all your other parts here
-      - krita
+      - qtwidgettest
       - runtime
     plugin: nil
     build-snaps: # List all content-snaps and base snaps you're using here

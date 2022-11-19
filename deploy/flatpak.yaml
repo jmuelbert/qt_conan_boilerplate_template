@@ -3,7 +3,6 @@ app-id: io.github.jmuelbert.qtwidgettest
 runtime: org.kde.Platform
 runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
-default-branch: main
 command: qtwidgettest
 rename-icon: qtwidgettest
 rename-desktop-file: qtwidgettest

@@ -51,12 +51,14 @@ parts:
     source: .
     source-type: git
     plugin: cmake
-    cmake-parameters::
-      - '-DCMAKE_INSTALL_PREFIX=/usr'
-      - '-DCMAKE_BUILD_TYPE=Release'
-      - '-DENABLE_TESTING=OFF'
-      - '-DBUILD_TESTING=OFF'
-      - '-DENABLE_CONAN=OFF'
+    cmake-generator:
+      - Ninja
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_TESTING=OFF
+      - -DBUILD_TESTING=OFF
+      - -DENABLE_CONAN=OFF
     build-snaps:
       - kde-frameworks-5-qt-5-15-core20
     build-packages:

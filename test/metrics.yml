@@ -5,7 +5,7 @@
 name: Metrics
 on:
   # 🌏 Think about the planet! No need to update stats too frequently
-  schedule: [{ cron: "0 16 * * *" }]
+  schedule: [{ cron: '0 16 * * *' }]
   # 💡 The following line lets you run workflow manually from the action tab!
   workflow_dispatch:
 jobs:
@@ -18,7 +18,7 @@ jobs:
         with:
           filename: medias.svg
           token: ${{ secrets.TOKEN }}
-          base: ""
+          base: ''
           config_order: anilist, music
           output_action: gist
           committer_gist: ${{ secrets.GIST }}
@@ -37,7 +37,7 @@ jobs:
         with:
           filename: achievements.svg
           token: ${{ secrets.TOKEN }}
-          base: ""
+          base: ''
           output_action: gist
           committer_gist: ${{ secrets.GIST }}
           plugin_achievements: yes
@@ -50,7 +50,7 @@ jobs:
         with:
           filename: sponsors.svg
           token: ${{ secrets.TOKEN }}
-          base: ""
+          base: ''
           output_action: gist
           committer_gist: ${{ secrets.GIST }}
           plugin_sponsors: yes

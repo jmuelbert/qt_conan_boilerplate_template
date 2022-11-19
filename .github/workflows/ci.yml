@@ -128,7 +128,7 @@ jobs:
       # Disable/enable builds in this list to meet the above recommendations
       # and your own projects needs
       matrix:
-        os: [ ubuntu-latest, ubuntu-22.04 ]
+        os: [ubuntu-latest, ubuntu-22.04]
         generator:
           - "Ninja"
         build_type:
@@ -580,7 +580,7 @@ jobs:
       - name: "Setup Flathub"
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          
+
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master
 
@@ -650,11 +650,6 @@ jobs:
         with:
           output_file: "images/diagram.svg"
           excluded_paths: "dist,node_modules"
-
-      - name: Metrics embed
-        uses: lowlighter/metrics@v3.28
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
 
   releaseNotes:
     if: startsWith(github.ref, 'refs/tags/')

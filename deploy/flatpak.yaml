@@ -4,9 +4,9 @@ runtime: org.kde.Platform
 runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: qtwidgettest
-rename-icon: qtwidgettest
-rename-desktop-file: qtwidgettest
-desktop-file-name-suffix: develop
+# rename-icon: qtwidgettest
+# rename-desktop-file: qtwidgettest
+# desktop-file-name-suffix: develop
 finish-args:
   - --socket=x11
   - --socket=wayland

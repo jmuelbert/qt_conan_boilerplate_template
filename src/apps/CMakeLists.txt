@@ -256,11 +256,13 @@ if(APPLE OR WIN32)
 
         install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . COMPONENT Runtime)
 
-        install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-                DESTINATION "${CMAKE_INSTALL_DATADIR}"
-        )
-
         install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
+
+        install(
+            TARGETS ${PROJECT_NAME}
+            DESTINATION RESOURCE
+            "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+        )
 
         configure_file(
             ${CMAKE_SOURCE_DIR}/cmake/config/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json @ONLY
@@ -272,10 +274,8 @@ if(APPLE OR WIN32)
 
         install(TARGETS ${PROJECT_NAME} ${INSTALL_PROJECT_NAMES_DEFAULT_ARGS})
 
-        install(
-            TARGETS ${PROJECT_NAME}
-            DESTINATION RESOURCE
-            "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+        install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+                DESTINATION "${CMAKE_INSTALL_DATADIR}"
         )
 
         install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${CMAKE_INSTALL_BINDIR}")

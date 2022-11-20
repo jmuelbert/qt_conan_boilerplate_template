@@ -329,7 +329,8 @@ elseif(UNIX AND NOT APPLE)
     )
 
     install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
-    DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps/io.github.jmuelbert.${PROJECT_NAME}.png")
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps/io.github.jmuelbert.${PROJECT_NAME}.png"
+    )
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 

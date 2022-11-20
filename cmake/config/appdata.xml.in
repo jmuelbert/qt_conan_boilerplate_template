@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (C) 2022 Jürgen Mülbert -->
 <component type="desktop">
-    <id>https://github.com/jmuelbert/jmbde-QT</id>
+    <id>io.github.jmuelbert.@PROJECT_NAME@</id>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>EUPL-1.2-or-later</project_license>
-    <name>@TARGET@</name>
-    <developer_name>@META_AUTHOR_ORGANIZATION@</developer_name>
+    <name>@PROJECT_NAME@</name>
+    <developer_name>Jürgen Mülbert</developer_name>
     <update_contact>juergen.muelbert_AT_gmail.com</update_contact>
-    <summary>@META_PROJECT_DESCRIPTION@</summary>
-    <translation type="qt">@TARGET@-QT</translation>
+    <summary>a qt template</summary>
+    <translation type="qt">@PROJECT_NAME@-QT</translation>
     <description>
-        <p>@META_PROJECT_DESCRIPTION@</p>
+        <p>a qt template</p>
     </description>
-    <launchable type="desktop-id">io.github.jmuelbert.@TARGET@.desktop</launchable>
-    <url type="homepage">https://github.com/jmuelbert.@META_PROJECT_NAME@</url>
-    <url type="bugtracker">https://github.com/jmuelbert.@META_PROJECT_NAME@/issues</url>
+    <launchable type="desktop-id">io.github.jmuelbert.@PROJECT_NAME@.desktop</launchable>
+    <url type="homepage">https://github.com/jmuelbert.@PROJECT_NAME@</url>
+    <url type="bugtracker">https://github.com/jmuelbert.@PROJECT_NAME@/issues</url>
     <url type="donation">https://jmuelbert.github.io/donate</url>
     <provides>
-        <binary>@TARGET@</binary>
+        <binary>@PROJECT_NAME@</binary>
     </provides>
     <releases>
-        <release version="@META_VERSION@" />
+        <release version="0.0.2" />
     </releases>
     <content_rating type="oars-1.0">
         <content_attribute id="violence-cartoon">none</content_attribute>
@@ -47,11 +47,11 @@
     <screenshots>
         <screenshot type="default">
             <caption>Linux version</caption>
-            <image>https://raw.githubusercontent.com/jmuelbert/@META_PROJECT_NAME@/master/resources/screenshots/jmbde-QT-linux.png</image>
+            <image>https://raw.githubusercontent.com/jmuelbert@PROJECT_NAME@/master/resources/screenshots/@PROJECT_NAME@-QT-linux.png</image>
         </screenshot>
         <screenshot>
             <caption>Windows version</caption>
-            <image>https://raw.githubusercontent.com/jmuelbert/@META_PROJECT_NAME@/master/resources/screenshots/jmbde-QT.png</image>
+            <image>https://raw.githubusercontent.com/jmuelbert/@PROJECT_NAME@/master/resources/screenshots/@PROJECT_NAME@-QT.png</image>
         </screenshot>
     </screenshots>
 </component>

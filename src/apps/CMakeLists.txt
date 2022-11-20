@@ -272,6 +272,12 @@ if(APPLE OR WIN32)
 
         install(TARGETS ${PROJECT_NAME} ${INSTALL_PROJECT_NAMES_DEFAULT_ARGS})
 
+        install(
+            TARGETS ${PROJECT_NAME}
+            DESTINATION RESOURCE
+            "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+        )
+
         install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
         install(FILES ${qm_files} DESTINATION "${CMAKE_INSTALL_BINDIR}/Translations")
@@ -324,12 +330,16 @@ elseif(UNIX AND NOT APPLE)
         ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop @ONLY
     )
     #${XDG_APPS_INSTALL_DIR}
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.desktop"
             DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
     )
 
-    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
-    DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps/io.github.jmuelbert.${PROJECT_NAME}.png")
+    file(RENAME "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
+         "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
+    )
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps"
+    )
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 

@@ -60,4 +60,4 @@ modules:
       - -DBUILD_TESTING=OFF
     sources:
       - type: dir
-        path: '.'
+        path: '../'

@@ -336,7 +336,7 @@ elseif(UNIX AND NOT APPLE)
 
     # icons
 
-    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png" "${CMAKE_CURRENT_BINARY_DIR}"
+    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
             RENAME "io.github.jmuelbert.${PROJECT_NAME}.png"
     )
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/icons8-app-symbol-16.png"

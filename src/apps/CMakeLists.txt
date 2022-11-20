@@ -258,11 +258,11 @@ if(APPLE OR WIN32)
 
         install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 
-        install(
-            TARGETS ${PROJECT_NAME}
-            DESTINATION RESOURCE
-            "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-        )
+        # install(
+        #     TARGETS ${PROJECT_NAME}
+        #     DESTINATION RESOURCE
+        #     "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+        # )
 
         configure_file(
             ${CMAKE_SOURCE_DIR}/cmake/config/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json @ONLY
@@ -337,7 +337,7 @@ elseif(UNIX AND NOT APPLE)
     # file(RENAME "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
     #      "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
     # )
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
+    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
             DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps"
     )
 

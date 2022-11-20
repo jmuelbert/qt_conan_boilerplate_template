@@ -69,7 +69,7 @@ parts:
       - libgmp-dev
       - kdoctools-dev
     parse-info:
-      - usr/share/metainfo/qtwidgettest.appdata.xml
+      - usr/share/metainfo/io.github.jmuelbert.qtwidgettest.metainfo.xml
 
   runtime:
     plugin: nil

@@ -310,11 +310,13 @@ elseif(UNIX AND NOT APPLE)
     install(TARGETS ${PROJECT_NAME} ${INSTALL_PROJECT_NAMES_DEFAULT_ARGS})
 
     configure_file(
-        ${CMAKE_SOURCE_DIR}/cmake/config/appdata.xml.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml @ONLY
+        ${CMAKE_SOURCE_DIR}/cmake/config/appdata.xml.in
+        ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.metainfo.xml @ONLY
     )
+
     # APPDATA_DIR
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.appdata.xml
-            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.metainfo.xml
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/metainfo"
     )
 
     configure_file(
@@ -326,9 +328,8 @@ elseif(UNIX AND NOT APPLE)
             DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
     )
 
-    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons"
-    )
+    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
+    DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps/io.github.jmuelbert.${PROJECT_NAME}.png")
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 

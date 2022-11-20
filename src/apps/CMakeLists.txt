@@ -334,9 +334,9 @@ elseif(UNIX AND NOT APPLE)
             DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications"
     )
 
-    file(RENAME "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
-         "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
-    )
+    # file(RENAME "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-16.png"
+    #      "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
+    # )
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
             DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps"
     )

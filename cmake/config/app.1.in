@@ -1,14 +1,14 @@
-.TH qtwidgettest 1 "@APPLICATION_VERSION" "Jürgen Mülbert" ""
+.TH @PROJECT_NAME@ 1 "0.0.2" "Jürgen Mülbert" ""
 .SH NAME
-qtwidgettest \- A BDE Tool.
+@PROJECT_NAME@ \- a qt template.
 .SH SYNOPSIS
-.B qtwidgettest
+.B @PROJECT_NAME@
 [\fIOPTIONS\fR] [\fIHELP\fR] [\fIVERSION\f] [\fIQUIT\f]
 .SH DESCRIPTION
-qtwidgettest is a BDE Tool. qtwidgettest is free software and written
+@PROJECT_NAME@ is a qt template. @PROJECT_NAME@ is free software and written
 in C++, using the Qt application framework.
 .IP
-<https://github.com/jmuelbert/qtwidgettest-QT/wiki/>
+<https://github.com/jmuelbert/@PROJECT_NAME@-QT/wiki/>
 .SH OPTIONS
 .TP
 \fB\-\-help\f
@@ -21,20 +21,20 @@ Shows the program version
 Only check validity of arguments
 ===========================
 .PP
-As a Qt application, qtwidgettest also obey Qt command-line flags, see Qt
+As a Qt application, @PROJECT_NAME@ also obey Qt command-line flags, see Qt
 documentation for complete list:
 .IP
 <http://doc.qt.io/qt-5/qguiapplication.html#QGuiApplication>
 .SH FILES
 .TP
-.I ~/.config/@META_PROJECT_DESCRIPTION@
+.I ~/.config/@PROJECT_NAME@
 Default directory for configuration data.
 .SH BUGS
 Bug tracker:
 .IP
-https://github.com/jmuelbert/@META_PROJECT_NAME@/issues
+https://github.com/jmuelbert/@PROJECT_NAME@/issues
 .PP
 Be sure to do your search within open and closed issues before submitting reports.
 .SH AUTHORS
-Jürgen Mülbert \- <https://github.com/jmuelbert/@META_PROJECT_NAME@/blob/master/AUTHORS>
+Jürgen Mülbert \- <https://github.com/jmuelbert/@PROJECT_NAME@/blob/master/AUTHORS>
 .br

@@ -4,17 +4,17 @@ IDI_ICON1 ICON DISCARDABLE "assets/icons8.ico"
 
     1 VERSIONINFO FILEVERSION 1,
     0, 0,
-    0 PRODUCTVERSION @META_VERSION@
+    0 PRODUCTVERSION 0.0.2
         @FILEFLAGSMASK VS_FFI_FILEFLAGSMASK FILEFLAGS 0 FILEOS VOS_NT_WINDOWS32 FILETYPE VFT_APP FILESUBTYPE VFT2_UNKNOWN BEGIN BLOCK
     "StringFileInfo" BEGIN BLOCK "040904B0" // US English, Unicode
     BEGIN
-        VALUE "CompanyName", "@META_AUTHOR_ORGANIZATION@\0"
-        VALUE "FileDescription", "@META_PROJECT_DESCRIPTION@\0"
-        VALUE "FileVersion", "@META_VERSION@\0"
-        VALUE "InternalName", "@META_PROJECT_NAME@\0"
-        VALUE "OriginalFilename", "@TARGET@.exe\0"
-        VALUE "ProductName", "@TARGET@\0" VALUE "
-        ProductVersion", "@META_NAME_VERSION@\0"
+        VALUE "CompanyName", "Jürgen Mülbert\0"
+        VALUE "FileDescription", "a qt template\0"
+        VALUE "FileVersion", "0.0.2\0"
+        VALUE "InternalName", "@PROJECT_NAME@\0"
+        VALUE "OriginalFilename", "@PROJECT_NAME@.exe\0"
+        VALUE "ProductName", "@PROJECT_NAME@\0" VALUE "
+        ProductVersion", "0.0.2\0"
     END
     END
     BLOCK "VarFileInfo" BEGIN VALUE "Translation",

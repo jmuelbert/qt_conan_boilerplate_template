@@ -43,18 +43,19 @@ cmake -S .. -B . -G "$GENERATOR" \
   -DCMAKE_BUILD_TYPE:STRING="${BUILD_TYPE}" \
   -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
   -DBUILD_SHARED_LIBS:BOOL="${SHARED_LIBS}" \
-  -DBUILD_TESTING:BOOL="${TESTING}" \
-  -DOPTION_BUILD_DOCS:BOOL="${DOCS}" \
-  -DOPTION_ENABLE_COVERAGE:BOOL="${COVERAGE}"
+  -DBUILD_TESTING:BOOL="${TESTING}" 
 
 testExitStatus $? "cmake config"
 
 # Build using cmake (with install)
+echo "Build target install..."
 cmake --build . --config "${BUILD_TYPE}" --target install
 testExitStatus $? "cmake build"
 
 # Package
+echo "Build target all..."
 cmake --build . --config "${BUILD_TYPE}" --target all
 
 # Test with CTest
+echo "All tests..."
 ctest -VV -C "${BUILD_TYPE}"

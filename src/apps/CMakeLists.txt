@@ -151,15 +151,6 @@ else()
     )
 endif()
 
-#
-# Project options
-#
-
-# set_target_properties(
-#     ${PROJECT_NAME} PROPERTIES ${DEFAULT_PROJECT_OPTIONS} INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}" FOLDER
-#                                "${IDE_FOLDER}"
-# )
-
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}" FOLDER "${IDE_FOLDER}")
 #
 # Include directories
@@ -256,13 +247,14 @@ if(APPLE OR WIN32)
 
         install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . COMPONENT Runtime)
 
-        install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
+        install(FILES ${qm_files}
+                DESTINATION
+                ${EXECUTABLE_PATH}/Contents/Resources/Translations/${TRANSLATION_INSTALL_DIR}
+        )
 
-        # install(
-        #     TARGETS ${PROJECT_NAME}
-        #     DESTINATION RESOURCE
-        #     "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-        # )
+        install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+                DESTINATION ${EXECUTABLE_PATH}/Contents/Resources/Icons
+        )
 
         configure_file(
             ${CMAKE_SOURCE_DIR}/cmake/config/package_dmg.json.in ${CMAKE_CURRENT_BINARY_DIR}/package_dmg.json @ONLY
@@ -277,8 +269,6 @@ if(APPLE OR WIN32)
         install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
                 DESTINATION "${CMAKE_INSTALL_DATADIR}"
         )
-
-        install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png" DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
         install(FILES ${qm_files} DESTINATION "${CMAKE_INSTALL_BINDIR}/Translations")
     endif()
@@ -341,15 +331,11 @@ elseif(UNIX AND NOT APPLE)
         DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
         RENAME "io.github.jmuelbert.${PROJECT_NAME}.png"
     )
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/icons8-app-symbol-16.png"
-            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/16x16"
     )
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
-
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/config/flatpak.yml.in ${CMAKE_CURRENT_BINARY_DIR}/flatpak.xml @ONLY)
-
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/config/snapcraft.yaml.in ${PROJECT_SOURCE_DIR}/snapcraft.yaml @ONLY)
 
     # man page
     find_program(GZIP gzip)

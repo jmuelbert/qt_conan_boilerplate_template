@@ -248,8 +248,7 @@ if(APPLE OR WIN32)
         install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . COMPONENT Runtime)
 
         install(FILES ${qm_files}
-                DESTINATION
-                ${EXECUTABLE_PATH}/Contents/Resources/Translations/${TRANSLATION_INSTALL_DIR}
+                DESTINATION ${EXECUTABLE_PATH}/Contents/Resources/Translations/${TRANSLATION_INSTALL_DIR}
         )
 
         install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"

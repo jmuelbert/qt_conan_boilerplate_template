@@ -461,7 +461,7 @@ jobs:
         run: |
           APPIMAGE_DST_PATH="${{github.workspace}}/AppDir"
           cd $GITHUB_WORKSPACE
-          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH
+          cp $GITHUB_WORKSPACE/assets/icons/icons8-app-symbol-80.png $APPIMAGE_DST_PATH/io.github.jmuelbert.${TARGET_NAME}.png
           $GITHUB_WORKSPACE/appimagetool -s deploy ${APPIMAGE_DST_PATH}/usr/share/applications/io.github.jmuelbert.${TARGET_NAME}.desktop
           mkdir -p ${APPIMAGE_DST_PATH}/usr/plugins/platforminputcontexts
           if [ -f "${APPIMAGE_DST_PATH}/lib/x86_64-linux-gnu/libxcb-glx.so.0" ]; then

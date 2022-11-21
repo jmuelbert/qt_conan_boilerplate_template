@@ -333,9 +333,6 @@ elseif(UNIX AND NOT APPLE)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
             DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/highcolor/16x16"
     )
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
-            DESTINATION "${CMAKE_INSTALL_BINDIR}"
-    )
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})
 

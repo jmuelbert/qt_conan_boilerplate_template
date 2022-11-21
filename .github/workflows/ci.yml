@@ -423,7 +423,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          ls -ah ../
+          ls -ahFR ${{github.workspace}}/install
 
       # TODO: Stored in install
       - name: "⚙️ 🧊 Build"
@@ -431,7 +431,7 @@ jobs:
         working-directory: build
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          ls ../
+          ls ${{github.workspace}}/install
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -484,14 +484,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: macos-artifacts
-          path: install/${{ env.PROJECT_NAME }}-*.*
+          path: ${{github.workspace}}/install/${{ env.PROJECT_NAME }}-*.*
 
       - name: "🧊 📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:
           name: windows-artifacts
-          path: install/${{ env.PROJECT_NAME }}*.*
+          path: ${{github.workspace}}/install/${{ env.PROJECT_NAME }}*.*
 
   build-flatpak:
     name: "🐧 Build flatpak on ubuntu-latest"

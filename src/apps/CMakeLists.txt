@@ -248,8 +248,7 @@ if(APPLE OR WIN32)
         install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . COMPONENT Runtime)
 
         install(FILES ${qm_files}
-                DESTINATION
-                ${EXECUTABLE_PATH}/Contents/Resources/Translations/${TRANSLATION_INSTALL_DIR}
+                DESTINATION ${EXECUTABLE_PATH}/Contents/Resources/Translations/${TRANSLATION_INSTALL_DIR}
         )
 
         install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
@@ -332,7 +331,7 @@ elseif(UNIX AND NOT APPLE)
         RENAME "io.github.jmuelbert.${PROJECT_NAME}.png"
     )
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
-            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/16x16"
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/highcolor/16x16"
     )
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})

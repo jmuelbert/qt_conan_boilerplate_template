@@ -423,7 +423,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          ls -ahFR
+          ls -ah ../
 
       # TODO: Stored in install
       - name: "⚙️ 🧊 Build"
@@ -431,7 +431,7 @@ jobs:
         working-directory: build
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
-          ls -ahFR
+          ls ../
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'

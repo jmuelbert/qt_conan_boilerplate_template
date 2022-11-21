@@ -330,8 +330,12 @@ elseif(UNIX AND NOT APPLE)
         DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
         RENAME "io.github.jmuelbert.${PROJECT_NAME}.png"
     )
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
-            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/highcolor/16x16/apps"
+
+    # install(FILES "${CMAKE_CURRENT_BINARY_DIR}/io.github.jmuelbert.${PROJECT_NAME}.png"
+    #         DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/highcolor/16x16/apps"
+    # )
+    install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/io.github.jmuelbert.qtwidgettest.png"
+            DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps"
     )
 
     install(FILES ${qm_files} DESTINATION ${TRANSLATION_INSTALL_DIR})

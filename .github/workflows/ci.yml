@@ -423,6 +423,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
+          ls -ahFR
 
       # TODO: Stored in install
       - name: "⚙️ 🧊 Build"
@@ -430,6 +431,7 @@ jobs:
         working-directory: build
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
+          ls -ahFR
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -535,7 +537,7 @@ jobs:
           BRANCH="main"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID}
-          # mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+          mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
       - name: "📤 Upload artifact: FlatPak"
         uses: actions/upload-artifact@v3
@@ -638,8 +640,20 @@ jobs:
       - name: Fetch all history for all tags and branches
         run: git fetch --prune --unshallow
 
-      - name: "Install sphinx"
+      - name: "⚙️ Install Python"
+        id: python
+        uses: actions/setup-python@v4
+        with:
+          # Read python version from a file .python-version
+          python-version-file: ".python-version"
+          #check-latest: true
+          cache: pip
+
+      - name: "⚙️ Install Python dependencies"
+        shell: bash
+        id: python-deps
         run: |
+          python -m pip install --upgrade pip
           pip3 install -r docs/requirements.txt
 
       - name: "Running the Sphinx to gh-pages Action"

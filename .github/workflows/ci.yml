@@ -534,7 +534,7 @@ jobs:
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
           BRANCH="main"
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
-          flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
+          flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID}
           # mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
       - name: "📤 Upload artifact: FlatPak"

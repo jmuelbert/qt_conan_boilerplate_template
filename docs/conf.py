@@ -31,7 +31,7 @@ version = get_version()
 
 # The full project version, used as the replacement for |release| and
 # e.g. in the HTML templates.
-release = get_version()
+# release = get_version()
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom

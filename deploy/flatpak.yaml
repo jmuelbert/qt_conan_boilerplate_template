@@ -63,6 +63,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DENABLE_CONAN=OFF
       - -DBUILD_TESTING=OFF
+      - -DENABLE_CACHE=ON
     sources:
       - type: git
         path: 'https://github.com/jmuelbert/qt_conan_boilerplate_template.git'

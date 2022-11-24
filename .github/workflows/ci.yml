@@ -256,7 +256,8 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
             -DCMAKE_INSTALL_PREFIX:PATH="./usr" \
             -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} \
-            -DBUILD_TESTING:BOOL=${{ matrix.build_type == 'Debug' }}
+            -DBUILD_TESTING:BOOL=${{ matrix.build_type == 'Debug' }} \
+            -DENABLE_CACHE="ON"
 
       - name: "🚧 Build"
         working-directory: build
@@ -317,6 +318,11 @@ jobs:
             arch: clang_64
             cxx: clang++
             cc: clang
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
       - name: "⚙️ Get the version"
@@ -466,7 +472,8 @@ jobs:
           cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/AppDir/usr" \
-           -DBUILD_SHARED_LIBS:BOOL="TRUE"
+           -DBUILD_SHARED_LIBS:BOOL="TRUE" \
+           -DENABLE_CACHE="ON"
 
       - name: "⚙️ 🍎 Configure CMake"
         working-directory: build
@@ -476,7 +483,8 @@ jobs:
           cmake -S .. -B . -G "${{matrix.generator}}" \
            -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} \
            -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" \
-           -DBUILD_SHARED_LIBS:BOOL="TRUE"
+           -DBUILD_SHARED_LIBS:BOOL="TRUE" \
+           -DENABLE_CACHE="ON"
 
       # TODO: Stored in install. Build DMG with CPack
       - name: "📦 🍎 Build and package application (macdeployqt and zipfile)"
@@ -484,6 +492,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
+          cpack -G DragNDrop
+          cpack -G ZIP
           ls -ahFR ${{github.workspace}}/install
 
       # TODO: Stored in install. Build installer with CPack
@@ -492,7 +502,10 @@ jobs:
         working-directory: build
         run: |
           cmake --build . --config ${{matrix.build_type}} --target install
+          cpack -G WIX
+          cpack -G ZIP
           ls ${{github.workspace}}/install
+          ls
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -558,6 +571,11 @@ jobs:
     name: "🐧 Build flatpak on ubuntu-latest"
     runs-on: ubuntu-latest
     needs: tests
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
       - name: "⚙️ Get the version"

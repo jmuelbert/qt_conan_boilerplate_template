@@ -20,8 +20,8 @@ version: '0.0.2'
 apps:
   qtwidgettest:
     common-id: io.github.jmuelbert.qtwidgettest
-    command: usr/local/bin/qtwidgettest
-    desktop: usr/local/share/applications/io.github.jmuelbert.qtwidgettest.desktop
+    command: usr/bin/qtwidgettest
+    desktop: usr/share/applications/io.github.jmuelbert.qtwidgettest.desktop
 
     extensions:
       - kde-neon
@@ -51,6 +51,7 @@ parts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DBUILD_TESTING=OFF
+      - -DENABLE_CACHE=ON
     prime: [-./*]
   qtwidgettest:
     after:

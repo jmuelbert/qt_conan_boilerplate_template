@@ -107,10 +107,11 @@ if(ENABLE_CONAN)
     run_conan()
 endif()
 
-add_library(
-    project_options INTERFACE
-)
-target_compile_features(project_options INTERFACE cxx_std_17)
+# TODO: Add the options in this way
+# add_library(
+#     project_options INTERFACE
+# )
+# target_compile_features(project_options INTERFACE cxx_std_17)
 
 # # Activate ECM
 # find_package(ECM REQUIRED NO_MODULE)

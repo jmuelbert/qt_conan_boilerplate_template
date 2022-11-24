@@ -4,13 +4,12 @@ BUILD_TYPE="Debug"
 GENERATOR="Ninja"
 # WITH_IPO="ON"
 # NATIVE_OPTIMIZATION="ON"
-# CACHE="ON"
+CACHE="ON"
 # COVERAGE="ON"
 # DOXYGEN="ON"
-# CPPCHECK="ON"
-# CLANG_TIDY="ON"
-# VS_ANALYSIS="OFF"
-# INCLUDE_WHAT_YOU_USE="ON"
+CPPCHECK="ON"
+CLANG_TIDY="ON"
+INCLUDE_WHAT_YOU_USE="ON"
 # PCH="ON"
 TESTING=ON
 APPIMAGE_DST_PATH="${TARGET_NAME}.AppDir"
@@ -43,7 +42,11 @@ cmake -S .. -B . -G "$GENERATOR" \
   -DCMAKE_BUILD_TYPE:STRING="${BUILD_TYPE}" \
   -DCMAKE_INSTALL_PREFIX:PATH="${APPIMAGE_DST_PATH}/usr" \
   -DBUILD_SHARED_LIBS:BOOL="${SHARED_LIBS}" \
-  -DBUILD_TESTING:BOOL="${TESTING}" 
+  -DBUILD_TESTING:BOOL="${TESTING}" \
+  -DENABLE_CACHE="${CACHE}" \
+  -DENABLE_INCLUDE_WHAT_YOU_USE="${INCLUDE_WHAT_YOU_USE}" \
+  -DENABLE_CLANG_TIDY="${CLANG_TIDY}" \
+  -DENABLE_CPPCHECK="${CPPCHECK}"
 
 testExitStatus $? "cmake config"
 
@@ -55,6 +58,10 @@ testExitStatus $? "cmake build"
 # Package
 echo "Build target all..."
 cmake --build . --config "${BUILD_TYPE}" --target all
+
+# CPack
+echo "Pack"
+cpack -G DragNDrop
 
 # Test with CTest
 echo "All tests..."

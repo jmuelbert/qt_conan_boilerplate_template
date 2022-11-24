@@ -4,20 +4,25 @@ runtime: org.kde.Platform
 runtime-version: 5.15-21.08
 sdk: org.kde.Sdk
 command: qtwidgettest
-# rename-icon: qtwidgettest
-# rename-desktop-file: qtwidgettest
-# desktop-file-name-suffix: develop
 finish-args:
-  - --socket=x11
-  - --socket=wayland
+  # X11 + XShm access
   - --share=ipc
-  - --share=network
+  - --socket=x11
+  # Wayland access
+  - --socket=wayland
   - --device=dri
-  - --filesystem=host:ro
-  - --talk-name=org.freedesktop.Notifications
-  - --talk-name=org.kde.StatusNotifierWatcher
-  - --talk-name=org.freedesktop.FileManager1
+  # Connectivity
+  - --share=network
+  # QtSingleApplication, allow other instances to see log files
   - --env=TMPDIR=/var/tmp
+  # Allow loading files from anywhere
+  - --filesystem=host:ro
+  # Notification access
+  - --talk-name=org.freedesktop.Notifications
+  # System Tray Icon
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --own-name=org.kde.*
+  - --own-name=io.github.jmuelbert.qtwidgettest
 cleanup:
   - /include
   - /lib
@@ -59,5 +64,6 @@ modules:
       - -DENABLE_CONAN=OFF
       - -DBUILD_TESTING=OFF
     sources:
-      - type: dir
-        path: '../'
+      - type: git
+        path: 'https://github.com/jmuelbert/qt_conan_boilerplate_template.git'
+        branch: main

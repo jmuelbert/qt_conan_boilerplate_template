@@ -19,20 +19,27 @@ version: '0.0.2'
 
 apps:
   qtwidgettest:
-    common-id: com.github.jmuelbert.qt_canon_boilerplate
-    command: usr/bin/qtwidgettest
-    # command-chain:
-    #   - snap/command-chain/add-qt-shortcuts
+    common-id: io.github.jmuelbert.qtwidgettest
+    command: usr/local/bin/qtwidgettest
+    desktop: usr/local/share/applications/io.github.jmuelbert.qtwidgettest.desktop
+
     extensions:
       - kde-neon
+    environment:
+      DISABLE_WAYLAND: 1
+      XDG_DATA_DIRS: $SNAP/share:$XDG_DATA_DIRS
+      QT_QPA_PLATFORMTHEME: gtk3
     plugs:
       - home
+      - removable-media
+      - network
+      - network-bind
+      - opengl
+      - x11
+      - wayland
       - desktop
       - desktop-legacy
-      - wayland
-      - x11
-    environment:
-      QT_QPA_PLATFORMTHEME: gtk3
+      - unity7
 
 parts:
   extra-cmake-modules:
@@ -68,6 +75,24 @@ parts:
       - libspdlog-dev
       - libgmp-dev
       - kdoctools-dev
+      - g++
+      - make
+      - qt5-default
+      - git
+    stage-packages:
+      - dbus-x11
+      - libgtk2.0-0
+      - openssl
+      - ca-certificates
+      - libxkbcommon0
+      - ttf-ubuntu-font-family
+      - dmz-cursor-theme
+      - light-themes
+      - adwaita-icon-theme
+      - gnome-themes-standard
+      - shared-mime-info
+      - libgdk-pixbuf2.0-0
+
     parse-info:
       - usr/share/metainfo/io.github.jmuelbert.qtwidgettest.metainfo.xml
 
@@ -79,26 +104,6 @@ parts:
       - '-usr/lib/x86_64-linux-gnu/libQt5*'
       - '-usr/lib/x86_64-linux-gnu/libqt5*'
 
-  launcher:
-    source: scripts
-    plugin: dump
-    organize:
-      add-qt-shortcuts: snap/command-chain/add-qt-shortcuts
-    stage-packages:
-      - xdg-user-dirs
-
-  # qtctl:
-  #   source: https://github.com/snapcrafters/qtctl.git
-  #   plugin: cmake
-  #   build-snaps: [kde-frameworks-5-qt-5-15-core20-sdk]
-
-  # This part removes all the files in this snap which already exist in
-  # connected content and base snaps. Since these files will be available
-  # at runtime from the content and base snaps, they do not need to be
-  # included in this snap itself.
-  #
-  # More info: https://snapcraft-utils-library.readthedocs.io/en/latest/lib/cleanup.html
-  #
   cleanup:
     after: # Make this part run last; list all your other parts here
       - qtwidgettest

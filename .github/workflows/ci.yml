@@ -586,9 +586,6 @@ jobs:
         run: |
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-      - name: "Add GCC problem matcher"
-        uses: ammaraskar/gcc-problem-matcher@master
-
       - name: "📦 Create flatpak"
         run: |
           BUNDLE="io.github.jmuelbert.${{env.TARGET_NAME}}.flatpak"
@@ -596,8 +593,9 @@ jobs:
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
           BRANCH="main"
+
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
-          flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID}
+          flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
       - name: "📤 Upload artifact: FlatPak"

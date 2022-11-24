@@ -36,6 +36,16 @@ project(
     LANGUAGES C CXX
 )
 
+set(PROJECT_NAME_CAPITALIZED "QtWidgetTest")
+
+# This can be read from ${PROJECT_NAME} after project() is called
+if(APPLE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET
+        "10.15"
+        CACHE STRING "Minimum OS X deployment version"
+    )
+endif()
+
 # Project Option
 option(BUILD_TESTING "Build and run all tests" OFF)
 option(ENABLE_CONAN "Load dependecies with conan" TRUE)
@@ -87,6 +97,7 @@ set(ProjectOptions_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
 include(cmake/folders.cmake)
+include(Cache)
 include(CompilerWarnings)
 include(StaticAnalyzers)
 include(FeatureSummary)
@@ -95,6 +106,11 @@ if(ENABLE_CONAN)
     include(Conan)
     run_conan()
 endif()
+
+add_library(
+    project_options INTERFACE
+)
+target_compile_features(project_options INTERFACE cxx_std_17)
 
 # # Activate ECM
 # find_package(ECM REQUIRED NO_MODULE)
@@ -125,5 +141,7 @@ if(BUILD_TESTING)
 endif()
 
 include(cmake/dev-mode.cmake)
+
+include(Packaging)
 
 feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)

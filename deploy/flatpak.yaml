@@ -66,4 +66,4 @@ modules:
       - -DENABLE_CACHE=ON
     sources:
       - type: dir
-        path: .
+        path: ../

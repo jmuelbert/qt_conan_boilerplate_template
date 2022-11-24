@@ -65,6 +65,5 @@ modules:
       - -DBUILD_TESTING=OFF
       - -DENABLE_CACHE=ON
     sources:
-      - type: git
-        url: 'https://github.com/jmuelbert/qt_conan_boilerplate_template.git'
-        branch: main
+      - type: dir
+        path: .

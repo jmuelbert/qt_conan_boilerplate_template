@@ -494,7 +494,6 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           cpack -G DragNDrop
           cpack -G ZIP
-          ls -lh
 
       # TODO: Stored in install. Build installer with CPack
       - name: "⚙️ 🧊 Build"
@@ -504,7 +503,6 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           cpack -G WIX
           cpack -G ZIP
-          ls -lh
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -613,10 +611,9 @@ jobs:
           MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.yaml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
           APP_ID="io.github.jmuelbert.${{env.TARGET_NAME}}"
-          BRANCH="main"
 
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
-          flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID} ${BRANCH}
+          flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID}
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
 
       - name: "📤 Upload artifact: FlatPak"

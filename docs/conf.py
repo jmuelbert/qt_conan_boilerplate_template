@@ -27,7 +27,7 @@ copyright = "2022-present, Jürgen Mülbert"
 author = "Jürgen Mülbert"
 
 # The major project version, used as the replacement for |version|.
-version = get_version()
+# version = get_version()
 
 # The full project version, used as the replacement for |release| and
 # e.g. in the HTML templates.

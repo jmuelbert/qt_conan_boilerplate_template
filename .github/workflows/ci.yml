@@ -614,15 +614,15 @@ jobs:
 
           flatpak-builder --user --disable-rofiles-fuse --repo=repo --force-clean flatpak_app ${MANIFEST_PATH} --install-deps-from=flathub
           flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID}
-          ls -alFR
           mv $GITHUB_WORKSPACE/$BUNDLE $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+          ls -al
 
       - name: "📤 Upload artifact: FlatPak"
         uses: actions/upload-artifact@v3
         with:
           name: flatpak-artifact
           path: |
-            $GITHUB_WORKSPACE/io.github.jmuelbert.${{env.TARGET_NAME}}_${{ steps.get_version.outputs.VERSION }}.x86_64.flatpak
+            $GITHUB_WORKSPACE/*.flatpak
 
   snap-build:
     name: "🐧 Build snap on ubuntu-20.04"
@@ -717,7 +717,7 @@ jobs:
           release_name: ${{ github.ref }}
           body: ${{ steps.check-version.outputs }}
         env:
-          GITHUB_TOKEN: $${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build_GH_Pages:
     name: "Build GH Pages"

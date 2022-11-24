@@ -494,7 +494,7 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           cpack -G DragNDrop
           cpack -G ZIP
-          ls -ahFR ${{github.workspace}}/install
+          ls -lh
 
       # TODO: Stored in install. Build installer with CPack
       - name: "⚙️ 🧊 Build"
@@ -504,8 +504,7 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           cpack -G WIX
           cpack -G ZIP
-          ls ${{github.workspace}}/install
-          ls
+          ls -lh
 
       - name: "⚙️ 🐧 Build"
         if: runner.os == 'Linux'
@@ -558,14 +557,18 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: macos-artifacts
-          path: ${{github.workspace}}/install/${{ env.PROJECT_NAME }}-*.*
+          path: |
+            build/*.dmg
+            build/*.zip
 
       - name: "🧊 📤 Upload artifact: Windows Installer"
         if: runner.os ==  'Windows'
         uses: actions/upload-artifact@v3
         with:
           name: windows-artifacts
-          path: ${{github.workspace}}/install/${{ env.PROJECT_NAME }}*.*
+          path: |
+            build/*.msi
+            build/*.zip
 
   build-flatpak:
     name: "🐧 Build flatpak on ubuntu-latest"

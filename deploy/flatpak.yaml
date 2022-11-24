@@ -66,5 +66,5 @@ modules:
       - -DENABLE_CACHE=ON
     sources:
       - type: git
-        path: 'https://github.com/jmuelbert/qt_conan_boilerplate_template.git'
+        url: 'https://github.com/jmuelbert/qt_conan_boilerplate_template.git'
         branch: main

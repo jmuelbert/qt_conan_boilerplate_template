@@ -607,6 +607,7 @@ jobs:
 
       - name: "📦 Create flatpak"
         run: |
+          mkdir -pv $GITHUB_WORKSPACE/install
           BUNDLE="io.github.jmuelbert.${{env.TARGET_NAME}}.flatpak"
           MANIFEST_PATH=$GITHUB_WORKSPACE/deploy/flatpak.yaml
           RUNTIME_REPO="https://flathub.org/repo/flathub.flatpakrepo"
@@ -622,7 +623,7 @@ jobs:
         with:
           name: flatpak-artifact
           path: |
-            $GITHUB_WORKSPACE/*.flatpak
+            ./install/*.flatpak
 
   snap-build:
     name: "🐧 Build snap on ubuntu-20.04"

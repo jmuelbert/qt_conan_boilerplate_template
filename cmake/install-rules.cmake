@@ -1,3 +1,6 @@
+
+include_guard()
+
 install(
     TARGETS Test1_exe
     RUNTIME COMPONENT Test1_Runtime

@@ -3,9 +3,6 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 #
-#
-# External dependencies
-#
 
 #
 # App name and options
@@ -28,6 +25,8 @@ project(
     LANGUAGES CXX
 )
 
+include_guard()
+
 set(PROJECT_PREFIX QTWIDGETTEST_LIB_)
 
 option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OFF)
@@ -45,8 +44,6 @@ set(SOURCE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/source")
 
 set(HEADERS ${INCLUDE_PATH}/MyClass.h)
 set(SOURCES ${SOURCE_PATH}/MyClass.cpp)
-
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
 
 find_package(
     QT
@@ -141,17 +138,6 @@ endif()
 #
 # Project options
 #
-
-# set_target_properties(
-#     ${PROJECT_NAME}
-#     PROPERTIES
-#         ${DEFAULT_PROJECT_OPTIONS} INSTALL_RPATH
-#         "${LIBRARY_INSTALL_RPATH}" FOLDER
-#         "${IDE_FOLDER}" VERSION
-#         "${PROJECT_VERSION}" SOVERSION
-#         "${PROJECT_VERSION_MAJOR}"
-# )
-
 set_target_properties(
     ${PROJECT_NAME}
     PROPERTIES INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}"
@@ -266,9 +252,7 @@ install(
 
 # Tests
 if(BUILD_TESTING)
-    set(IDE_FOLDER "Tests")
     enable_testing()
     add_subdirectory(test)
 endif()
 
-add_folders(lib)

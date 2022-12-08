@@ -1,6 +1,9 @@
 # Example file to run OpenCppCoverage on Windows
 
+include_guard()
+
 include(ProcessorCount)
+
 ProcessorCount(N)
 
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/opencppcoverage")

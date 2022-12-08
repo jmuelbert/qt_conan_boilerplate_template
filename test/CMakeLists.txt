@@ -22,12 +22,15 @@ project(
     LANGUAGES CXX
 )
 
+
+include_guard()
+
 set(PROJECT_PREFIX QTWIDGETTEST_TEST1_)
+
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(GNUInstallDirs)
-
 include(CTest)
 
 #
@@ -124,4 +127,3 @@ add_test(NAME relaxed_constexpr_tests COMMAND relaxed_constexpr_tests)
 #   OUTPUT_SUFFIX
 #   .xml)
 
-add_folders(Test)

@@ -1,3 +1,6 @@
+
+include_guard()
+
 # ---- Developer mode ----
 
 # Developer mode enables targets and code paths in the CMake scripts that are

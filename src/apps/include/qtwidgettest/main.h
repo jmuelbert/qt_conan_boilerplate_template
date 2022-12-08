@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: EUPL-1.2
  *
  */
-#include <QtCore/qcoreapplication.h>
+
+#pragma once
+
 #include <functional>
 #include <iostream>
 #include <optional>
@@ -13,9 +15,8 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QLocale>
 #include <QTranslator>
-
-#include "qtwidgettest/mainwindow.h"
 
 #include "qtwidgettest/qtwidgettest-version.h"

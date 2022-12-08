@@ -1,3 +1,7 @@
+
+include_guard()
+
+
 set(SPELL_COMMAND
     codespell
     CACHE STRING "Spell checker to use"

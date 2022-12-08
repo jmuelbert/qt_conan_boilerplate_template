@@ -1,5 +1,7 @@
 # ---- Dependencies ----
 
+include_guard()
+
 set(extract_timestamps "")
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
     set(extract_timestamps DOWNLOAD_EXTRACT_TIMESTAMP YES)

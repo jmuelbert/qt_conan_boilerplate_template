@@ -1,3 +1,6 @@
+
+include_guard()
+
 set(FORMAT_PATTERNS
     source/*.cpp
     source/*.hpp

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-BUILD_TYPE="Debug"
+BUILD_TYPE="RelWithDebInfo"
 GENERATOR="Ninja"
 # WITH_IPO="ON"
 # NATIVE_OPTIMIZATION="ON"
@@ -11,9 +11,9 @@ CPPCHECK="ON"
 CLANG_TIDY="ON"
 INCLUDE_WHAT_YOU_USE="ON"
 # PCH="ON"
-TESTING=ON
-APPIMAGE_DST_PATH="${TARGET_NAME}.AppDir"
+TESTING="OFF"
 TARGET_NAME=qtwidgettest
+APPIMAGE_DST_PATH="${TARGET_NAME}.AppDir"
 
 # Function to test exit status of a command.
 # It exits if the command failed.
@@ -46,23 +46,22 @@ cmake -S .. -B . -G "$GENERATOR" \
   -DENABLE_CACHE="${CACHE}" \
   -DENABLE_INCLUDE_WHAT_YOU_USE="${INCLUDE_WHAT_YOU_USE}" \
   -DENABLE_CLANG_TIDY="${CLANG_TIDY}" \
-  -DENABLE_CPPCHECK="${CPPCHECK}"
+  -DENABLE_CPPCHECK="${CPPCHECK}" \
+  -DENABLE_CLAZY="${CLAZY}"
 
 testExitStatus $? "cmake config"
 
+echo "CMAKE_COMPILER_CXX:  ${CMAKE_COMPILER_CXX}"
+
 # Build using cmake (with install)
 echo "Build target install..."
-cmake --build . --config "${BUILD_TYPE}" --target install
+cmake --build . --config "${BUILD_TYPE}"
 testExitStatus $? "cmake build"
-
-# Package
-echo "Build target all..."
-cmake --build . --config "${BUILD_TYPE}" --target all
-
-# CPack
-echo "Pack"
-cpack -G DragNDrop
 
 # Test with CTest
 echo "All tests..."
 ctest -VV -C "${BUILD_TYPE}"
+
+# CPack
+echo "Pack"
+cpack -C "${BUILD_TYPE}" -G "DragNDrop;ZIP"

@@ -49,12 +49,18 @@ endif()
 # Project Option
 option(BUILD_TESTING "Build and run all tests" OFF)
 option(ENABLE_CONAN "Load dependecies with conan" TRUE)
+
 # Include cmake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/generators)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/generators
+    ${CMAKE_BINARY_DIR}/build/generators)
+list(APPEND CMAKE_PREFIX_PATH
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/generators
+    ${CMAKE_BINARY_DIR}/build/generators)
 
-set(projectPrefix QTTESTWIDGET_)
+set(projectPrefix ${PROJECT_NAME_CAPILIZED}_)
 
 # Options to enable folders in CMake generated projects for Visual Studio, Xcode, etc
 # Very useful to put 3rd-party libraries such as Minizip, GoogleTest and FuzzyLite in their own folders
@@ -69,19 +75,9 @@ define_property(
     PROPERTY FOLDER
     INHERITED
     BRIEF_DOCS
-        "Set
-       the
-       folder
-       name."
+        "Set the folder name."
     FULL_DOCS
-        "Use
-       to
-       organize
-       targets
-       in
-       an
-       IDE.
-       "
+        "Use to organize targets in an IDE."
 )
 
 set(CMAKE_CXX_STANDARD 17)
@@ -96,7 +92,6 @@ set(ProjectOptions_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/cmake)
 # include the files to allow calling individual functions (including the files does not run any code.)
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
-include(cmake/folders.cmake)
 include(Cache)
 include(CompilerWarnings)
 include(StaticAnalyzers)
@@ -107,11 +102,10 @@ if(ENABLE_CONAN)
     run_conan()
 endif()
 
-# TODO: Add the options in this way
-# add_library(
-#     project_options INTERFACE
-# )
-# target_compile_features(project_options INTERFACE cxx_std_17)
+add_library(
+    project_options INTERFACE
+)
+target_compile_features(project_options INTERFACE cxx_std_17)
 
 # # Activate ECM
 # find_package(ECM REQUIRED NO_MODULE)
@@ -125,14 +119,6 @@ endif()
 # Subdirs contain CMakeLists.txt files with commands to setup build
 # Comment the following line if the library is header-only
 add_subdirectory(src)
-
-# add usage example
-# add_subdirectory(example)
-
-# generate project documentation
-# if(ENABLE_DOXYGEN)
-#     run_doxygen()
-# endif()
 
 # Tests
 if(BUILD_TESTING)

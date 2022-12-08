@@ -1,3 +1,6 @@
+
+include_guard()
+
 option(ENABLE_CACHE "Enable cache if available" ON)
 if(NOT ENABLE_CACHE)
     return()

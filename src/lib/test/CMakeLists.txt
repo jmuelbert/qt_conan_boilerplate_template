@@ -22,6 +22,9 @@ project(
     LANGUAGES CXX
 )
 
+
+include_guard()
+
 set(PROJECT_PREFIX QTWIDGETTESTLIB_TEST_)
 
 option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OFF)
@@ -84,4 +87,3 @@ endif()
 
 add_test(NAME testMain COMMAND testMain)
 
-add_folders(lib_test)

@@ -1,3 +1,5 @@
+include_guard()
+
 # ---- Variables ----
 
 # We use variables separate from what CTest uses, because those have

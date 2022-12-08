@@ -1,4 +1,0 @@
-.. default-role:: term
-
-Glossary
-========

@@ -1,0 +1,29 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "debug",
+            "displayName": "'debug' config",
+            "description": "'debug' configure using 'Unix Makefiles' generator",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "toolchainFile": "/Users/juergen/Projects/GitHub/qt_conan_boilerplate_template/conan_toolchain.cmake",
+            "binaryDir": "/Users/juergen/Projects/GitHub/qt_conan_boilerplate_template"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug"
+        }
+    ],
+    "testPresets": []
+}

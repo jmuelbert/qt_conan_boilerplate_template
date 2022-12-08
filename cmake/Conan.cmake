@@ -26,17 +26,15 @@ macro(run_conan)
     # Add (or remove) remotes as needed
     # conan_add_remote(NAME conan-center URL https://conan.bintray.com)
     conan_add_remote(
-        NAME
-        cci
-        URL
-        https://center.conan.io
-        INDEX
-        0
+        NAME cci
+        URL https://center.conan.io
+        INDEX 0
     )
     conan_add_remote(NAME bincrafters URL https://bincrafters.jfrog.io/artifactory/api/conan/public-conan)
 
     if(CONAN_EXPORTED)
-        # standard conan installation, in which deps will be defined in conanfile. It is not necessary to call conan again, as it is already running.
+        # standard conan installation, deps will be defined in conanfile.py
+        # and not necessary to call conan again, conan is already running
         if(EXISTS "${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake")
             include(${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
         else()
@@ -68,13 +66,11 @@ macro(run_conan)
             # the external "conanfile.py" provided with the project
             # Alternatively a conanfile.txt could be used
             conan_cmake_install(
-                PATH_OR_REFERENCE
-                ${CMAKE_SOURCE_DIR}
-                BUILD
-                missing
+                PATH_OR_REFERENCE ${CMAKE_SOURCE_DIR}
+                OUTPUT_FOLDER ${CMAKE_BINARY_DIR}
+                BUILD missing
                 # Pass compile-time configured options into conan
-                OPTIONS
-                ${CONAN_OPTIONS}
+                OPTIONS ${CONAN_OPTIONS}
                 # Pass CMake compilers to Conan
                 ${CONAN_ENV}
                 # Pass either autodetected settings or a conan profile
@@ -84,5 +80,4 @@ macro(run_conan)
             )
         endforeach()
     endif()
-    set("generators/conan_toolchain.cmake")
 endmacro()

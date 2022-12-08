@@ -21,6 +21,8 @@ set(META_PROJECT_NAME "qtwidgettest-app")
 # Declare project
 project("${META_PROJECT_NAME}-tests" LANGUAGES CXX)
 
+include_guard()
+
 # Compiler settings and options
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -56,4 +58,3 @@ add_test(NAME cli.has_help COMMAND catch_main --help)
 add_test(NAME cli.version_matches COMMAND ${EXECUTABLE_PATH} --version)
 set_tests_properties(cli.version_matches PROPERTIES PASS_REGULAR_EXPRESSION "${PROJECT_VERSION}")
 
-add_folders(apps_test)

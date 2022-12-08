@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
+include_guard()
+
 macro(default name)
     if(NOT DEFINED "${name}")
         set("${name}" "${ARGN}")

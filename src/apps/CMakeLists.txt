@@ -4,15 +4,6 @@
 # SPDX-License-Identifier: EUPL-1.2
 #
 #
-# Options
-#
-# ${PROJECT_PREFIX}AS_SYSTEM_HEADERS=[true, false]
-#  Exports library as system HEADERS
-#  Default=false
-
-#
-# App name and options
-#
 
 cmake_minimum_required(VERSION 3.16..3.24 FATAL_ERROR)
 
@@ -31,6 +22,8 @@ project(
     LANGUAGES CXX
 )
 
+include_guard()
+
 set(PROJECT_PREFIX QTWIDGETTEST_)
 
 option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OFF)
@@ -38,7 +31,10 @@ option(${PROJECT_PREFIX}AS_SYSTEM_HEADERS "Exports library as system HEADERS" OF
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 #Generate version - header
-configure_file(version.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}-version.h @ONLY)
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/codegeneration/version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}-version.h @ONLY
+)
 
 #
 # SOURCES
@@ -145,7 +141,7 @@ if(WriterCompilerDetectionHeaderFound)
     )
 else()
     file(
-        COPY ${PROJECT_SOURCE_DIR}/codegeneration/${PROJECT_NAME}_features.h
+        COPY ${CMAKE_CURRENT_SOURCE_DIR}/codegeneration/${PROJECT_NAME}_features.h
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}
         USE_SOURCE_PERMISSIONS
     )
@@ -359,17 +355,8 @@ install(
     COMPONENT dev
 )
 
-# Install cmake find script for the project
-# install(
-#     FILES "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}-config.cmake"
-#     DESTINATION ${CMAKE_INSTALL_BINDIR}
-#     COMPONENT dev
-# )
-
 # Tests
 if(BUILD_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()
-
-add_folders(apps)

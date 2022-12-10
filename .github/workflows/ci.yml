@@ -1,5 +1,5 @@
 ---
-name: "CI: Testm Build and create release"
+name: "CI: Test, Build and create release"
 
 # yamllint disable
 on:

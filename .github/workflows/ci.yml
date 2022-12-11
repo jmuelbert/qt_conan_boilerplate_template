@@ -182,7 +182,8 @@ jobs:
             ninja-build \
             gcovr \
             ccache \
-            cppcheck
+            cppcheck \
+            googletest
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
           echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
           echo "CXX=g++-10" >> $GITHUB_ENV

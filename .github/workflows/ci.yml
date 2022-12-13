@@ -301,7 +301,7 @@ jobs:
           - "Ninja"
         include:
           - name: windows-latest-cl.exe
-            os: windows-latest
+            os: windows-2019
             qt_arch: win64_msvc2019_64
             arch: x64
             pak_arch: win64
@@ -403,7 +403,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.12.0
         with:
           # 14.1 is for vs2017, 14.2 is vs2019, 14.3 is VS2022
-          toolset: 14.3
+          toolset: 14.2
           arch: "${{ matrix.pak_arch }}"
 
       - name: (Linux/macOS) restore ccache

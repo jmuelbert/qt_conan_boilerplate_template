@@ -393,18 +393,18 @@ jobs:
           sudo xcode-select -s "/Applications/Xcode_13.2.1.app"
           echo "DEVELOPER_DIR=/Applications/Xcode_13.2.1.app/Contents/Developer" >> $GITHUB_ENV
 
-      # - name: "🧊 ⚙️ Install Windows dependencies"
-      #   if: runner.os ==  'Windows'
-      #   run: |
-      #     cinst ninja ccache
+      - name: "🧊 ⚙️ Install Windows dependencies"
+        if: runner.os ==  'Windows'
+        run: |
+          cinst ninja
 
-      # - name: "🧊 ⚙️ Configure MSVC"
-      #   if: runner.os ==  'Windows'
-      #   uses: ilammy/msvc-dev-cmd@v1.12.0
-      #   with:
-      #     # 14.1 is for vs2017, 14.2 is vs2019, 14.3 is VS2022
-      #     toolset: 14.3
-      #     arch: "${{ matrix.pak_arch }}"
+      - name: "🧊 ⚙️ Configure MSVC"
+        if: runner.os ==  'Windows'
+        uses: ilammy/msvc-dev-cmd@v1.12.0
+        with:
+          # 14.1 is for vs2017, 14.2 is vs2019, 14.3 is VS2022
+          toolset: 14.3
+          arch: "${{ matrix.pak_arch }}"
 
       - name: (Linux/macOS) restore ccache
         if: runner.os == 'Linux' || runner.os == 'macOS'
@@ -455,7 +455,7 @@ jobs:
         run: |
           cmake  `
           -S .. -B  . `
-          -G "Visual Studio 17 2022" -A x64 `
+          -G "${{matrix.generator}}" `
           -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" `
           -DBUILD_SHARED_LIBS:BOOL="TRUE"

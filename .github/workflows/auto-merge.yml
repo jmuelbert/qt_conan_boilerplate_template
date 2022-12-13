@@ -3,15 +3,15 @@ name: "Auto-merge minor/patch"
 
 # yamllint disable
 on:
-  # yamllint enable  schedule:
-  schedule:
-    - cron: "59 23 * * 0"
+  pull_request:
+  # yamllint enable  
 
 jobs:
-  automerge:
-    name: "Auto-merge minor and patch updates"
+  auto-merge:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
+          target: minor
           github-token: ${{ secrets.mytoken }}

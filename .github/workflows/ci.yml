@@ -393,18 +393,18 @@ jobs:
           sudo xcode-select -s "/Applications/Xcode_13.2.1.app"
           echo "DEVELOPER_DIR=/Applications/Xcode_13.2.1.app/Contents/Developer" >> $GITHUB_ENV
 
-      - name: "🧊 ⚙️ Install Windows dependencies"
-        if: runner.os ==  'Windows'
-        run: |
-          cinst ninja ccache
+      # - name: "🧊 ⚙️ Install Windows dependencies"
+      #   if: runner.os ==  'Windows'
+      #   run: |
+      #     cinst ninja ccache
 
-      - name: "🧊 ⚙️ Configure MSVC"
-        if: runner.os ==  'Windows'
-        uses: ilammy/msvc-dev-cmd@v1.12.0
-        with:
-          # 14.1 is for vs2017, 14.2 is vs2019, 14.3 is VS2022
-          toolset: 14.3
-          arch: "${{ matrix.pak_arch }}"
+      # - name: "🧊 ⚙️ Configure MSVC"
+      #   if: runner.os ==  'Windows'
+      #   uses: ilammy/msvc-dev-cmd@v1.12.0
+      #   with:
+      #     # 14.1 is for vs2017, 14.2 is vs2019, 14.3 is VS2022
+      #     toolset: 14.3
+      #     arch: "${{ matrix.pak_arch }}"
 
       - name: (Linux/macOS) restore ccache
         if: runner.os == 'Linux' || runner.os == 'macOS'

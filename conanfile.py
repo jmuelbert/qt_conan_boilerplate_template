@@ -109,7 +109,7 @@ class QtTestConan(ConanFile):
         self.options["qt"].qttranslations = True
 
     def requirements(self):
-        self.requires("spdlog/1.10.0")
+        self.requires("spdlog/1.11.0")
         self.requires("extra-cmake-modules/5.93.0")
 
         if self._use_libfmt:

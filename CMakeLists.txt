@@ -52,13 +52,20 @@ option(ENABLE_CONAN "Load dependecies with conan" TRUE)
 
 # Include cmake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}
-    ${CMAKE_BINARY_DIR}/generators
-    ${CMAKE_BINARY_DIR}/build/generators)
-list(APPEND CMAKE_PREFIX_PATH
+list(
+    APPEND
+    CMAKE_MODULE_PATH
     ${CMAKE_BINARY_DIR}
     ${CMAKE_BINARY_DIR}/generators
-    ${CMAKE_BINARY_DIR}/build/generators)
+    ${CMAKE_BINARY_DIR}/build/generators
+)
+list(
+    APPEND
+    CMAKE_PREFIX_PATH
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/generators
+    ${CMAKE_BINARY_DIR}/build/generators
+)
 
 set(projectPrefix ${PROJECT_NAME_CAPILIZED}_)
 
@@ -74,10 +81,8 @@ define_property(
     TARGET
     PROPERTY FOLDER
     INHERITED
-    BRIEF_DOCS
-        "Set the folder name."
-    FULL_DOCS
-        "Use to organize targets in an IDE."
+    BRIEF_DOCS "Set the folder name."
+    FULL_DOCS "Use to organize targets in an IDE."
 )
 
 set(CMAKE_CXX_STANDARD 17)

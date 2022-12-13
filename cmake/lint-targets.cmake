@@ -1,4 +1,3 @@
-
 include_guard()
 
 set(FORMAT_PATTERNS

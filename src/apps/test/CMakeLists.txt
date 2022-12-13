@@ -57,4 +57,3 @@ add_test(NAME cli.has_help COMMAND catch_main --help)
 # to make, but also easy to test for.
 add_test(NAME cli.version_matches COMMAND ${EXECUTABLE_PATH} --version)
 set_tests_properties(cli.version_matches PROPERTIES PASS_REGULAR_EXPRESSION "${PROJECT_VERSION}")
-

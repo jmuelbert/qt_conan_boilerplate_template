@@ -22,7 +22,6 @@ project(
     LANGUAGES CXX
 )
 
-
 include_guard()
 
 set(PROJECT_PREFIX QTWIDGETTESTLIB_TEST_)
@@ -86,4 +85,3 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 add_test(NAME testMain COMMAND testMain)
-

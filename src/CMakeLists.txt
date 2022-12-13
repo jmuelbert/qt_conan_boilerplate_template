@@ -12,9 +12,9 @@ cmake_minimum_required(VERSION 3.16..3.24 FATAL_ERROR)
 # Make sure that an old version of CMake is not being used so modern features are available
 # Update this to the min, max versions that applicable
 if(${CMAKE_VERSION} VERSION_LESS 3.24)
-	cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 else()
-	cmake_policy(VERSION 3.24)
+    cmake_policy(VERSION 3.24)
 endif()
 
 include_guard()
@@ -29,4 +29,3 @@ add_subdirectory(lib)
 
 #App
 add_subdirectory(apps)
-

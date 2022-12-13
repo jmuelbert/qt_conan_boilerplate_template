@@ -14,15 +14,14 @@ cmake_minimum_required(VERSION 3.16..3.24 FATAL_ERROR)
 # Makesure thet an old version of CMake is not being used so modern features are available
 # Update this to the mix, max versions that are applicable.
 if(${CMAKE_VERSION} VERSION_LESS 3.24)
-	cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_VERSION_MINOR})
+    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_VERSION_MINOR})
 else()
-	cmake_policy(VERSION 3.24)
+    cmake_policy(VERSION 3.24)
 endif()
 
 include_guard()
 
 find_package(fmt)
-
 
 add_executable(
     fuzz_tester
@@ -45,4 +44,3 @@ set(FUZZ_RUNTIME
 ) # Default of 10 seconds
 
 add_test(NAME fuzz_tester_run COMMAND fuzz_tester -max_total_time=${FUZZ_RUNTIME})
-

@@ -1,6 +1,4 @@
-
 include_guard()
-
 
 set(SPELL_COMMAND
     codespell

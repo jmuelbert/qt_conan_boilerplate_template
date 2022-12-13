@@ -7,7 +7,6 @@
 
 include_guard()
 
-
 # TODO: Change to Packaging.cmake.in
 
 #

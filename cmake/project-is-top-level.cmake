@@ -1,4 +1,3 @@
-
 include_guard()
 
 # This variable is set by project() in CMake 3.21+

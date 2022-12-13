@@ -1,4 +1,3 @@
-
 include_guard()
 
 option(ENABLE_CACHE "Enable cache if available" ON)

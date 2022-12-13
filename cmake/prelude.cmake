@@ -1,6 +1,5 @@
 include_guard()
 
-
 # ---- In-source guard ----
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)

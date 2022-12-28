@@ -1,12 +1,1 @@
-{
-    "version": 4,
-    "vendor": {
-        "conan": {}
-    },
-    "include": [
-        "/Users/juergen/Projects/GitHub/build-qt_conan_boilerplate_template-Qt_6_4_1_for_macOS-DebugS/build/generators/CMakePresets.json",
-        "/Users/juergen/Projects/GitHub/build-qt_conan_boilerplate_template-Qt_6_4_1_for_macOS-Debug/build/generators/CMakePresets.json",
-        "/Users/juergen/Projects/GitHub/qt_conan_boilerplate_template/build/build/generators/CMakePresets.json",
-        "/Users/juergen/Projects/GitHub/build-qt_conan_boilerplate_template-Qt_6_4_1_for_macOS-RelWithDebInfo/build/generators/CMakePresets.json"
-    ]
-}
+{}

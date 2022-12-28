@@ -119,6 +119,10 @@ endif()
 
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES} ${HEADERS} ${MOC_SOURCE_FILES})
 
+configure_file(
+    "codegeneration/version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h" ESCAPE_QUOTES
+)
+
 # Create feature detection header
 # Compilers:
 #   https://cmake.org/cmake/help/v3.1/variable/CMAKE_LANG_COMPILER_ID.html#variable:CMAKE_%3CLANG%3E_COMPILER_ID
@@ -199,7 +203,7 @@ target_compile_options(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE fmt::fmt spdlog::spdlog Qt${QT_VERSION_MAJOR}::Widgets
+    PRIVATE fmt::fmt spdlog::spdlog Qt${QT_VERSION_MAJOR}::Widgets qtwidgettestlib::qtwidgettestlib
     PUBLIC ${DEFAULT_LINKER_OPTIONS}
     INTERFACE
 )

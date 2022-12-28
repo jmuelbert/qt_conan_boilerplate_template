@@ -295,30 +295,37 @@ jobs:
       fail-fast: false
       matrix:
         name: [ubuntu-latest-clang++, macos-latest-clang++, windows-latest-cl.exe]
-        build_type:
-          - Release
-        generator:
-          - "Ninja"
         include:
-          - name: windows-latest-cl.exe
-            os: windows-latest
-            qt_arch: win64_msvc2019_64
-            arch: x64
-            cxx:
-            cc:
-            pak_arch: win64
-            # generator: 'Visual Studio 16 2019'
           - name: ubuntu-latest-clang++
             os: ubuntu-latest
+            build_type: Release
             qt_arch: gcc_64
-            cxx: clang++
-            cc: clang
+            compiler: clang++-14
+            ccompiler: clang-14
+            clang-tidy: ''
+            generators: Ninja
+          - name: windows-latest-cl.exe
+            os: windows-latest
+            build_type: Release
+            qt_arch: win64_msvc2019_64
+            arch: x64
+            pak_arch: win64
+            compiler: cl.exe
+            ccompiler: cl.exe
+            clang-tidy: ''
+            generators: Ninja
           - name: macos-latest-clang++
             os: macos-latest
+            build_type: Release
             qt_arch: clang_64
             arch: clang_64
-            cxx: clang++
-            cc: clang
+            compiler: clang++
+            ccompiler: clang
+            generators: Ninja
+
+    env:
+      CXX: ${{ matrix.compiler }}
+      CC: ${{ matrix.ccompiler }}
 
     permissions:
       actions: read
@@ -457,8 +464,8 @@ jobs:
         run: |
           cmake  `
           -S .. -B  . `
-          -G "${{matrix.generator}}" `
-          -DCMAKE_BUILD_TYPE:STRING=${{ env.BUILD_TYPE }} `
+          -G "${{matrix.generators}}" `
+          -DCMAKE_BUILD_TYPE:STRING=${{ matrix.build_type }} `
           -DCMAKE_INSTALL_PREFIX:PATH="${{github.workspace}}/install" `
           -DBUILD_SHARED_LIBS:BOOL="TRUE"
         # -G "Visual Studio 16 2019" -A "x64" `

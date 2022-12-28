@@ -5,6 +5,8 @@
  *
  */
 
+#include <iostream>
+#include "qtwidgettest/version.h"
 #include "qtwidgettest/main.h"
 #include "qtwidgettest/mainwindow.h"
 
@@ -12,12 +14,12 @@ int main(int argc, char *argv[])
 {
     QApplication const app(argc, argv);
 
-    QCoreApplication::setApplicationName(PROJECT_NAME);
-    QCoreApplication::setApplicationVersion(VERSION);
+    QCoreApplication::setApplicationName(project_name);
+    QCoreApplication::setApplicationVersion(project_version);
 
     QCommandLineParser parser;
 
-    parser.setApplicationDescription(PROJECT_DESCRIPTION);
+    parser.setApplicationDescription(project_description);
     parser.addHelpOption();
     parser.addVersionOption();
 

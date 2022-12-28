@@ -18,7 +18,9 @@ from conan.tools.scm import Version
 
 required_conan_version = ">=1.50.0"
 
-
+"""Build and dependency definition
+   for conan.
+"""
 class QtTestConan(ConanFile):
     name = "qt_test"
 
@@ -57,18 +59,56 @@ class QtTestConan(ConanFile):
         "CMakeLists.txt",
     ]
 
-    no_copy_source = True
     generators = "CMakeDeps", "CMakeToolchain"
     #   "cmake", "cmake_find_package",
 
+    """_summary_
+
+    Raises:
+        ConanInvalidConfiguration: _description_
+        ConanInvalidConfiguration: _description_
+        ConanInvalidConfiguration: _description_
+        ConanInvalidConfiguration: _description_
+        ConanInvalidConfiguration: _description_
+        ConanInvalidConfiguration: _description_
+
+    Returns:
+        _type_: _description_
+    """
     @property
     def _build_all(self):
         return bool(self.conf["user.build:all"])
 
+    """_summary_
+
+        Raises:
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+
+        Returns:
+            _type_: _description_
+    """
     @property
     def _build_tests(self):
         return bool((self.settings.build_type == "Debug") or (self.settings.build_type == "RelWithDebInfo") )
 
+    """ summary_
+
+        Raises:
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+
+        Returns:
+            _type_: _description_
+    """
     @property
     def _use_libfmt(self):
         compiler = self.settings.compiler
@@ -78,12 +118,38 @@ class QtTestConan(ConanFile):
         ) or (compiler == "msvc" and version >= 193 and compiler.cppstd == 23)
         return not std_support
 
+    """_summary_
+
+        Raises:
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+
+        Returns:
+            _type_: _description_
+    """
     @property
     def _use_range_v3(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         return "clang" in compiler and compiler.libcxx == "libc++" and version < 14
 
+    """_summary_
+
+        Raises:
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+            ConanInvalidConfiguration: _description_
+
+        Returns:
+            _type_: _description_
+    """
     @property
     def _msvc_version(self):
         compiler = self.settings.compiler
@@ -92,6 +158,8 @@ class QtTestConan(ConanFile):
         else:
             return int(f"{compiler.version}0")
 
+    """_summary_
+    """
     def set_version(self):
         content = load(
             self, os.path.join(self.recipe_folder, "src/apps//CMakeLists.txt")
@@ -101,6 +169,8 @@ class QtTestConan(ConanFile):
         ).group(1)
         self.version = version.strip()
 
+    """_summary_
+    """
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
@@ -108,6 +178,8 @@ class QtTestConan(ConanFile):
         self.options["qt"].shared = True
         self.options["qt"].qttranslations = True
 
+    """_summary_
+    """
     def requirements(self):
         self.requires("spdlog/1.11.0")
         self.requires("extra-cmake-modules/5.93.0")
@@ -119,6 +191,9 @@ class QtTestConan(ConanFile):
         if qtDir == 0:
             self.requires("qt/6.4.1")
 
+
+    """_summary_
+    """
     def build_requirements(self):
         if self._build_tests:
             self.test_requires("gtest/1.12.1")
@@ -127,6 +202,8 @@ class QtTestConan(ConanFile):
             # self.tool_requires("doxygen/1.9.4")
 
     # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
+    """_summary_
+    """
     def configure(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
@@ -153,9 +230,13 @@ class QtTestConan(ConanFile):
             raise ConanInvalidConfiguration("Unsupported compiler")
         check_min_cppstd(self, 17)
 
+    """_summary_
+    """
     def layout(self):
         cmake_layout(self)
 
+    """_summary_
+    """
     def generate(self):
         # This generates "conan_toolchain.cmake" in self.generators_folder
         tc = CMakeToolchain(self)
@@ -168,6 +249,8 @@ class QtTestConan(ConanFile):
         deps = CMakeDeps(self)
         deps.generate()
 
+    """_summary_
+    """
     def build(self):
         cmake = CMake(self)
         cmake.configure(build_script_folder=None if self._build_all else "src")
@@ -175,9 +258,13 @@ class QtTestConan(ConanFile):
         if self._build_all:
             cmake.test()
 
+    """_summary_
+    """
     def package_id(self):
         self.info.clear()
 
+    """_summary_
+    """
     def package(self):
         copy(
             self,
@@ -189,6 +276,8 @@ class QtTestConan(ConanFile):
         cmake.install()
         rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
 
+    """_summary_
+    """
     def package_info(self):
         compiler = self.settings.compiler
 

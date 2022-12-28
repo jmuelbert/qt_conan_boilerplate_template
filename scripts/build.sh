@@ -1,5 +1,6 @@
 #! /bin/bash
 
+CMAKE_EXPORT_COMPILE_COMMANDS="ON"
 BUILD_TYPE="RelWithDebInfo"
 GENERATOR="Ninja"
 # WITH_IPO="ON"
@@ -14,6 +15,7 @@ INCLUDE_WHAT_YOU_USE="ON"
 TESTING="OFF"
 TARGET_NAME=qtwidgettest
 APPIMAGE_DST_PATH="${TARGET_NAME}.AppDir"
+
 
 # Function to test exit status of a command.
 # It exits if the command failed.
@@ -47,7 +49,8 @@ cmake -S .. -B . -G "$GENERATOR" \
   -DENABLE_INCLUDE_WHAT_YOU_USE="${INCLUDE_WHAT_YOU_USE}" \
   -DENABLE_CLANG_TIDY="${CLANG_TIDY}" \
   -DENABLE_CPPCHECK="${CPPCHECK}" \
-  -DENABLE_CLAZY="${CLAZY}"
+  -DENABLE_CLAZY="${CLAZY}" \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL="ON"
 
 testExitStatus $? "cmake config"
 

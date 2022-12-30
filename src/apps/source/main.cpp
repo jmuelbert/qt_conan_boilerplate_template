@@ -6,10 +6,10 @@
  */
 
 #include <iostream>
-// #include "qtwidgettest/qtwidgettest-version.h"
 #include "qtwidgettest/main.h"
 #include "qtwidgettest/mainwindow.h"
 #include "qtwidgettest/version.h"
+
 
 int main(int argc, char *argv[])
 {

@@ -46,13 +46,14 @@ repos:
     rev: v14.0.6
     hooks:
       - id: clang-format
-        files: (\.cpp|\.h|\.c)
+        exclude: (.json)
   - repo: https://github.com/PyCQA/pylint
     rev: v2.15.4
     hooks:
       - id: pylint
         args: ['--disable=C0103,C0301,C0114,R0801']
-        exclude: (\.cmake-format\.py)
+        exclude: (.cmake-format.py|conanfile.py)
+        additional_dependencies: ["PySide2", "PySide6"]
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v1.7.0
     hooks:

@@ -33,7 +33,7 @@ macro(run_conan)
         # standard conan installation, deps will be defined in conanfile.py
         # and not necessary to call conan again, conan is already running
         if(EXISTS "${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake")
-            include(${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
+            include("${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake")
         else()
             message(
                 FATAL_ERROR

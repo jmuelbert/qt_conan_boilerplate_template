@@ -1,16 +1,24 @@
 #
 # SPDX-FileCopyrightText: 2022 Project qt_conan_boilerplate_template, Jürgen Mülbert
+# Author: Jürgen Mülbert
 #
 # SPDX-License-Identifier: EUPL-1.2
 #
 #
 
+# Pass the following variables to cmake to control the build process:
 #
 # BUILD_TESTING=[True, False]
 # Default=OFF
 #
 # ENABLE_CONAN=[True, False]
 # Default=True
+#
+# TODO: Implement!
+#
+# -DXXX_QT6=[true, false]
+# Build against QT6 rather than Qt5
+# Default=true (Qt6 will be used by default)
 
 cmake_minimum_required(VERSION 3.16..3.24 FATAL_ERROR)
 
@@ -36,6 +44,8 @@ project(
     LANGUAGES C CXX
 )
 
+include_guard()
+
 set(PROJECT_NAME_CAPITALIZED "QtWidgetTest")
 
 # This can be read from ${PROJECT_NAME} after project() is called
@@ -49,23 +59,6 @@ endif()
 # Project Option
 option(BUILD_TESTING "Build and run all tests" OFF)
 option(ENABLE_CONAN "Load dependecies with conan" TRUE)
-
-# Include cmake modules
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-list(
-    APPEND
-    CMAKE_MODULE_PATH
-    ${CMAKE_BINARY_DIR}
-    ${CMAKE_BINARY_DIR}/generators
-    ${CMAKE_BINARY_DIR}/build/generators
-)
-list(
-    APPEND
-    CMAKE_PREFIX_PATH
-    ${CMAKE_BINARY_DIR}
-    ${CMAKE_BINARY_DIR}/generators
-    ${CMAKE_BINARY_DIR}/build/generators
-)
 
 set(projectPrefix ${PROJECT_NAME_CAPILIZED}_)
 
@@ -85,11 +78,23 @@ define_property(
     FULL_DOCS "Use to organize targets in an IDE."
 )
 
+set(QT_MIN_VERSION "5.15.2")
+set(KF5_DEP_VERSION "5.90.0")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include_guard()
+# Include cmake modules
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(
+    APPEND
+    CMAKE_MODULE_PATH
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/generators
+    ${CMAKE_BINARY_DIR}/build/generators
+)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 # only usable here
 set(ProjectOptions_SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/cmake)
@@ -100,21 +105,38 @@ include(cmake/variables.cmake)
 include(Cache)
 include(CompilerWarnings)
 include(StaticAnalyzers)
-include(FeatureSummary)
+
+
 
 if(ENABLE_CONAN)
     include(Conan)
     run_conan()
+    include(conan_toolchain)
 endif()
+
+find_package(ECM REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+
+include(KDECompilerSettings NO_POLICY_SCOPE)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDEClangFormat)
+include(KDEGitCommitHooks)
+
+include(ECMOptionalAddSubdirectory)
+include(ECMAddAppIcon)
+include(ECMInstallIcons)
+include(ECMDeprecationSettings)
+
+include(FeatureSummary)
+
+# Forbid some old things
+add_definitions(-DQT_NO_FOREACH)
 
 add_library(
     project_options INTERFACE
 )
 target_compile_features(project_options INTERFACE cxx_std_17)
-
-# # Activate ECM
-# find_package(ECM REQUIRED NO_MODULE)
-# list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 #
 # Project modules
@@ -123,7 +145,10 @@ target_compile_features(project_options INTERFACE cxx_std_17)
 # Add subdirs for headers, sources, and executables
 # Subdirs contain CMakeLists.txt files with commands to setup build
 # Comment the following line if the library is header-only
-add_subdirectory(src)
+ecm_optional_add_subdirectory(src)
+
+# our documentation
+ecm_optional_add_subdirectory(doc)
 
 # Tests
 if(BUILD_TESTING)
@@ -132,8 +157,16 @@ if(BUILD_TESTING)
     add_subdirectory(test)
 endif()
 
-include(cmake/dev-mode.cmake)
+feature_summary(INCLUDE_QUIET_PACKAGES WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-include(Packaging)
+file(
+    GLOB_RECURSE
+    ALL_CLANG_FORMAT_SOURCE_FILES
+    *.cpp
+    *.h
+    *.hpp
+    *.c
+)
+kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
+kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
 
-feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)

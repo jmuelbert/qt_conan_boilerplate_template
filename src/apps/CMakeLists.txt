@@ -36,6 +36,10 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/${PROJECT_NAME}-version.h @ONLY
 )
 
+configure_file(
+    "codegeneration/version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h" ESCAPE_QUOTES
+)
+
 #
 # SOURCES
 #
@@ -119,10 +123,6 @@ endif()
 
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES} ${HEADERS} ${MOC_SOURCE_FILES})
 
-configure_file(
-    "codegeneration/version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h" ESCAPE_QUOTES
-)
-
 # Create feature detection header
 # Compilers:
 #   https://cmake.org/cmake/help/v3.1/variable/CMAKE_LANG_COMPILER_ID.html#variable:CMAKE_%3CLANG%3E_COMPILER_ID
@@ -151,7 +151,6 @@ else()
     )
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "${LIBRARY_INSTALL_RPATH}" FOLDER "${IDE_FOLDER}")
 #
 # Include directories
 #
@@ -247,12 +246,16 @@ if(APPLE OR WIN32)
 
         install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION . COMPONENT Runtime)
 
-        install(FILES ${qm_files}
-                DESTINATION ${EXECUTABLE_PATH}/Contents/Resources/Translations/${TRANSLATION_INSTALL_DIR}
+        install(
+            FILES ${qm_files}
+            DESTINATION ${EXECUTABLE_PATH}/Contents/Resources/Translations/${TRANSLATION_INSTALL_DIR}
+            COMPONENT Translations
         )
 
-        install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-                DESTINATION ${EXECUTABLE_PATH}/Contents/Resources/Icons
+        install(
+            FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+            DESTINATION ${EXECUTABLE_PATH}/Contents/Resources/Icons
+            COMPONENT Runtime
         )
 
         configure_file(
@@ -265,11 +268,18 @@ if(APPLE OR WIN32)
 
         install(TARGETS ${PROJECT_NAME} ${INSTALL_PROJECT_NAMES_DEFAULT_ARGS})
 
-        install(FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
-                DESTINATION "${CMAKE_INSTALL_DATADIR}"
+        install(
+            FILES "${CMAKE_SOURCE_DIR}/assets/icons/icons8-app-symbol-80.png"
+            DESTINATION "${CMAKE_INSTALL_DATADIR}"
+            COMPONENT Runtime
         )
 
-        install(FILES ${qm_files} DESTINATION "${CMAKE_INSTALL_BINDIR}/Translations")
+        install(
+            FILES ${qm_files}
+            DESTINATION "${CMAKE_INSTALL_BINDIR}/Translations"
+            COMPONENT Translations
+        )
+
     endif()
     # The following script must only be executed at install time
     set(DEPLOY_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/deploy_${PROJECT_NAME}.cmake")
@@ -293,9 +303,11 @@ qt_deploy_runtime_dependencies(
     # Omitting RUNTIME DESTINATION will install a non-bundle PROJECT_NAME to CMAKE_INSTALL_BINDIR,
     # which coincides with the default value of QT_DEPLOY_BIN_DIR used above, './bin'.
     # Installing macOS bundles always requires an explicit BUNDLE DESTINATION option.
-    install(TARGETS ${PROJECT_NAME} # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
-                    #                           and ./binHelperApp.exe
-            BUNDLE DESTINATION . # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
+    install(
+        TARGETS ${PROJECT_NAME} # Install to CMAKE_INSTALL_PREFIX/bin/MyApp.exe
+                #                           and ./binHelperApp.exe
+        BUNDLE DESTINATION . # Install to CMAKE_INSTALL_PREFIX/MyApp.app/Contents/MacOS/MyApp
+               COMPONENT Runtime
     )
 
     install(SCRIPT ${DEPLOY_SCRIPT}) # Add its runtime dependencies

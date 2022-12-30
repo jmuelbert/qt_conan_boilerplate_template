@@ -6,7 +6,7 @@ out/
 *.rej
 *.orig
 *.out
-# /.clang-format
+/.clang-format
 /.idea
 *.user*
 

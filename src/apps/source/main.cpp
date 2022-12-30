@@ -5,11 +5,10 @@
  *
  */
 
-#include <iostream>
 #include "qtwidgettest/main.h"
 #include "qtwidgettest/mainwindow.h"
 #include "qtwidgettest/version.h"
-
+#include <iostream>
 
 int main(int argc, char *argv[])
 {

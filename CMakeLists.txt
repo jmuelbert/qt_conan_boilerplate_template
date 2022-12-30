@@ -106,8 +106,6 @@ include(Cache)
 include(CompilerWarnings)
 include(StaticAnalyzers)
 
-
-
 if(ENABLE_CONAN)
     include(Conan)
     run_conan()
@@ -157,7 +155,11 @@ if(BUILD_TESTING)
     add_subdirectory(test)
 endif()
 
-feature_summary(INCLUDE_QUIET_PACKAGES WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+feature_summary(
+    INCLUDE_QUIET_PACKAGES
+    WHAT ALL
+    FATAL_ON_MISSING_REQUIRED_PACKAGES
+)
 
 file(
     GLOB_RECURSE
@@ -169,4 +171,3 @@ file(
 )
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
-

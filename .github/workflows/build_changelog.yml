@@ -1,18 +1,22 @@
-name: Build Changelog
-
+---
+name: 'Build Changelog'
 on:
-    - push
-    - pull_request
+  push:
+    tags:
+      - '*'
 
 jobs:
-    changelog:
-        runs-on: ubuntu-latest
-        name: Changelog Validate
-        steps:
-            - uses: actions/checkout@v3
-            - name: "Build Changelog"
-              uses: mikepenz/release-changelog-builder-action@v3
-              with:
-                configuration: ".github/changelog_configuration.json"
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
+        with:
+          body: ${{steps.github_release.outputs.changelog}}

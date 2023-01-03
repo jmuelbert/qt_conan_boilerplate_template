@@ -140,7 +140,7 @@
             "binaryDir": "${sourceDir}/build-dev6",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_EXPORT_COMPILE_COMMMANDS": "ON",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "CMAKE_PREFIX_PATH": "$env{QT6_DIR}"
             }
         },

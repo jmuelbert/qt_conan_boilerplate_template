@@ -130,9 +130,6 @@ include(ECMDeprecationSettings)
 
 include(FeatureSummary)
 
-# Forbid some old things
-add_definitions(-DQT_NO_FOREACH)
-
 add_library(
     project_options INTERFACE
 )

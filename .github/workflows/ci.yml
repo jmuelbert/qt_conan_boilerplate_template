@@ -73,7 +73,7 @@ jobs:
         with:
           source: "."
           exclude: "./third_party ./external"
-          extensions: "h,cpp,hpp"
+          extensions: "c,h,cpp,hpp"
           clangFormatVersion: 14
           inplace: true
 
@@ -119,6 +119,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # lint:
+
   # tests:
   tests:
     runs-on: ${{ matrix.os }}
@@ -302,7 +303,7 @@ jobs:
             qt_arch: gcc_64
             compiler: clang++-14
             ccompiler: clang-14
-            clang-tidy: ''
+            clang-tidy: ""
             generators: Ninja
           - name: windows-latest-cl.exe
             os: windows-latest
@@ -312,7 +313,7 @@ jobs:
             pak_arch: win64
             compiler: cl.exe
             ccompiler: cl.exe
-            clang-tidy: ''
+            clang-tidy: ""
             generators: Ninja
           - name: macos-latest-clang++
             os: macos-latest
@@ -705,26 +706,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: upload
     steps:
-      - name: "🧰 Checkout"
-        uses: actions/checkout@v3
-        with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
-
-      - name: "Build/Update ChangeLog"
-        id: github_changelog
+      - name: Build Changelog
+        id: github_release
         uses: mikepenz/release-changelog-builder-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Create Release"
-        uses: actions/create-release@v1
+      - name: Create Release
+        uses: mikepenz/action-gh-release@v0.2.0-a03 #softprops/action-gh-release
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: ${{ steps.check-version.outputs }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          body: ${{steps.github_release.outputs.changelog}}
 
   build_GH_Pages:
     name: "Build GH Pages"

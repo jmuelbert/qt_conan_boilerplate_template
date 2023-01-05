@@ -73,7 +73,7 @@ env:
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   CLANG_TIDY_VERSION: "13.0.0"
-  CXX: g++-10
+  CXX: g++-11
 
 jobs:
   build:
@@ -97,16 +97,16 @@ jobs:
 
       matrix:
         os:
-          - ubuntu-20.04
+          - ubuntu-latest
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
-          - gcc-10
+          - gcc-11
         generator:
           - "Ninja Multi-Config"
         build_type:
           - Debug
         qt_version:
-          - "6.3.0"
+          - "6.4.1"
         qt_target:
           - "desktop"
 
@@ -122,18 +122,14 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: "🐧 ⚙️ Install Linux dependencies"
-        run: |
-          sudo apt install -y libclang-dev ninja-build gcovr ccache
-          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
-          echo "CXX=g++-10" >> $GITHUB_ENV
-          echo "CC=gcc-10" >> $GITHUB_ENV
-
       - name: "⚙️ Install Python"
         id: python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          # Read python version from a file .python-version
+          python-version-file: ".python-version"
+          #check-latest: true
+          cache: pip
 
       - name: "⚙️ Install Python dependencies"
         shell: bash
@@ -141,6 +137,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip3 install "conan<2"
+
+      - name: "🐧 ⚙️ Install Linux dependencies"
+        run: |
+          sudo apt install -y libclang-dev ninja-build gcovr ccache
+          echo "CCACHE_DIR=${{runner.workspace}}/ccache" >> $GITHUB_ENV
+          echo "CXX=g++-11" >> $GITHUB_ENV
+          echo "CC=gcc-11" >> $GITHUB_ENV
 
       - name: Configure Conan
         shell: bash
@@ -184,13 +187,6 @@ jobs:
           # tools: "tools_ifw"
           set-env: "true"
 
-      - name: "Cache Qt"
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: "${{ github.workspace }}/Qt"
-          key: ${{ runner.os }}-QtCache
-
       - name: "Cleanup Conan system packages (they are not properly cached)"
         run: |
           conan remove -f '*/system'
@@ -198,8 +194,11 @@ jobs:
       - name: "Add GCC problem matcher"
         uses: ammaraskar/gcc-problem-matcher@master
 
-      - name: "Create Working directory"
-        run: mkdir -pv build
+      - name: "Setup Cache"
+        uses: ./.github/actions/setup_cache
+        with:
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
 
       - name: "Cache SonarCloud packages"
         uses: actions/cache@v3
@@ -228,6 +227,11 @@ jobs:
       - name: "Xvfb run for ${{ runner.os }}"
         run: |
           Xvfb -ac ${{ env.DISPLAY }} -screen 0 1280x780x24 &
+
+      - name: "Create Build Environment"
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: cmake -E make_directory build
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results

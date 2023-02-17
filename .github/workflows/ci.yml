@@ -403,7 +403,7 @@ jobs:
 
       - name: "🧊 ⚙️ Configure MSVC"
         if: runner.os ==  'Windows'
-        uses: ilammy/msvc-dev-cmd@v1.12.0
+        uses: ilammy/msvc-dev-cmd@v1.12.1
         with:
           # 14.1 is for vs2017, 14.2 is vs2019, 14.3 is VS2022
           toolset: 14.2

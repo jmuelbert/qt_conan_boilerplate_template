@@ -6,10 +6,10 @@ out/
 *.rej
 *.orig
 *.out
-/.clang-format
 /.idea
 *.user*
 
+/.clang-format
 .envrc
 
 # Conan

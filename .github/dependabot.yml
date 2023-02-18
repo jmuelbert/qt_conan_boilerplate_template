@@ -1,71 +1,49 @@
 ---
+# SPDX-FileCopyrightText: Jürgen Mülbert <juergen.muelbert@web.de>
+#
+# SPDX-License-Identifier: EUPL-1.2
+#
 # To get started with Dependabot version updates, you'll need to specify which
 # package ecosystems to update and where the package manifests are located.
 # Please see the documentation for all configuration options:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
 updates:
-  - package-ecosystem: "github-actions" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: github-actions
+    directory: "/"
     schedule:
-      interval: "weekly"
-      day: "friday"
+      interval: "daily"
     commit-message:
+      include: scope
       prefix: ":rocket: gha"
 
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
-      day: "friday"
+      interval: "daily"
     commit-message:
       prefix: ":rocket: docker"
 
   - package-ecosystem: "bundler" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
-      day: "friday"
+      interval: "daily"
     commit-message:
       prefix: ":rocket: bundler"
 
-  - package-ecosystem: "npm" # See documentation for possible values
+  # Maintain dependencies for npm
+  - package-ecosystem: bundler # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
-      day: "friday"
+      interval: "daily"
     commit-message:
       prefix: ":rocket: npm"
 
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/**" # Location of package manifests
     schedule:
-      interval: "weekly"
-      day: "friday"
+      interval: "daily"
     commit-message:
       prefix: ":rocket: pip"
-
-  - package-ecosystem: "pipenv" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
-      day: "friday"
-    commit-message:
-      prefix: ":rocket: pipenv"
-
-  - package-ecosystem: "poetry" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
-      day: "friday"
-    commit-message:
-      prefix: ":rocket: poetry"
-
-  - package-ecosystem: "yarn" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
-      day: "friday"
-    commit-message:
-      prefix: ":rocket: yarn"

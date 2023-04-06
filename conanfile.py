@@ -279,8 +279,7 @@ class QtTestConan(ConanFile):
     """_summary_
     """
     def package_info(self):
-        compiler = self.settings.compiler
-
+        
         self.cpp_info.names["generator_name"] = "<PKG_NAME>"
         self.cpp_info.includedirs = ["include"]  # Ordered list of include paths
         self.cpp_info.libs = []  # The libs to link against

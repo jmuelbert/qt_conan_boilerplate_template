@@ -142,11 +142,11 @@
         },
         "aqtinstall": {
             "hashes": [
-                "sha256:c162e2035403a43a547ccb0bfc6e9a81e65f34a221adaa5d36dcc74cfb9f6930",
-                "sha256:e867fe38f35afe45e4a9b50cc4863c34c0f121bd548ff511e003381415f574a8"
+                "sha256:1e0d2796ad02ff742dd25b58c17a5a495fb141d0a6b0cbbd020482f25e6f303a",
+                "sha256:1e55042405349a5c2f7d0b66d017bd289d9080695fbe70d4b93959f3bda942c5"
             ],
             "index": "pypi",
-            "version": "==3.0.2"
+            "version": "==3.1.5"
         },
         "argcomplete": {
             "hashes": [

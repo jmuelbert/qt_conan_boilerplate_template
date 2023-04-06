@@ -234,13 +234,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==1.29.108"
         },
-        "bottle": {
-            "hashes": [
-                "sha256:d6f15f9d422670b7c073d63bd8d287b135388da187a0f3e3c19293626ce034ea",
-                "sha256:e1a9c94970ae6d710b3fb4526294dfeb86f2cb4a81eff3a4b98dc40fb0e5e021"
-            ],
-            "version": "==0.12.25"
-        },
         "breathe": {
             "hashes": [
                 "sha256:5165541c3c67b6c7adde8b3ecfe895c6f7844783c4076b6d8d287e4f33d62386",
@@ -581,10 +574,10 @@
         },
         "conan": {
             "hashes": [
-                "sha256:11ed86b8f6ddf83d48a8a2a8688c2b24b7a391b3d7dd7a3dd2cde7650b11a955"
+                "sha256:508f97b04c72fe15510ae6c109e084f3755938addef2b84e853a79b36a1b21e3"
             ],
             "index": "pypi",
-            "version": "==1.54.0"
+            "version": "==2.0.3"
         },
         "configargparse": {
             "hashes": [
@@ -642,11 +635,11 @@
         },
         "distro": {
             "hashes": [
-                "sha256:151aeccf60c216402932b52e40ee477a939f8d58898927378a02abbe852c1c39",
-                "sha256:d596311d707e692c2160c37807f83e3820c5d539d5a83e87cfb6babd8ba3a06b"
+                "sha256:02e111d1dc6a50abb8eed6bf31c3e48ed8b0830d1ea2a1b78c61765c2513fdd8",
+                "sha256:99522ca3e365cac527b44bde033f64c6945d90eb9f769703caaec52b09bbd3ff"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.7.0"
+            "version": "==1.8.0"
         },
         "docker": {
             "hashes": [
@@ -1118,13 +1111,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.6.3"
         },
-        "node-semver": {
-            "hashes": [
-                "sha256:4016f7c1071b0493f18db69ea02d3763e98a633606d7c7beca811e53b5ac66b7",
-                "sha256:d4bf83873894591a0cbb6591910d96917fbadc9731e8e39e782d3a2fbc2b841e"
-            ],
-            "version": "==0.6.1"
-        },
         "nodeenv": {
             "hashes": [
                 "sha256:27083a7b96a25f2f5e1d8cb4b6317ee8aeda3bdd121394e5ac54e498028a042e",
@@ -1168,12 +1154,6 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==3.2.0"
-        },
-        "pluginbase": {
-            "hashes": [
-                "sha256:ff6c33a98fce232e9c73841d787a643de574937069f0d18147028d70d7dee287"
-            ],
-            "version": "==1.0.1"
         },
         "ply": {
             "hashes": [
@@ -1444,14 +1424,6 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2.14.0"
-        },
-        "pyjwt": {
-            "hashes": [
-                "sha256:69285c7e31fc44f68a1feb309e948e0df53259d579295e6cfe2b1792329f05fd",
-                "sha256:d83c3d892a77bbb74d3e1a2cfa90afaadb60945205d1095d9221f04466f64c14"
-            ],
-            "markers": "python_version >= '3.7'",
-            "version": "==2.6.0"
         },
         "pyppmd": {
             "hashes": [

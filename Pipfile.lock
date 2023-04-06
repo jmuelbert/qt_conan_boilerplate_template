@@ -142,11 +142,11 @@
         },
         "aqtinstall": {
             "hashes": [
-                "sha256:c162e2035403a43a547ccb0bfc6e9a81e65f34a221adaa5d36dcc74cfb9f6930",
-                "sha256:e867fe38f35afe45e4a9b50cc4863c34c0f121bd548ff511e003381415f574a8"
+                "sha256:1e0d2796ad02ff742dd25b58c17a5a495fb141d0a6b0cbbd020482f25e6f303a",
+                "sha256:1e55042405349a5c2f7d0b66d017bd289d9080695fbe70d4b93959f3bda942c5"
             ],
             "index": "pypi",
-            "version": "==3.0.2"
+            "version": "==3.1.5"
         },
         "argcomplete": {
             "hashes": [
@@ -236,11 +236,11 @@
         },
         "breathe": {
             "hashes": [
-                "sha256:48804dcf0e607a89fb6ad88c729ef12743a42db03ae9489be4ef8f7c4011774a",
-                "sha256:ac0768a5e84addad3e632028fe67749c567aba2b29088493b64c2c1634bcdba1"
+                "sha256:5165541c3c67b6c7adde8b3ecfe895c6f7844783c4076b6d8d287e4f33d62386",
+                "sha256:52c581f42ca4310737f9e435e3851c3d1f15446205a85fbc272f1f97ed74f5be"
             ],
             "index": "pypi",
-            "version": "==4.34.0"
+            "version": "==4.35.0"
         },
         "brotli": {
             "hashes": [
@@ -1180,11 +1180,11 @@
         },
         "pre-commit": {
             "hashes": [
-                "sha256:51a5ba7c480ae8072ecdb6933df22d2f812dc897d5fe848778116129a681aac7",
-                "sha256:a978dac7bc9ec0bcee55c18a277d553b0f419d259dadb4b9418ff2d00eb43959"
+                "sha256:0b4210aea813fe81144e87c5a291f09ea66f199f367fa1df41b55e1d26e1e2b4",
+                "sha256:5b808fcbda4afbccf6d6633a56663fed35b6c2bc08096fd3d47ce197ac351d9d"
             ],
             "index": "pypi",
-            "version": "==2.20.0"
+            "version": "==3.2.2"
         },
         "prettytable": {
             "hashes": [

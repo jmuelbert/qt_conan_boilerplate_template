@@ -198,7 +198,7 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           ccache --zero-stats --show-stats
 
-      - uses: EndBug/add-and-commit@v4
+      - uses: EndBug/add-and-commit@v9
         # only commit and push if we are not a template project anymore!
         if: fromJson(steps.get_repo_meta.outputs.data).is_template != true
         with:
@@ -333,7 +333,7 @@ jobs:
           cmake --build . --config ${{matrix.build_type}} --target install
           ccache --zero-stats --show-stats
 
-      - uses: EndBug/add-and-commit@v4
+      - uses: EndBug/add-and-commit@v9
         # only commit and push if we are a template and project name has changed
         if: fromJson(steps.get_repo_meta.outputs.data).is_template == true && env.TEST_RUN == 'false'
         with:

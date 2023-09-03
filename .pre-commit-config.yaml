@@ -5,10 +5,14 @@ exclude: ^(3rdparty|COPYING|.gitmodules|conan)
 default_stages: [commit]
 default_language_version:
   python: python3
+fail_fast: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-ast
       - id: fix-byte-order-marker
         exclude: ^.*(\.cbproj|\.groupproj|\.props|\.sln|\.vcxproj|\.vcxproj.filters)$
       - id: check-case-conflict
@@ -18,8 +22,7 @@ repos:
       - id: check-yaml
         exclude: ^\.clang-format$
         args: [--allow-multiple-documents]
-      - id: check-added-large-files
-        args: ['--maxkb=1000']
+
       - id: end-of-file-fixer
         stages:
           - commit

@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Python pip Cache (Linux)
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: pip-${{ matrix.name }}-${{ hashFiles('py-requirements.txt') }}
@@ -75,7 +75,7 @@ jobs:
           pip3 install "conan<2"
           
       - name: Conan Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.conan/data
           key: conan-${{ matrix.name }}-${{ hashFiles('**/Conan.cmake') }}

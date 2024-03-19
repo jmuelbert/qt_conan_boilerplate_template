@@ -1,127 +1,60 @@
----
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: ^(3rdparty|COPYING|.gitmodules|conan)
-default_stages: [commit]
-default_language_version:
-  python: python3
-fail_fast: false
+ci:
+  skip: [pylint]
+  autoupdate_schedule: monthly
+
+exclude: ^(3rdpart|cmake/ECM|cmake/KDAB/|src/3rdparty/|code.dev.code-workspace)
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
       - id: check-added-large-files
         args: ['--maxkb=1000']
-      - id: check-ast
-      - id: fix-byte-order-marker
-        exclude: ^.*(\.cbproj|\.groupproj|\.props|\.sln|\.vcxproj|\.vcxproj.filters)$
       - id: check-case-conflict
-      - id: check-json
-      - id: check-merge-conflict
       - id: check-xml
       - id: check-yaml
-        exclude: ^\.clang-format$
         args: [--allow-multiple-documents]
-
-      - id: end-of-file-fixer
-        stages:
-          - commit
-          - manual
-      - id: mixed-line-ending
-      - id: trailing-whitespace
-        exclude: \.(md|adoc)$
-        stages:
-          - commit
-          - manual
-      - id: no-commit-to-branch
-        # protect main and any branch that has a semver-like name
-        args: [-b, main, -p, '^\d+\.\d+(?:\.\d+)?$']
-      - id: fix-encoding-pragma
-  - repo: https://github.com/cheshirekow/cmake-format-precommit
-    rev: v0.6.13
-    hooks:
-      - id: cmake-lint
-        exclude: (cmake/\.cmake$)
-      - id: cmake-format
-        additional_dependencies: ['cmakelang[YAML]']
-        exclude: (cmake/\.cmake$)
+      - id: check-json
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: check-executables-have-shebangs
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v14.0.6
+    rev: v18.1.1
     hooks:
       - id: clang-format
         exclude: (.json)
   - repo: https://github.com/PyCQA/pylint
-    rev: v2.15.4
+    rev: v3.1.0
     hooks:
       - id: pylint
-        args: ['--disable=C0103,C0301,C0114,R0801']
-        exclude: (.cmake-format.py|conanfile.py)
-        additional_dependencies: ["PySide2", "PySide6"]
-  - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v1.7.0
+        exclude: ^(.cmake-format.py|conan/conanfile.py)
+        # additional_dependencies: ['PySide2', 'PySide6']
+  - repo: https://github.com/hhatto/autopep8
+    rev: v2.0.4
     hooks:
       - id: autopep8
-  - repo: https://github.com/psf/black
-    rev: 22.10.0
+        exclude: ^(.cmake-format.py|conan/.*/conanfile.py)
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
     hooks:
-      - id: black
-        language_version: python3
-  - repo: https://github.com/asottile/blacken-docs
-    rev: v1.12.1
+      - id: codespell
+  - repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
     hooks:
-      - id: blacken-docs
-        additional_dependencies: [black==22.10.0]
-  - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: 3.0.0 # or specific git tag
-    hooks:
-      - id: bundler-audit
-      - id: check-mailmap
-      - id: fasterer
-      - id: forbid-binary
-      - id: forbid-space-in-indent
-      - id: git-check # Configure in .gitattributes
-      - id: git-dirty # Configure in .gitignore
-      - id: markdownlint # Configure in .mdlrc
-      - id: reek
-      - id: rubocop
-      - id: script-must-have-extension
-      - id: script-must-not-have-extension
-      - id: shellcheck
-      - id: shfmt
-  - repo: https://github.com/pocc/pre-commit-hooks
-    rev: v1.3.5
-    hooks:
-      - id: clang-tidy
-      - id: uncrustify
-      - id: cppcheck
-      - id: cpplint
-      - id: include-what-you-use
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
-    hooks:
-      - id: isort
-        args: [--profile, black, --multi-line, '3']
+      - id: cmake-format
+      - id: cmake-lint
+        exclude: (cmake/Toolchain-QNX|.py.cmake|.h.cmake|.rc.cmake|Doxyfile.cmake|gammaray.qhcp.cmake)
   - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.11.0
+    rev: v0.12.0
     hooks:
       - id: markdownlint
         entry: mdl
         language: ruby
         files: \.(md|mdown|markdown)$
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.2
-    hooks:
-      - id: codespell
-
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: 'v3.0.0-alpha.2' # Use the sha / tag you want to point at
-    hooks:
-      - id: prettier
-        additional_dependencies:
-          - prettier@2.7.1
-          - '@prettier/plugin-xml@0.12.0'
-
   - repo: https://github.com/fsfe/reuse-tool
-    rev: v1.0.0
+    rev: v3.0.1
     hooks:
       - id: reuse

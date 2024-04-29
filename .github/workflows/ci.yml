@@ -736,7 +736,7 @@ jobs:
 
       - name: "📤 Upload Release: AppImage"
         if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@2.7.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{runner.workspace}}/${{env.TARGET_NAME}}.appimage
@@ -746,7 +746,7 @@ jobs:
 
       - name: "📤 Upload Release: FlatPak"
         if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@2.7.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{runner.workspace}}/${{env.TARGET_NAME}}.flatpak
@@ -756,7 +756,7 @@ jobs:
 
       - name: "📤 Upload Release: snap"
         if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@2.7.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{runner.workspace}}/${{env.TARGET_NAME}}.amd64.snap
@@ -766,7 +766,7 @@ jobs:
 
       - name: "📤 Upload Release: macOS"
         if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@2.7.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{runner.workspace}}/${{env.TARGET_NAME}}.dmg
@@ -776,7 +776,7 @@ jobs:
 
       - name: "📤 Upload Release: windows"
         if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@2.7.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./${{ env.TARGET_NAME }}.exe
@@ -786,7 +786,7 @@ jobs:
 
       - name: "📤 Upload Release: zip for windows"
         if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@2.7.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./${{ env.archiveName }}-win.zip

@@ -111,7 +111,7 @@ jobs:
 
       - name: "⚙️ Install Python"
         id: python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # Read python version from a file .python-version
           python-version-file: ".python-version"
@@ -268,7 +268,7 @@ jobs:
 
       - name: "⚙️ Install Python"
         id: python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # Read python version from a file .python-version
           python-version-file: ".python-version"

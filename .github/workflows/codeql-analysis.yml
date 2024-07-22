@@ -91,7 +91,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: "Initialize CodeQL"
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -101,7 +101,7 @@ jobs:
 
       - name: "⚙️ Install Python"
         id: python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # Read python version from a file .python-version
           # python-version-file: ".python-version"
@@ -204,7 +204,7 @@ jobs:
       # If this step fails, then you should remove it and run the build manually (see below)
       - name: "📦 Autobuild"
         if: matrix.language != 'cpp'
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - name: "Perform CodeQL Analysis"
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3

@@ -164,7 +164,7 @@ jobs:
         uses: ammaraskar/gcc-problem-matcher@master
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: "${{ env.QT_VERSION }}"
           dir: "${{ env.QT_DIR }}"
@@ -299,7 +299,7 @@ jobs:
           echo "CC=gcc-10" >> $GITHUB_ENV
 
       - name: "⚙️ Install Qt Version ${{ env.QT_VERSION }}"
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: "${{ env.QT_VERSION }}"
           dir: "${{ env.QT_DIR }}"

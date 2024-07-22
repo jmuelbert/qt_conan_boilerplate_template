@@ -59,7 +59,7 @@ jobs:
       
       - name: "⚙️ Install Python"
         id: python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           # Read python version from a file .python-version
           # python-version-file: ".python-version"
@@ -145,7 +145,7 @@ jobs:
           
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4.6.3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages # The branch the action should deploy to.
